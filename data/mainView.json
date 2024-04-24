@@ -1,0 +1,47 @@
+{
+    "id": 123,
+    "username": "Ibn Sinaa",
+    "progress": {
+        "width": 21,
+        "count": 52,
+        "read": 33,
+        "color": [
+            "bg-primary",
+            "bg-success",
+            "bg-danger",
+            "bg-warning"
+        ]
+    },
+    "tags": [
+        "algorithms(4)",
+        "engineering(28)",
+        "lost-generation(6)",
+        "networks(5)",
+        "security(13)",
+        "self(8)",
+        "أفضل-ما-قرأت(17)",
+        "افضل-روايات-عربية(18)",
+        "اقتصاد(1)",
+        "الأدب-العربي(15)",
+        "الادب-العالمي(13)",
+        "المنفلوطي(6)",
+        "تاريخ-مصر(4)",
+        "خولة-حمدي(6)",
+        "فلسفة(9)",
+        "قصة-الحضارة(15)",
+        "مصطفى-محمود(39)",
+        "موسوعة-مصر-القديمة(1)",
+        "يوسف-ادريس(4)"
+    ],
+    "current": {
+        "cover": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1706818727i/206741391.jpg",
+        "path": "73287.json"
+    },
+    "paths": {
+        "read": "read.json",
+        "want_to_read": "want_to_read.json",
+        "read_current": "read_current.json",
+        "reviews": "reviews.json",
+        "stats": "stats.json"
+    }
+}

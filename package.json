@@ -1,0 +1,16 @@
+{
+  "name": "qiraa",
+  "version": "1.0.0",
+  "description": "Book Reader Helper",
+  "main": "main.js",
+  "scripts": {
+    "run": "node main.js",
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^30.0.1"
+  }
+}

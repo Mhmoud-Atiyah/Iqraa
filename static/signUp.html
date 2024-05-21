@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرحباً بك في عالمنا</title>
+    <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
+    <style>
+        :root {
+            --App-bgColor: grey;
+            --App-bgColor-Second: rgba(249, 249, 252, 255);
+            --Icon-Color: rgb(31, 41, 56);
+            --Icon-Hover: rgb(0, 122, 255);
+            --Icon-Active: rgb(0, 122, 255);
+            --bt-color: rgb(95, 103, 112);
+            --Text-header-Color: rgb(0, 122, 255);
+            --Text-Color: #222;
+            --PPM-font: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        ::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: white;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            background-color: #1f2938;
+            border-radius: 10%;
+            display: none;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--Icon-Color);
+            display: none;
+        }
+
+        @font-face {
+            font-family: 'arbic';
+            src: url('./assets/arabic_text.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'arbic_text';
+            src: url('arabic_text.ttf') format('truetype');
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--Text-Color);
+        }
+
+        input {
+            border: none;
+            outline: none;
+            text-indent: 10px;
+            color: rgb(119, 119, 119);
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 20px;
+            font-family: inherit;
+        }
+
+        .fas {
+            color: var(--Icon-Color);
+        }
+
+        #progress-bar_ {
+            width: 100%;
+            position: absolute;
+            right: 280px;
+        }
+
+        #top-options,
+        #note-options {
+            position: fixed;
+            top: 20px;
+            right: 280px;
+            z-index: 1;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-right: 5%;
+            width: 100%;
+            height: 45px;
+        }
+
+        #main {
+            display: block;
+            position: fixed;
+            top: 60px;
+            right: 280px;
+            padding: 15px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+
+        .card-text {
+            overflow-y: scroll;
+            height: 80px;
+        }
+
+        #book_view_purchaseBt {
+            position: absolute;
+            top: 180px;
+            left: 120px;
+        }
+
+        #panel {
+            display: block;
+            position: absolute;
+            z-index: 0;
+            top: 30px;
+            left: 10px;
+            width: 350px;
+        }
+
+        #panel-search-results {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 10px;
+            display: block;
+            overflow: scroll;
+        }
+
+        #panel-status {
+            display: inline-block;
+            height: 20px;
+            width: 350px;
+            position: fixed;
+            z-index: 1;
+            bottom: 15px;
+            left: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            cursor: default;
+            user-select: none;
+        }
+
+        .container {
+            max-width: 960px;
+        }
+
+        body {
+            overflow: scroll;
+        }
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .b-example-divider {
+            width: 100%;
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+        }
+
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .btn-bd-primary {
+            --bd-violet-bg: #712cf9;
+            --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+            --bs-btn-font-weight: 600;
+            --bs-btn-color: var(--bs-white);
+            --bs-btn-bg: var(--bd-violet-bg);
+            --bs-btn-border-color: var(--bd-violet-bg);
+            --bs-btn-hover-color: var(--bs-white);
+            --bs-btn-hover-bg: #6528e0;
+            --bs-btn-hover-border-color: #6528e0;
+            --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+            --bs-btn-active-color: var(--bs-btn-hover-color);
+            --bs-btn-active-bg: #5a23c8;
+            --bs-btn-active-border-color: #5a23c8;
+        }
+
+        .bd-mode-toggle {
+            z-index: 1500;
+        }
+    </style>
+</head>
+
+<body class="bg-body-tertiary">
+    <div class="d-flex align-items-center justify-content-center" style="padding-bottom: 25px;padding-top: 25px;">
+        <span style="font-weight: bold;font-family:arbic_text;letter-spacing: 2px;" class="fs-1">قراءة</span>
+        <i style="font-size: 36px;margin-left: 20px; margin-right: 20px;line-height: 1.3em;"
+            class="fa-solid fa-book-open-reader"></i>
+    </div>
+    <!--
+        Main Content of page
+    -->
+    <div class="container">
+        <h4 class="mb-3">مرحباً بك</h4>
+        <form class="needs-validation">
+            <!--
+                User Data Contents
+            -->
+            <div class="row g-3">
+                <!--
+                 First Name
+                -->
+                <div class="col-sm-6 fw-bold">
+                    <label for="firstName" class="form-label">الاسم الأول</label>
+                    <input type="text" class="form-control" id="firstName" required>
+                </div>
+                <!--
+                Last Name
+                -->
+                <div class="col-sm-6 fw-bold">
+                    <label for="lastName" class="form-label">اسم العائلة</label>
+                    <input type="text" class="form-control" id="lastName" required>
+                </div>
+                <!--
+                    Age Of User
+                -->
+                <div class="col-md-6">
+                    <label for="day" class="form-label fw-bold">السن</label>
+                    <input type="number" class="form-control" placeholder=""
+                        required>
+
+
+                </div>
+                <!--
+                    Country
+                -->
+                <div class="col-md-3 fw-bold">
+                    <label for="country" class="form-label">البلد&nbsp;</label>
+                    <select class="form-select" id="country">
+                        <option value="">اختر...</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        يرجى اختيار بلد صحيح.
+                    </div>
+                </div>
+                <!--
+                    Gender
+                -->
+                <div class="col-md-3 fw-bold">
+                    <label for="gender" class="form-label">الجنس</label>
+                    <select class="form-select" id="gender" required>
+                        <option value="">اختر...</option>
+                        <option>ذكر</option>
+                        <option>أنثى</option>
+                    </select>
+                </div>
+                <!--
+                    Account
+                -->
+                <div class="col-6 fw-bold">
+                    <label for="email" class="form-label">اسم المستخدم</label>
+                    <input type="email" class="form-control" id="email" placeholder="راعي الرموز والإشارات">
+                </div>
+                <!--
+                    Profile
+                -->
+                <div class="col-6 fw-bold">
+                    <label for="Profile" class="form-label">صورةالمستخدم</label>
+                    <input class="form-control" type="file" id="Profile">
+                </div>
+                <!--
+                    Password
+                -->
+                <div class="col-sm-6 fw-bold">
+                    <label for="firstName" class="form-label">الرقم السري</label>
+                    <input type="password" class="form-control" placeholder="اختر كلمة مرور قوية" required>
+                </div>
+                <!--
+                    Re-type Password
+                -->
+                <div class="col-sm-6 fw-bold">
+                    <label for="firstName" class="form-label">الرقم السري&nbsp;
+                        <span class="text-body-secondary">(مرة
+                            أخرى)</span></label>
+                    <input type="password" class="form-control" required>
+                </div>
+
+                <!--
+                    About me
+                -->
+                <div>
+                    <label for="exampleFormControlTextarea1" class="form-label fw-bold">نبذة عنك</label>
+                    <span class="badge rounded-pill text-bg-secondary">اختياري</span>
+                    <span class="badge rounded-pill bg-success text-bg-secondary">(80 حرف)</span>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="1" maxlength="80"></textarea>
+                </div>
+                <!--
+                    Favourite Books
+                -->
+                <div class="col-md-6 fw-bold">
+                    <label for="Favourite-Books" class="form-label">نوعية الكتب التي تحب&nbsp;</label>
+                    <span class="badge rounded-pill text-bg-secondary">اختياري</span>
+                    <span class="badge rounded-pill bg-success text-bg-secondary">(متعدد)</span>
+                    <select class="form-select" id="favouriteGenres" multiple title="اضغط ctrl لتحديد متعدد"></select>
+                </div>
+                <!--
+                    Interests
+                -->
+                <div class="col-md-6 fw-bold">
+                    <label for="Interests" class="form-label">الإهتمامات&nbsp;</label>
+                    <span class="badge rounded-pill text-bg-secondary">اختياري</span>
+                    <span class="badge rounded-pill bg-success text-bg-secondary">(متعدد)</span>
+                    <select class="form-select" id="intersts" multiple title="اضغط ctrl لتحديد متعدد"></select>
+                </div>
+            </div>
+            <!--
+                Login Button
+            -->
+            <hr class="my-3">
+            <div id="login-window" class="w-100 btn btn-primary btn-lg mb-4" type="submit">تسجيل</div>
+        </form>
+    </div>
+
+    <script src="JS/register.js"></script>
+    <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,13 +1,13 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const { exec } = require('child_process');
 const path = require('path');
 const http = require('http');
 const fs = require('fs');
 const misc = require('./misc');
+const GR = require('./goodreads');
 // const { createSign } = require('crypto');
 
-// Some Defualt Values
-
+/* Some Defualt Values */
+const MAINPATH = path.join(__dirname);
 const ASSETSPATH = path.join(__dirname, "/assets");
 const DATAPATH = path.join(__dirname, "/data");
 const PORT = process.env.PORT || 1999;
@@ -21,21 +21,6 @@ function isItfirstTime(path) {
     } else {
         false;
     }
-};
-/**
- * @brief Reads a file asynchronously.
- * @param {string} filename - The path of the file to read.
- * @returns {Promise<Buffer|string>} A promise that resolves with the file data as a Buffer or string, depending on the encoding used.
- */
-fs.readFileAsync = function (filename) {
-    return new Promise(function (resolve, reject) {
-        fs.readFile(filename, function (err, data) {
-            if (err)
-                reject(err);
-            else
-                resolve(data);
-        });
-    });
 };
 /**
  * Converts a hyphen-separated string of favorite items into a JSON array string.
@@ -65,32 +50,43 @@ function favouriteSave(list) {
     // Return the JSON array string
     return str;
 };
+//---------------------------------------------------------
+// Files Manipulation Routines
+//---------------------------------------------------------
 /**
- * @brief Opens a new tab in Google Chrome with the specified URL.
- *
- * This function opens a new tab in Google Chrome with the specified URL.
- * It uses the `google-chrome` command to execute the operation.
- *
- * @param {string} url - The URL of the webpage to open in the new tab.
- * @returns {void}
- *
- * @note This function requires Google Chrome to be installed and accessible via the `google-chrome` command.
- * @note If an error occurs while opening the tab, an error message will be logged to the console.
- * @note This function is asynchronous, and the success or failure of the operation is determined by the callback.
- *
+ * @brief Reads a file asynchronously.
+ * @param {string} filename - The path of the file to read.
+ * @returns {Promise<Buffer|string>} A promise that resolves with the file data as a Buffer or string, depending on the encoding used.
  */
-function ChromeTabOpen(url) {
-    exec(`google-chrome ${url}`, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error opening Google Chrome: ${error}`);
-            return;
+fs.readFileAsync = function (filename) {
+    return new Promise(function (resolve, reject) {
+        fs.readFile(filename, function (err, data) {
+            if (err)
+                reject(err);
+            else
+                resolve(data);
+        });
+    });
+};
+/**
+ * @brief Copies a file from the source path to the destination path.
+ *
+ * This function uses the Node.js fs.copyFile method to copy a file from the
+ * specified source path to the specified destination path. It logs a message
+ * indicating whether the file was copied successfully or if an error occurred.
+ *
+ * @param[in] source The path to the source file.
+ * @param[in] destination The path to the destination file.
+ */
+function copyFile(source, destination) {
+    fs.copyFile(source, destination, (err) => {
+        if (err) {
+            console.error('Error copying the file:', err);
+        } else {
+            console.log(`File ${source} copied to ${destination} successfully`);
         }
-        console.log(`Google Chrome opened ${url} successfully`);
     });
 }
-//---------------------------------------------------------
-// JSON related Functions
-//---------------------------------------------------------
 /**
 * Reads a JSON file and sends its contents as a response in an HTTP server.
 *
@@ -131,9 +127,7 @@ function editJsonFile(path, opt, data) {
             }
         } else if (opt === 1 && typeof data === 'object') {
             // Edit Data
-            Object.keys(data).forEach((key) => {
-                Input[key] = data[key];
-            })
+            Input[data[0]] = data[1];
         } else if (opt === 2 && typeof data === 'object') {
             // append Data
             Input.push(data);
@@ -147,6 +141,24 @@ function editJsonFile(path, opt, data) {
             if (err) throw err;
             console.log(`Data of file:${path} updated successfully`);
         });
+    });
+}
+/**
+* Reads a CSS file and sends its contents as a response in an HTTP server.
+*
+* @param {string} file - The path to the CSS file to be read.
+* @param {Object} req - The HTTP request object.
+* @param {Object} res - The HTTP response object.
+*/
+function readCSS(file, req, res) {
+    fs.readFile(file, 'utf8', function (err, data) {
+        if (err) {
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Internal Server Error');
+            return;
+        };
+        res.writeHead(200, { 'Content-Type': 'text/css' });
+        res.end(data);
     });
 }
 //---------------------------------------------------------
@@ -174,7 +186,7 @@ function createLoginWindow() {
 function createMainWindow(id) {
     const win = new BrowserWindow({
         minHeight: 600,
-        minWidth: 1024,
+        minWidth: 1280,
         width: 1280,
         height: 720,
         center: true,
@@ -243,6 +255,25 @@ function createNotesWindow() {
         }
     })
     win.loadFile('static/notes.html');
+};
+/** Library Window **/
+function createLibraryWindow() {
+    const win = new BrowserWindow({
+        minHeight: 720,
+        minWidth: 720,
+        width: 720,
+        height: 720,
+        center: true,
+        autoHideMenuBar: true,
+        icon: path.join(__dirname, 'assets/book-open-reader-solid.svg'),
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true,
+            enableRemoteModule: false,
+            nodeIntegration: false
+        }
+    })
+    win.loadFile('static/library.html');
 };
 /** Settings Window **/
 function createSettingsWindow() {
@@ -335,18 +366,38 @@ const server = http.createServer((req, res) => {
                 console.error(`Error parsing JSON File (${DATAPATH}/users.json):`, parseErr);
             }
         });
-    } else if (req.url.includes('Config')) { // Login Window
+    } else if (req.url.includes('loadConfig')) { // Load config file
         readJson(`${DATAPATH}/config.json`, req, res);
     } else if (req.url.includes('userData')) { // Load User Data
-        /* First 
-            Get User ID
-         */
+        /* Get User ID */
         const ID = req.url.split('/userData/')[1];
         readJson(`${DATAPATH}/${ID}/${ID}_data.json`, req, res);
+    } else if (req.url.includes('loadUserSection')) { // Load User's Section Data
+        const query_ = req.url.split('/loadUserSection/')[1];
+        const [id, section] = decodeURIComponent(query_).split('|');
+        readJson(`${DATAPATH}/${id}/${id}_${section}.json`, req, res);
+    } else if (req.url.includes('loadStyle')) { // Load Style file
+        const style = req.url.split('/loadStyle/')[1];
+        try {
+            readCSS(`${DATAPATH}/themes/${style}.css`, req, res);
+        } catch (parseErr) {
+            console.error(`Error Load Theme File ${DATAPATH}/themes/${style}.css):`, parseErr);
+        }
     } else if (req.url.includes('loadBookData')) { // Load User Data
         /* Get Book ID */
         const ID = req.url.split('/loadBookData/')[1];
         readJson(`${DATAPATH}/books/${ID}.json`, req, res);
+    } else if (req.url.includes('editConfig')) { // Edit Config Key
+        const query_ = req.url.split('/editConfig/')[1];
+        const config = decodeURIComponent(query_).split('|');
+        try {
+            editJsonFile(`${DATAPATH}/config.json`, 1, config);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.write(JSON.stringify(true));
+            res.end();
+        } catch (parseErr) {
+            console.error(`Error Editing JSON File (${DATAPATH}/config.json):`, parseErr);
+        }
     } else if (req.url.includes('signUp')) { // signUp Window
         /* 
             Just one time load data for sign up
@@ -412,13 +463,14 @@ const server = http.createServer((req, res) => {
             fs.writeFile(`${DATAPATH}/${id.slice(4)}/${id.slice(4)}_data.json`, `
         {
             "id": "${id.slice(4)}",
+            "new": "true",
             "firstName": "${firstName.slice(4)}",
             "lasttName": "${lasttName.slice(4)}",
             "account": "${account.slice(4)}",
             "profile": "${profile.slice(4)}",
             "current": {
                 "id": "",
-                "cover": "https://m.media-amazon.com/images/I/81QPHl7zgbL._AC_UF1000,1000_QL80_.jpg",
+                "cover": "${ASSETSPATH}/bookCover.jpg",
                 "title": "اختر كتاب تقراءه حالياَ",
                 "path": ""
             },
@@ -438,6 +490,7 @@ const server = http.createServer((req, res) => {
             fs.writeFile(`${DATAPATH}/${id.slice(4)}/${id.slice(4)}_read.json`, `
         {
             "id": "${id.slice(4)}",
+            "tags": [],
             "books": []
         }
         `, (err) => {
@@ -451,6 +504,21 @@ const server = http.createServer((req, res) => {
             fs.writeFile(`${DATAPATH}/${id.slice(4)}/${id.slice(4)}_want.json`, `
         {
             "id": "${id.slice(4)}",
+            "tags": [],
+            "books": []
+        }
+        `, (err) => {
+                if (err) {
+                    console.error('Error writing to file', err);
+                } else {
+                    console.log(`Successfully User ${firstName.slice(4)} ${lasttName.slice(4)}'s Read Books Created`);
+                }
+            });
+            /* Create Suggest File */
+            fs.writeFile(`${DATAPATH}/${id.slice(4)}/${id.slice(4)}_suggest.json`, `
+        {
+            "id": "${id.slice(4)}",
+            "tags": [],
             "books": []
         }
         `, (err) => {
@@ -464,6 +532,7 @@ const server = http.createServer((req, res) => {
             fs.writeFile(`${DATAPATH}/${id.slice(4)}/${id.slice(4)}_notes.json`, `
         {
             "id": "${id.slice(4)}",
+            "tags": [],
             "notes": []
         }
         `, (err) => {
@@ -484,32 +553,77 @@ const server = http.createServer((req, res) => {
         Re-open Login Window again
         */
         createLoginWindow();
+    } else if (req.url.includes('goodreads')) { // Save Goodreads Data to cache
+        const path_ = req.url.split('/goodreads/')[1];
+        const ID = decodeURIComponent(path_).split('|')[0];
+        const JSONPath = decodeURIComponent(path_).split('|')[1];
+        fs.readFile(JSONPath, 'utf8', function (err, data) {
+            if (err) throw err;
+            let JSONFile = JSON.parse(data);
+            for (let index = 0; index < JSONFile.length; index++) {
+                let obj = {
+                    "id": `${JSONFile[index]["Book Id"]}`,
+                    "cover": `${getCover(JSONFile[index]["Title"])}`,
+                    "title": `${JSONFile[index]["Title"]}`,
+                    "path": `${createBook(JSONFile[index]["Book Id"])}`
+                }
+                if (JSONFile[index]["Exclusive Shelf"] === "read") {
+                    editJsonFile(`${DATAPATH}/${ID}/${ID}_read.json`, 2, obj);
+                } else {
+                    editJsonFile(`${DATAPATH}/${ID}/${ID}_want.json`, 2, obj);
+                }
+            }
+            // let arr = [
+            //     'id', "Book Id",
+            //     'title', "Title",
+            //     'pathbook', "Function to create file",
+            //     'pagesCount', "Number of Pages",
+            //     'pubDate', "Year Published",
+            //     'Publisher', "Publisher",
+            //     'rating', "My Rating",
+            //     'authorName', "Author", "Additional Authors",
+            //     'tags', "[Bookshelves]",
+            //     'comments', "My Review"
+            // ]
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.write("load data");
+            res.end();
+        });
     } else {
         // Handle other requests (if any)
         res.writeHead(404);
         res.end('Not Found');
     }
 });
-
 /**
- * First Check If Files and DIRs Exist ?
- */
-
-/**
- * Second Start Backend Server
+ * Start Backend Server
  */
 server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+/* 
+    Start Front End App
+*/
 app.whenReady().then(() => {
+    /** Check If it's First App Look ? */
     if (isItfirstTime(DATAPATH)) {
         /* Create Main Dirs */
         fs.mkdir(`${DATAPATH}`, (err) => {
             if (err) throw err;
             console.log(`Directory: ${DATAPATH} created successfully`);
+            /* Books Directory */
             fs.mkdir(`${DATAPATH}/books`, (err) => {
                 if (err) throw err;
                 console.log(`Directory: ${DATAPATH}/books created successfully`);
+            });
+            /* Themes Directory */
+            fs.mkdir(`${DATAPATH}/themes`, (err) => {
+                if (err) throw err;
+                console.log(`Directory: ${DATAPATH}/themes created successfully`);
+                copyFile(`${MAINPATH}/static/style/darkTheme.css`, `${DATAPATH}/themes/`);
+                copyFile(`${MAINPATH}/static/style/lightTheme.css`, `${DATAPATH}/themes/`);
+                copyFile(`${MAINPATH}/static/style/arabic_text.ttf`, `${DATAPATH}/themes/`);
+                copyFile(`${MAINPATH}/static/style/Old Antic Decorative.ttf`, `${DATAPATH}/themes/`);
             });
         });
         // Check Connection
@@ -525,8 +639,8 @@ app.whenReady().then(() => {
         /* Create Config File */
         fs.writeFile(`${DATAPATH}/config.json`, `
         {
-            "connection": ${isOnline},
-            "dark": false,
+            "connection": "${isOnline}",
+            "mode": "light",
             "dock": "show",
             "theme": [
                 "bg-primary",
@@ -567,10 +681,12 @@ app.whenReady().then(() => {
     ipcMain.on('open-Notes-window', () => {
         createNotesWindow();
     });
+    ipcMain.on('open-Library-window', () => {
+        createLibraryWindow();
+    });
     ipcMain.on('open-riwaq-window', () => {
         createRiwaqWindow();
     });
-
 })
 
 app.on('window-all-closed', () => {

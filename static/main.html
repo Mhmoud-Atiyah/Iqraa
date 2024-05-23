@@ -4,103 +4,79 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Qiraa Tracker</title>
+    <title>Iqraa</title>
     <link rel="icon" href="assets/book-open-reader-solid.svg">
     <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
     <link href="style/main.css" rel="stylesheet">
 </head>
 
-<body style="font-family: arbic_text;background-color: #fffff0;">
-    <!-- 
-        Header
-     -->
-    <header data-bs-theme="light" dir="ltr" style="font-size: 18px;">
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<body>
+    <!-- Header -->
+    <header dir="ltr">
+        <nav class="navbar navbar-expand-md">
             <div class="container-fluid">
-                <!-- 
-                    Search Input
-                 -->
+                <!-- Search Input -->
                 <form class="d-flex" role="search">
-                    <button class="btn btn-outline-warning d-inline-flex align-items-center" type="button">اضف كتاب
-                        جديد
+                    <button class="btn btn-outline-warning d-inline-flex align-items-center fw-bold" type="button">اضف
+                        كتاب جديد
                         <svg class="bi ms-1" width="5" height="20">
                             <use xlink:href="#arrow-right-short"></use>
                         </svg>
                     </button>
-                    <input class="form-control ms-2 me-4" id="search-input"
-                        style="width: 300px;direction: rtl;text-indent: 15px;font-family: Arial, Helvetica, sans-serif;"
-                        type="search" placeholder="بحث" aria-label="بحث">
-                    <ul class="dropdown-menu dropdown-menu-macos mx-0 shadow "
-                        style="width: 300px;text-align: right;font-size: 16px;" id="search-list">
-                    </ul>
+                    <div>
+                        <input class="form-control ms-2 me-4" id="search-input" type="search" placeholder="بحث">
+                        <ul class="dropdown-menu dropdown-menu-macos mx-0 shadow" id="search-list">
+                            <!-- PLACEHOLDER For Search List Items-->
+                        </ul>
+                    </div>
                 </form>
-                <!-- 
-                    Secondry Show Options
-                 -->
+                <!-- Secondry Show Options -->
                 <div class="navbar-collapse" id="navbarCollapse">
                     <ul id="secondry-nav" class="navbar-nav mb-2 mb-md-0">
                         <!-- PLACEHOLDER For  secondry Show Items-->
                     </ul>
                 </div>
-                <!-- 
-                    User Profile
-                 -->
-                <span class="align-items-right text-white fw-bold" aria-expanded="false" style="user-select: none;">
+                <!-- User Profile -->
+                <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
                     <strong id="profile-name" class="me-1" style="letter-spacing: 1px;"></strong>
                     <img id="profile-pic" width="32" height="32" class="rounded-circle">
                 </span>
-                <!-- 
-                    App Dark Mode
-                 -->
-                <span class="align-items-right text-white ms-3" aria-expanded="false">
-                    <i id="theme-icon" class="fa-solid fa-moon"
-                        style="font-size: 20px;padding-top: 10px;cursor: pointer;"></i>
-                </span>
-                <!-- 
-                    App Connection Status
-                 -->
-                <span class="align-items-right text-white ms-3" aria-expanded="false">
-                    <i id="status-icon" class="fa-solid fa-signal"
-                        style="font-size: 20px;padding-top: 10px;cursor: pointer;transform: scaleX(-1);"></i>
-                </span>
+                <!-- App Dark Mode -->
+                <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="theme-icon"
+                        class="#"></i></span>
+                <!-- App Connection Status -->
+                <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="status-icon"
+                        class="#"></i></span>
 
             </div>
         </nav>
     </header>
-    <!-- 
-        Main View
-     -->
+    <!--  Main View -->
     <div id="main"></div>
-    <!-- 
-        Bottom Dock
-     -->
-    <div id="nav" class="navbar navbar-expand-md navbar-dark bg-dark text-white">
+    <!-- Bottom Dock -->
+    <div id="nav" class="navbar navbar-expand-md">
         <div class="row">
-            <div id="myBooks" class="navBt col-md-1 nav-bt">كتبي</div>
-            <div id="want" class="navBt col-md-1 nav-bt">أعجبني</div>
-            <div id="notes" class="navBt col-md-1 nav-bt">ملاحظات</div>
-            <div class="col-md-1">
-                <img class="openBookBt" id="current" height="150px" width="150px"
-                    style="border-radius: 6px;cursor: pointer;" src="#">
-            </div>
-            <div id="main_bt" class="navBt col-md-1 nav-bt">creative</div>
-            <div id="suggest" class="navBt col-md-1 nav-bt">ترشيحات</div>
-            <div id="session" class="navBt col-md-1 nav-bt">الرواق</div>
-
+            <div id="myBooks" class="navBt mySection col-md-1 nav-bt cursorBt">كتبي</div>
+            <div id="want" class="navBt mySection col-md-1 nav-bt cursorBt">أعجبني</div>
+            <div id="suggest" class="navBt mySection col-md-1 nav-bt cursorBt">ترشيحات</div>
+            <div class="col-md-1"><img class="openBookBt cursorBt" id="current" src="#"></div>
+            <div id="notes" class="navBt col-md-1 nav-bt cursorBt">ملاحظات</div>
+            <div id="library_bt" class="navBt col-md-1 nav-bt cursorBt">المكتبة</div>
+            <div id="session" class="navBt col-md-1 nav-bt cursorBt">الرواق</div>
         </div>
     </div>
-    <!-- 
-        Setting Icon
-     -->
-    <div id="settings">
+    <!-- Setting Icon -->
+    <div id="settings" class="cursorBt">
         <i class="fa-solid fa-sliders" style="padding: 5px;"></i>
     </div>
-    <!-- 
-        External Scripts
-     -->
+    <!-- External Scripts -->
     <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="JS/mainView.js"></script>
+    <script src="JS/components.js"></script><!-- App Components like header and buttons -->
+    <script src="JS/misc.js"></script><!-- Helpful Routines -->
+    <script src="JS/theme.js"></script><!-- Dark Mode and Themes -->
+    <script src="JS/userSection.js"></script><!-- Load and remove User Sections -->
+    <script src="JS/mainView.js"></script><!-- Main Routines -->
 </body>
 
 </html>

@@ -1,0 +1,91 @@
+/* 
+    عدل الاتنين اللي في داتا معاهم وكدا كدا الملف دا هيتطبع في الداتا بعدين
+*/
+
+:root {
+    --App-bgColor: #f9f9f9;
+    --App-fgColor: #ffffff;
+    --App-textColor: #333333;
+    --App-secondaryTextColor: #666666;
+    --App-panelBgColor: #ffffff;
+    --App-panelBorderColor: #e0e0e0;
+    --App-iconColor: #555555;
+    --App-linkColor: #007acc;
+    --App-linkHoverColor: #005fa3;
+    --App-buttonBgColor: #007acc;
+    --App-buttonTextColor: #ffffff;
+    --App-buttonHoverBgColor: #005fa3;
+    --App-navBgColor: #ffffff;
+    --App-navTextColor: #333333;
+    --App-footerBgColor: #f1f1f1;
+    --App-footerTextColor: #666666;
+    --App-inputBgColor: #ffffff;
+    --App-inputBorderColor: #cccccc;
+    --App-placeholderColor: #aaaaaa;
+    --App-highlightColor: #ffff99;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: var(--App-bgColor);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: var(--App-panelBorderColor);
+    border-radius: 10%;
+    display: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--App-iconColor);
+    display: none;
+}
+
+a {
+    text-decoration: none;
+    color: var(--App-linkColor);
+}
+
+input {
+    border: none;
+    outline: none;
+    text-indent: 10px;
+    color: var(--App-inputBgColor);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 20px;
+    font-family: inherit;
+}
+
+.fa-solid {
+    color: var(--App-iconColor);
+}
+
+body {
+    background-color: var(--App-bgColor);
+}
+
+header {
+    background-color: var(--App-panelBgColor);
+    color: var(--App-textColor);
+}
+
+#nav {
+    background-color: var(--App-navBgColor);
+    color: var(--App-navTextColor);
+}
+
+.nav-bt:hover {
+    background-color: var(--App-footerBgColor);
+}
+
+.secondry-nav-item:hover {
+    background-color: var(--App-footerBgColor);
+    color: var(--App-buttonBgColor);
+}
+
+.newSection {
+    background-color: var(--App-navBgColor);
+    color: var(--App-navTextColor);
+}

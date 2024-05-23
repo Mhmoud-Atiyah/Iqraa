@@ -1,13 +1,29 @@
 @font-face {
-    font-family: 'arbic_text';
-    src: url('../assets/arabic_text.ttf') format('truetype');
+    font-family: 'arbicDecorative';
+    src: url('Old\ Antic\ Decorative.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'arbicNormal';
+    src: url('arabic_text.ttf') format('truetype');
 }
 
 ::-webkit-scrollbar {
     display: none;
 }
 
+ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.cursorBt {
+    cursor: pointer;
+}
+
 body {
+    font-family: arbicNormal;
     display: block;
     margin: 0px;
     padding: 0px;
@@ -20,19 +36,37 @@ header {
     margin-bottom: 100px;
     width: 100%;
     z-index: 1;
+    font-size: 18px;
 }
-#search-list{
-    display: none;
-    position: absolute;
-    top: 52px;
-    left: 133px;
+
+#theme-icon {
+    font-size: 20px;
+    padding-top: 10px;
+}
+
+#status-icon {
+    font-size: 20px;
+    padding-top: 10px;
+    transform: scaleX(-1);
+}
+
+#search-input {
+    width: 300px;
+    direction: rtl;
+    text-indent: 15px;
     font-family: Arial, Helvetica, sans-serif;
 }
-.dropdown-item:hover{
-    /* TODO: */
-    background-color: rgba(0, 0, 0, 0.63);
-    cursor: pointer;
+
+#search-list {
+    font-size: 16px;
+    width: 300px;
+    text-align: right;
+    display: none;
+    position: absolute;
+    left: 125px;
+    font-family: Arial, Helvetica, sans-serif;
 }
+
 #secondry-nav {
     direction: rtl;
     font-size: 22px;
@@ -40,10 +74,14 @@ header {
     width: 600px;
     overflow-x: scroll;
     overflow-y: hidden;
+    line-height: 1.8em;
 }
 
 .secondry-nav-item {
-    float: right;
+    margin-left: 5px;
+    padding-left: 3px;
+    padding-right: 3px;    
+    border-radius: 5px;
 }
 
 #main {
@@ -55,7 +93,11 @@ header {
     overflow-x: hidden;
     padding: 10px;
 }
-
+/* Book Card */
+.col {
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
 #nav {
     display: block;
     position: fixed;
@@ -71,6 +113,9 @@ header {
     position: relative;
     top: -105px;
     left: 5px;
+    border-radius: 6px;
+    height: 150px;
+    width: 150px;
 }
 
 .nav-bt {
@@ -78,18 +123,12 @@ header {
     font-size: 28px;
     text-align: center;
     letter-spacing: 2px;
-    cursor: pointer;
 }
 
 .navBt {
     height: 45px;
     width: auto;
     border-radius: 2px;
-}
-
-.nav-bt:hover {
-    background-color: #fffff0;
-    color: black;
 }
 
 .navBt:nth-child(5) {
@@ -101,5 +140,4 @@ header {
     bottom: 10px;
     left: 10px;
     font-size: 20px;
-    cursor: pointer;
 }

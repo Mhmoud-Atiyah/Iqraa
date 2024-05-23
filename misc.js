@@ -60,3 +60,6 @@ function convertToArabicNumeral(number) {
 
     return arabicNumber;
 }
+/* Download Data from Goodreads */
+// https://www.goodreads.com/review/import
+/* Excel Parsing */

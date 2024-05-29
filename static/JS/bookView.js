@@ -1,67 +1,4 @@
-function getData(path) {
-    let obj = fetch(`http://localhost:1999/${path}`, {
-        method: 'GET',
-        headers: {
-            "Accept": "application/json"
-        },
-    }).then(response => response.json())
-    return obj;
-};
-// Function to get ID Of User
-function getQueryParams() {
-    const query = window.location.search.substring(1);
-    const vars = query.split("&");
-    const params = {};
-    vars.forEach(v => {
-        const pair = v.split("=");
-        params[pair[0]] = decodeURIComponent(pair[1]);
-    });
-    return params;
-}
 const ID = getQueryParams().bookId;
-/**
-* Converts a number to its Arabic numeral representation.
-*
-* @param {number} number - The number to convert.
-* @returns {string} The Arabic numeral representation of the number.
-*/
-function convertToArabicNumeral(number) {
-    const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-    const numberString = number.toString();
-    let arabicNumber = '';
-
-    for (let i = 0; i < numberString.length; i++) {
-        const char = numberString[i];
-        if (char === '.') {
-            arabicNumber += ',';
-        } else {
-            const digit = parseInt(char);
-            arabicNumber += arabicNumerals[digit];
-        }
-    }
-
-    return arabicNumber;
-}
-const book_view = {
-    view: document.getElementsByClassName("book_view")[0],
-    cover: document.getElementById("book_view_cover"),
-    title: document.getElementById("book_view_title"),
-    pagesCount: document.getElementById("book_view_pagesCount"),
-    pubDate: document.getElementById("book_view_pubDate"),
-    rating: document.getElementById("book_view_rating"),
-    readBt: document.getElementById("book_view_readBt"),
-    readNowBt: document.getElementById("book_view_readNowBt"),
-    wantreadBt: document.getElementById("book_view_wantreadBt"),
-    noteBt: document.getElementById("book_view_noteBt"),
-    purchaseBt: document.getElementById("book_view_purchaseBt"),
-    authorName: document.getElementById("authorName"),
-    authorProfile: document.getElementById("authorProfile"),
-    authorBirth: document.getElementById("authorBirth"),
-    authorInfo: document.getElementById("authorInfo"),
-    bookAbout: document.getElementById("book_viewAbout"),
-    bookTags: document.getElementsByClassName("book_tag_bt"),
-}
-
 /**
 * @function loadBookDataPage
 * @param {*} path the link contains the data of book
@@ -88,10 +25,7 @@ function loadBookDataPage(bookData) {
     //3. Want to read
     book_view.wantreadBt.setAttribute("data-path", bookData.id);
     book_view.wantreadBt.setAttribute("data-title", bookData.title);
-    //4. note
-    book_view.noteBt.setAttribute("data-path", bookData.id);
-    book_view.noteBt.setAttribute("data-title", bookData.title);
-    //5. purchase
+    //4. purchase
     book_view.purchaseBt.setAttribute("data-path", bookData.purchasePath);
     //set author data
     book_view.authorName.innerHTML = bookData.author.name;
@@ -108,7 +42,21 @@ function loadBookDataPage(bookData) {
     }
 }
 window.onload = () => {
+    getData("loadConfig").then((config) => { // Global Config
+        /* Dark mode setting */
+        if (config.mode === "dark") { // Now is Dark
+            loadTheme("darkTheme");
+        } else {    // Now is Light
+            loadTheme("lightTheme");
+        }
+    })
     getData(`loadBookData/${ID}`).then(data => {
+        document.title = `كتاب ${data.title} للكاتب ${data.author.name}`
         loadBookDataPage(data);
     });
 }
+//TODO: on read button click show window inside page for info about book like date of end and rating and so on
+
+//TODO: on reply on comment open same top windows as thread between two users like future RIWAQ
+
+//TODO: عاوزين نحسن شكل النجوم بتاعت الرات

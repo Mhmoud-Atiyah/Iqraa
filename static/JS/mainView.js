@@ -140,6 +140,9 @@ themeBt.onclick = () => {
         });
     }
 }
+addBookBt.onclick = () => { 
+    window.IPC.openAddBookWindow();
+}
 /* Setting button */
 settings.onclick = () => {
     window.IPC.openSettingWindow();
@@ -175,6 +178,7 @@ riwaqBt.onclick = () => {
 // Back End Work
 //---------------------------------------------------------
 /* Search Staff */
+
 searchInput.onclick = () => {
     searchList.style.display = "block"
 };
@@ -183,3 +187,17 @@ searchInput.oninput = () => {
         searchList.innerHTML = "";
     }
 }
+
+searchInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();  // Prevent the form from submitting
+        getData(`search/${query}`).then((res) => {
+            if (res.Success == "1") {
+                //TODO: Do Showing of results staff
+
+            } else {
+                console.log("Error Search!");
+            }
+        })
+    }
+});

@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('IPC', {
   openMainWindow: (data) => ipcRenderer.send('open-main-window', data),
   opensignUpWindow: () => ipcRenderer.send('open-signUp-window'),
   openBookWindow: (bookId) => ipcRenderer.send('open-book-window', bookId),
+  openAddBookWindow: () => ipcRenderer.send('open-Addbook-window'),
   openSettingWindow: () => ipcRenderer.send('open-settings-window'),
   openNotesWindow: () => ipcRenderer.send('open-Notes-window'),
   openLibraryWindow: () => ipcRenderer.send('open-Library-window'),

@@ -80,7 +80,7 @@ header {
 .secondry-nav-item {
     margin-left: 5px;
     padding-left: 3px;
-    padding-right: 3px;    
+    padding-right: 3px;
     border-radius: 5px;
 }
 
@@ -93,11 +93,13 @@ header {
     overflow-x: hidden;
     padding: 10px;
 }
+
 /* Book Card */
 .col {
     margin-left: 5px;
     margin-bottom: 5px;
 }
+
 #nav {
     display: block;
     position: fixed;

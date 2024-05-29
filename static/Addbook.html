@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة كتاب</title>
+    <link rel="icon" href="assets/book-open-reader-solid.svg">
+    <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: ArabicNumbers;
+            src: url('style/ArabicNumbers.ttf');
+        }
+
+        @font-face {
+            font-family: 'arbicDecorative';
+            src: url('style/Old\ Antic\ Decorative.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'arbicNormal';
+            src: url('style/arabic_text.ttf') format('truetype');
+        }
+        input[type=number]{
+            font-size: 16px;
+        }
+        input[type=text]{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        textarea{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        /* Hide the scrollbar for number input fields */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .rightSide {
+            display: inline-block;
+            width: 300px;
+            height: 100%;
+            margin-right: 20px;
+        }
+
+        .rightSideButtons {
+            display: block;
+            background-color: var(--App-panelBgColor);
+            position: relative;
+            top: -10px;
+            padding-top: 10px;
+            margin-top: 5px;
+            padding-bottom: 8px;
+            z-index: 1;
+            margin-left: 10px;
+            width: 260px;
+            border-end-start-radius: 5px;
+            border-end-end-radius: 5px;
+            border: solid 1px var(--App-panelBorderColor);
+        }
+
+        #addBookBt {
+            position: relative;
+            top: 50px;
+            right: 20%;
+            background-color: var(--App-buttonBgColor);
+            color: var(--App-buttonTextColor);
+        }
+
+        .btn {
+            margin-right: 12px;
+        }
+
+        .btn:hover {
+            cursor: pointer;
+            background-color: var(--App-footerBgColor)
+        }
+
+        .mainSide {
+            background-color: var(--App-footerBgColor);
+            display: block;
+            height: 100%;
+        }
+
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 0.1rem;
+        }
+
+        .rating input:checked~label,
+        .rating label:hover~label {
+            color: #f5b301;
+        }
+    </style>
+</head>
+
+<body style="font-family: arbicNormal;word-spacing: 2px;">
+    <div class="container">
+        <div class="row">
+            <!-- Right Side -->
+            <div class="rightSide col-sm-5 col-md-6 mt-2">
+                <!-- Book Cover -->
+                <img src="assets/bookCover.jpg" height="260px" width="260px" id="bookCover"
+                    style="filter: grayscale(100%); margin-left: 10px;margin-top: 10px;border-top-left-radius: 7px;border-top-right-radius: 7px;">
+                <!-- Book Cover Buttons -->
+                <div class="rightSideButtons">
+                    <a class="btn fw-bold border rounded-pill fs-5" style="color: var(--App-navTextColor);" href="#"
+                        id="browse_cover">
+                        اختر ملف<i class="fa-solid fa-file-import me-2"></i>
+                        <input class="form-control" type="file" style="display:none" id="browse_cover_input"
+                            accept=".png,.jpg">
+                    </a>
+                    <a class="btn fw-bold border rounded-pill fs-5" style="color: var(--App-navTextColor);" href="#"
+                        id="download_cover">
+                        تحميل الغلاف<i class="fa-solid fa-cloud-arrow-down me-2"></i>
+                    </a>
+                </div>
+                <button id="addBookBt" class="btn border rounded-pill d-inline-flex align-items-center fw-bold fs-4"
+                    type="button" style="word-spacing: 3px">اضف الكتاب</button>
+            </div>
+            <!-- Main Section -->
+            <div class="mainSide col-sm-5 offset-sm-2 col-md-6 offset-md-0 rounded p-3 mt-3 fs-4">
+                <!-- Book Name -->
+                <div class="container">
+                    <div class="row align-items-start">
+
+                        <div class="mb-3 col">
+                            <label for="BookName" class="form-label fw-bold me-1"
+                                style="color: var(--App-textColor)">اسم الكتاب</label>
+                            <input type="text" class="form-control required" id="BookName" placeholder="اسم الكتاب">
+                        </div>
+                    </div>
+                </div>
+                <!-- Author Name -->
+                <div class="container">
+                    <div class="row align-items-start">
+                        <div class="mb-3 col">
+                            <label for="BookAuthor" class="form-label fw-bold me-1"
+                                style="color: var(--App-textColor)">اسم المؤلف</label>
+                            <input type="text" class="form-control required" id="BookAuthor" placeholder="اسم المؤلف">
+                        </div>
+                    </div>
+                </div>
+                <!-- PG_Count , Pub_Date and Rating -->
+                <div class="container">
+                    <div class="row align-items-start mb-3 ">
+                        <div class="col col-4">
+                            <label for="BookPagesCount" class="form-label fw-bold me-1"
+                                style="color: var(--App-textColor)">عدد الصفحات</label>
+                            <input type="number" class="form-control required" id="BookPagesCount" max="9999"
+                                placeholder="٣٥٧" data-toggle="tooltip" data-placement="bottom"
+                                title="عدد الصفحات لا يزيد عن 9999 صفحة" style="font-family: ArabicNumbers;font-size: 16px;">
+                        </div>
+                        <div class="col col-4">
+                            <label for="BookPubDate" class="form-label fw-bold me-1"
+                                style="color: var(--App-textColor)">سنة النشر</label>
+                            <input type="number" min="1800" max="2025" maxlength="4" step="1"
+                                class="form-control required" id="BookPubDate" placeholder="١٦٦٣" data-toggle="tooltip"
+                                data-placement="bottom" title="سنة بين 1800 و 2025" style="font-family: ArabicNumbers;">
+                        </div>
+                        <div class="col col-4">
+                            <label for="BookPubDate" class="form-label fw-bold me-2"
+                                style="color: var(--App-textColor)">التقييم</label>
+                            <div class="container border pt-1 pb-1 rounded"
+                                style="background-color: var(--App-panelBgColor);">
+                                <form>
+                                    <div class="form-group fw-bold">
+                                        <div class="rating">
+                                            <input type="radio" class="ratingBt" name="rating" id="star5"
+                                                value="5"><label for="star5">&#9733;</label>
+                                            <input type="radio" class="ratingBt" name="rating" id="star4"
+                                                value="4"><label for="star4">&#9733;</label>
+                                            <input type="radio" class="ratingBt" name="rating" id="star3"
+                                                value="3"><label for="star3">&#9733;</label>
+                                            <input type="radio" class="ratingBt" name="rating" id="star2"
+                                                value="2"><label for="star2">&#9733;</label>
+                                            <input type="radio" class="ratingBt" name="rating" id="star1"
+                                                value="1"><label for="star1">&#9733;</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- About Book -->
+                <div class="container">
+                    <div class="row align-items-start">
+                        <div class="col-md-12 fw-bold form-group">
+                            <label for="bookAbout" class="form-label me-1" style="color: var(--App-textColor)">عن
+                                الكتاب&nbsp;</label>
+                            <textarea id="bookAbout" class="form-control required" rows="4"
+                                placeholder="عن الكتاب" style="font-size: 18px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tags -->
+                <div class="container">
+                    <div class="row align-items-start">
+                        <label class="fw-bold p-2 me-2" for="bookTag" class="form-label"
+                            style="color: var(--App-textColor)">إشارة&nbsp;</label>
+                        <div class="col col-4 ps-0">
+                            <input type="text" class="form-control tag" placeholder="أدب_مصري" data-toggle="tooltip"
+                                data-placement="bottom" title="اكتب بهذه الصيغة (كلمة_كلمة) أو (كلمة) فقط">
+                        </div>
+                        <div class="col col-4 ps-0">
+                            <input type="text" class="form-control tag" placeholder="كتبي" data-toggle="tooltip"
+                                data-placement="bottom" title="اكتب بهذه الصيغة (كلمة_كلمة) أو (كلمة) فقط">
+                        </div>
+                        <div class="col col-4">
+                            <input type="text" class="form-control tag" placeholder="قصص_خيال" data-toggle="tooltip"
+                                data-placement="bottom" title="اكتب بهذه الصيغة (كلمة_كلمة) أو (كلمة) فقط">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="alertPlaceholder"></div>
+
+    <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="JS/misc.js"></script>
+    <script src="JS/theme.js"></script>
+    <script src="JS/addBook.js"></script>
+</body>
+
+</html>

@@ -9,7 +9,7 @@ const {
     createMainWindow,
     createBookWindow,
     createAddbookWindow,
-    createRiwaqWindow,
+    createRiwaqWindow, 
     createNotesWindow,
     createLibraryWindow,
     createSettingsWindow,

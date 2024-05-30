@@ -6,30 +6,33 @@ const ID = getQueryParams().bookId;
 */
 function loadBookDataPage(bookData) {
     book_view.cover.src = bookData.coverSrc;
+    book_view.cover.title = bookData.title;
+    book_view.cover.style.filter = "";
     book_view.title.innerHTML = bookData.title;
-    //TODO: pubDate
+    book_view.pubDate.innerText = bookData.pubDate;
     //book_view.pubDate.innerHTML = convertToArabicNumeral(bookData.pubDate)
     book_view.pagesCount.innerHTML = convertToArabicNumeral(bookData.pagesCount.split(" ")[0]) + " صفحة ";
-    book_view.rating.innerHTML = " تقييم " + convertToArabicNumeral(bookData.rating);
+    book_view.ratingStars[5 - Math.floor(bookData.rating)].click();
     //---------------------------------------------------------
     // set button data
     //---------------------------------------------------------
     //1. Already read
     book_view.readBt.setAttribute("data-path", bookData.id);
     book_view.readBt.setAttribute("data-title", bookData.title);
-    //2. Reader
-    book_view.readNowBt.setAttribute("data-path", bookData.readPath);
-    book_view.readNowBt.setAttribute("data-title", bookData.title);
-    book_view.readNowBt.setAttribute("data-img", bookData.coverSrc);
-    book_view.readNowBt.setAttribute("data-info", bookData.about.slice(0, 100));
+    //TODO: 2. Reader
+    // book_view.readNowBt.setAttribute("data-path", bookData.readPath);
+    // book_view.readNowBt.setAttribute("data-title", bookData.title);
+    // book_view.readNowBt.setAttribute("data-img", bookData.coverSrc);
+    // book_view.readNowBt.setAttribute("data-info", bookData.about.slice(0, 100));
     //3. Want to read
     book_view.wantreadBt.setAttribute("data-path", bookData.id);
     book_view.wantreadBt.setAttribute("data-title", bookData.title);
     //4. purchase
-    book_view.purchaseBt.setAttribute("data-path", bookData.purchasePath);
+    book_view.purchaseBt.setAttribute("data-title", bookData.id);
     //set author data
     book_view.authorName.innerHTML = bookData.author.name;
     book_view.authorProfile.src = bookData.author.profile;
+    book_view.authorProfile.style.filter = "";
     book_view.authorBirth.innerHTML = bookData.author.birth;
     book_view.authorInfo.innerHTML = bookData.author.info;
     // set book about data
@@ -60,3 +63,7 @@ window.onload = () => {
 //TODO: on reply on comment open same top windows as thread between two users like future RIWAQ
 
 //TODO: عاوزين نحسن شكل النجوم بتاعت الرات
+
+//TODO: on load book data check if it read or want so it will check the button
+
+//TODO: read now need reader software

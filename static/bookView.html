@@ -8,29 +8,21 @@
     <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'arbicNormal';
+            src: url('style/arabic_text.ttf') format('truetype');
+        }
+
         body {
             padding-top: 20px;
             padding-bottom: 30px;
-        }
-
-        .gradient-custom {
-            /* fallback for old browsers */
-            background: #4facfe;
-            /* Chrome 10-25,
-Safari 5.1-6 */
-            background: -webkit-linear-gradient(to bottom right, rgba(79, 172, 254,
-                        1), rgba(0, 242, 254, 1));
-            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+,
-Safari 7+ */
-            background: linear-gradient(to bottom right, rgba(79, 172, 254, 1), rgba(0,
-                        242, 254, 1))
         }
 
         .Btn {
             width: 30px;
             color: var(--App-textColor);
             padding: 8px;
-            margin-left: 4px;
+            margin-left: 5px;
             border-radius: 10px;
             border: solid 2px var(--App-panelBorderColor);
             cursor: pointer;
@@ -39,64 +31,133 @@ Safari 7+ */
         .Btn:hover {
             background-color: var(--App-panelBorderColor);
         }
+
+        #book_viewAbout {
+            color: var(--App-textColor);
+            font-family: arbicNormal;
+            font-size: 24px;
+            word-spacing: 2px;
+        }
+
+        #myBookComment {
+            font-size: 16px;
+            resize: none;
+        }
+
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0 0.1rem;
+        }
+
+        .rating input:checked~label {
+            color: #f5b301;
+        }
+
+        #book_view_title {
+            font-family: arbicNormal;
+            word-spacing: 3px;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 
 <body>
     <!--Section: book view-->
     <div class="book_view container">
-        <div class="p-4 p-md-5 mb-4 rounded"
+        <!-- Book Details -->
+        <div class="p-md-3 mb-4 rounded col-md-10"
             style="background-color: var(--App-panelBgColor);color: var(--App-textColor);">
-            <img id="book_view_cover" src="" class="float-start" title="book cover" height="150px" width="150px"
-                style="border-radius: 7.5px;">
-            <a class="book_purchase_bt btn btn-outline-warning btn-sm active" id="book_view_purchaseBt"
-                href="#">شراء&nbsp;
-                <i class="fa-solid fa-bag-shopping"></i>
-            </a>
-            <div class="col-md-6 px-0">
-                <p class="lead my-3" id="book_view_title"></p>
-                <p class="small my-3" id="book_view_pagesCount"></p>
-                <p class="small my-3" id="book_view_pubDate"></p>
-                <p class="small my-3" id="book_view_rating"></p>
-                <div class="book_options">
-                    <nav class="blog-pagination" aria-label="Pagination">
-                        <a class="read_bt Btn" id="book_view_readBt">
-                            قرأت&nbsp;
-                            <i class="fa-solid fa-book-medical"></i>
-                        </a>
-                        <a class="wantread_bt Btn" id="book_view_wantreadBt">تريد
-                            قراءته&nbsp;
-                            <i class="fa-solid fa-heart"></i>
-                        </a>
-                        <a class="Btn" id="book_view_readNowBt">
-                            قراءه&nbsp;
-                            <i class="fa-brands fa-readme"></i>
-                        </a>
-                    </nav>
+            <!-- Book Cover -->
+            <img id="book_view_cover" src="assets/bookCover.jpg" class="float-start" title="عنوان الكتاب" height="170px"
+                width="150px" style="border-radius: 7.5px;filter: grayscale(100%);">
+            <!-- Book Title -->
+            <div class="px-0">
+                <div style="display: inline-block;" class="pb-1">
+                    <div class="lead fw-bold ms-3" id="book_view_title" style="display: inline;"></div>
+                    <div id="book_view_rating" class="ms-3 rating" style="display: inline;direction: ltr;">(
+                        <input type="radio" class="ratingBt" name="rating" id="star1" value="1"><label
+                            for="star1">&#9733;</label>
+                        <input type="radio" class="ratingBt" name="rating" id="star3" value="3"><label
+                            for="star3">&#9733;</label>
+                        <input type="radio" class="ratingBt" name="rating" id="star2" value="2"><label
+                            for="star2">&#9733;</label>
+                        <input type="radio" class="ratingBt" name="rating" id="star4" value="4"><label
+                            for="star4">&#9733;</label>
+                        <input type="radio" class="ratingBt" name="rating" id="star5" value="5"><label
+                            for="star5">&#9733;</label>
+                        )
+                    </div>
                 </div>
+                <!-- Book Pages Count -->
+                <div class="small fw-bold fs-5 ms-3" id="book_view_pagesCount"
+                    style="font-family: arbicNormal;word-spacing: 3px;"></div>
+                <!-- Book Pubish Date -->
+                <div class="small fw-bold fs-5 ms-3 pb-2" id="book_view_pubDate"
+                    style="font-family: arbicNormal;word-spacing: 3px;"></div>
+                <!-- Book Options -->
+                <div class="fw-bold">
+                    <div class="book_options mt-3 pb-2">
+                        <nav class="book_optionsNav">
+                            <a class="read_bt Btn fw-bold" id="book_view_readBt">
+                                قرأت&nbsp;
+                                <i class="fa-solid fa-book-medical"></i>
+                            </a>
+                            <a class="wantread_bt Btn fw-bold" id="book_view_wantreadBt">يعجبني&nbsp;
+                                <i class="fa-solid fa-heart"></i>
+                            </a>
+                            <a class="Btn fw-bold" id="book_view_readNowBt">
+                                قراءه&nbsp;
+                                <i class="fa-brands fa-readme"></i>
+                            </a>
+                            <a class="book_purchase_bt Btn fw-bold" id="book_view_purchaseBt" href="#">شراء&nbsp;
+                                <i class="fa-solid fa-bag-shopping"></i>
+                            </a>
+
+                        </nav>
+                    </div>
+                </div>
+
             </div>
         </div>
+        <!-- Author Section -->
         <div class="row mb-2">
-            <div class="col-md-6" style="width: 600px;">
+            <div class="col-md-8">
                 <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative"
                     style="background-color: var(--App-panelBgColor);color: var(--App-textColor);">
-                    <div class="col p-4 d-flex flex-column position-static">
-                        <strong class="d-inline-block mb-2">المؤلف</strong>
-                        <h3 class="mb-0" id="authorName"></h3>
-                        <div class="mb-1" id="authorBirth"></div>
-                        <p class="card-text mb-auto" id="authorInfo"></p>
+                    <!-- Author title -->
+                    <div class="col pe-4 pt-2 d-flex flex-column position-static"
+                        style="font-family: arbicNormal;word-spacing: 2px;">
+                        <div class="d-inline-block fs-3 fw-bold" style="letter-spacing: 1px;">المؤلف</div>
+                        <div class="mb-0 fs-4 fw-bold" id="authorName"></div>
+                        <div class="mb-1 fs-4" id="authorBirth"></div>
+                        <p class="card-text mb-auto fs-4" id="authorInfo"></p>
                     </div>
-                    <div class="col-auto d-none d-lg-block">
-                        <img id="authorProfile" src="#" width="200" height="250">
+                    <!-- Author Profile -->
+                    <div class="col-auto d-none d-lg-block p-3">
+                        <img id="authorProfile" class="rounded" src="assets/authorProfile.png" width="200" height="250"
+                            style="filter: grayscale(100%);">
                     </div>
                 </div>
             </div>
 
         </div>
+        <!-- About Book -->
         <div class="row">
             <div class="col-md-8">
 
-                <article class="blog-post mb-4" id="book_viewAbout" style="color: var(--App-textColor);"></article>
+                <article class="blog-post mb-4" id="book_viewAbout"></article>
 
                 <nav class="blog-pagination" aria-label="Pagination">
                     <a class="book_tag_bt Btn" data-path=""></a>
@@ -108,161 +169,89 @@ Safari 7+ */
             </div>
         </div>
     </div>
-    <section class="gradient-custom" dir="ltr">
-        <div class="container my-5 py-5">
-            <div class="row d-flex justify-content-center">
-                <div class="col-md-12 col-lg-10 col-xl-8">
+    <!-- User Comments -->
+    <section class="UserComments">
+        <div class="container mt-5">
+            <div class="row d-flex">
+                <div class="col-md-12">
                     <div class="card">
-                        <div class="card-body p-4">
-                            <h4 class="text-center mb-4 pb-2">Nested comments section</h4>
-
+                        <!-- My thread -->
+                        <div class="card-body p-4 rounded pb-0 mb-0"
+                            style="background-color: var(--App-navBgColor);color: var(--App-textColor);">
                             <div class="row">
                                 <div class="col">
-                                    <div class="d-flex flex-start">
-                                        <img class="rounded-circle shadow-1-strong me-3"
+                                    <!-- User Comment -->
+                                    <div class="d-flex flex-start rounded p-2 border">
+                                        <img class="rounded-circle shadow-1-strong ms-3" src="assets/profile.jpg"
+                                            alt="avatar" width="65" height="65" />
+                                        <div class="flex-grow-1 flex-shrink-1">
+                                            <div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <p class="mb-1">
+                                                        <span class="fw-bold">اسم المستخدم -</span>
+                                                        <span class="small">منذ ساعتين</span>
+                                                    </p>
+                                                </div>
+
+                                                <textarea id="myBookComment"
+                                                    class="form-control rounded border pt-2 pb-2" rows="3"
+                                                    placeholder="تعليقك !"></textarea>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- User Thread -->
+                        <div class="card-body p-4 rounded"
+                            style="background-color: var(--App-navBgColor);color: var(--App-textColor);">
+                            <div class="row">
+                                <div class="col">
+                                    <!-- User Comment -->
+                                    <div class="d-flex flex-start rounded p-2 border">
+                                        <img class="rounded-circle shadow-1-strong ms-3"
                                             src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(10).webp"
                                             alt="avatar" width="65" height="65" />
                                         <div class="flex-grow-1 flex-shrink-1">
                                             <div>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <p class="mb-1">
-                                                        Maria Smantha <span class="small">- 2 hours ago</span>
+                                                        <span class="fw-bold">اسم المستخدم -</span>
+                                                        <span class="small">منذ ساعتين</span>
                                                     </p>
-                                                    <a href="#!"><i class="fas fa-reply fa-xs"></i><span class="small">
-                                                            reply</span></a>
-                                                </div>
-                                                <p class="small mb-0">
-                                                    It is a long established fact that a reader will be distracted by
-                                                    the readable content of a page.
-                                                </p>
-                                            </div>
-
-                                            <div class="d-flex flex-start mt-4">
-                                                <a class="me-3" href="#">
-                                                    <img class="rounded-circle shadow-1-strong"
-                                                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp"
-                                                        alt="avatar" width="65" height="65" />
-                                                </a>
-                                                <div class="flex-grow-1 flex-shrink-1">
                                                     <div>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <p class="mb-1">
-                                                                Simona Disa <span class="small">- 3 hours ago</span>
-                                                            </p>
-                                                        </div>
-                                                        <p class="small mb-0">
-                                                            letters, as opposed to using 'Content here, content here',
-                                                            making it look like readable English.
-                                                        </p>
+                                                        <i class="fa-regular fa-thumbs-up ms-1"></i>
+                                                        <i class="fa-regular fa-comment ms-1"></i>
+                                                        <i class="fa-regular fa-share-from-square ms-1"></i>
                                                     </div>
                                                 </div>
+                                                <p class="small mb-0">إنها حقيقة مثبتة منذ زمن طويل أن المحتوى المقروء
+                                                    للصفحة سوف يلهي القارئ.</p>
                                             </div>
-
-                                            <div class="d-flex flex-start mt-4">
-                                                <a class="me-3" href="#">
-                                                    <img class="rounded-circle shadow-1-strong"
-                                                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(32).webp"
-                                                        alt="avatar" width="65" height="65" />
-                                                </a>
+                                            <!-- Other User Reply -->
+                                            <div class="d-flex flex-start mt-3 me-3"
+                                                style="color: var(--App-secondaryTextColor);">
+                                                <img class="rounded-circle shadow-1-strong ms-3"
+                                                    src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp"
+                                                    alt="avatar" width="65" height="65" />
                                                 <div class="flex-grow-1 flex-shrink-1">
                                                     <div>
                                                         <div class="d-flex justify-content-between align-items-center">
-                                                            <p class="mb-1">
-                                                                John Smith <span class="small">- 4 hours ago</span>
+                                                            <p class="mb-1" style="color: var(--App-textColor);">ماريا
+                                                                سامنثا -
+                                                                <span class="small">منذ ساعتين</span>
                                                             </p>
+                                                            <div style="color: var(--App-textColor);">
+                                                                <i class="fa-regular fa-thumbs-up ms-1"></i>
+                                                                <i class="fa-regular fa-message ms-1"></i>
+                                                                <i class="fa-regular fa-share-from-square ms-1"></i>
+                                                            </div>
                                                         </div>
-                                                        <p class="small mb-0">
-                                                            the majority have suffered alteration in some form, by
-                                                            injected humour, or randomised words.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex flex-start mt-4">
-                                        <img class="rounded-circle shadow-1-strong me-3"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(12).webp"
-                                            alt="avatar" width="65" height="65" />
-                                        <div class="flex-grow-1 flex-shrink-1">
-                                            <div>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <p class="mb-1">
-                                                        Natalie Smith <span class="small">- 2 hours ago</span>
-                                                    </p>
-                                                    <a href="#!"><i class="fas fa-reply fa-xs"></i><span class="small">
-                                                            reply</span></a>
-                                                </div>
-                                                <p class="small mb-0">
-                                                    The standard chunk of Lorem Ipsum used since the 1500s is
-                                                    reproduced below for those interested. Sections 1.10.32 and
-                                                    1.10.33.
-                                                </p>
-                                            </div>
-
-                                            <div class="d-flex flex-start mt-4">
-                                                <a class="me-3" href="#">
-                                                    <img class="rounded-circle shadow-1-strong"
-                                                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(31).webp"
-                                                        alt="avatar" width="65" height="65" />
-                                                </a>
-                                                <div class="flex-grow-1 flex-shrink-1">
-                                                    <div>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <p class="mb-1">
-                                                                Lisa Cudrow <span class="small">- 4 hours ago</span>
-                                                            </p>
-                                                        </div>
-                                                        <p class="small mb-0">
-                                                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus
-                                                            scelerisque ante sollicitudin commodo. Cras purus odio,
-                                                            vestibulum in vulputate at, tempus viverra turpis.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex flex-start mt-4">
-                                                <a class="me-3" href="#">
-                                                    <img class="rounded-circle shadow-1-strong"
-                                                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(29).webp"
-                                                        alt="avatar" width="65" height="65" />
-                                                </a>
-                                                <div class="flex-grow-1 flex-shrink-1">
-                                                    <div>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <p class="mb-1">
-                                                                Maggie McLoan <span class="small">- 5 hours ago</span>
-                                                            </p>
-                                                        </div>
-                                                        <p class="small mb-0">
-                                                            a Latin professor at Hampden-Sydney College in Virginia,
-                                                            looked up one of the more obscure Latin words, consectetur
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex flex-start mt-4">
-                                                <a class="me-3" href="#">
-                                                    <img class="rounded-circle shadow-1-strong"
-                                                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(32).webp"
-                                                        alt="avatar" width="65" height="65" />
-                                                </a>
-                                                <div class="flex-grow-1 flex-shrink-1">
-                                                    <div>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <p class="mb-1">
-                                                                John Smith <span class="small">- 6 hours ago</span>
-                                                            </p>
-                                                        </div>
-                                                        <p class="small mb-0">
-                                                            Autem, totam debitis suscipit saepe sapiente magnam officiis
-                                                            quaerat necessitatibus odio assumenda, perferendis quae
-                                                            iusto
-                                                            labore laboriosam minima numquam impedit quam dolorem!
-                                                        </p>
+                                                        <p class="small mb-0">إنها حقيقة مثبتة منذ زمن طويل أن المحتوى
+                                                            المقروء
+                                                            للصفحة سوف يلهي القارئ.</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -276,15 +265,6 @@ Safari 7+ */
             </div>
         </div>
     </section>
-    
-    
-    
-    
-    
-    
-    <img src="/media/mhmoud/Global/Pictures/Screenshots/Screenshot from 2024-05-28 23-13-30.png" alt="" style="position: absolute;top: 960px;right: 125px;">
-
-
 
     <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="JS/components.js"></script>

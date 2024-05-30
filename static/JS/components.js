@@ -25,6 +25,7 @@ const book_view = {
     title: document.getElementById("book_view_title"),
     pagesCount: document.getElementById("book_view_pagesCount"),
     pubDate: document.getElementById("book_view_pubDate"),
+    ratingStars: document.getElementsByClassName("ratingBt"),
     rating: document.getElementById("book_view_rating"),
     readBt: document.getElementById("book_view_readBt"),
     readNowBt: document.getElementById("book_view_readNowBt"),

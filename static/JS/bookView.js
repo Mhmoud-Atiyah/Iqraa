@@ -33,7 +33,6 @@ function loadBookDataPage(bookData) {
     book_view.authorName.innerHTML = bookData.author.name;
     book_view.authorProfile.src = bookData.author.profile;
     book_view.authorProfile.style.filter = "";
-    book_view.authorBirth.innerHTML = bookData.author.birth;
     book_view.authorInfo.innerHTML = bookData.author.info;
     // set book about data
     book_view.bookAbout.innerHTML = bookData.about;

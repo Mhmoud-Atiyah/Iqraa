@@ -1,7 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
+const { IQRAADB } = require("./config");
+
 
 // Open a database connection
-const db = new sqlite3.Database('./mydatabase.db', (err) => {
+const db = new sqlite3.Database(IQRAADB, (err) => {
     if (err) {
         console.error('Error opening database:', err.message);
     } else {

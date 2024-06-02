@@ -10,15 +10,19 @@ axios.get(url)
         // Load the HTML content into Cheerio
         const $ = cheerio.load(response.data);
 
-        // Example: Extract all links from the webpage
-        $('a').each((index, element) => {
-            const link = $(element).attr('href');
-            console.log(link);
-        });
+        const ID = 1232;//TODO:
+        // const cover = $('.ResponsiveImage[role="presentation"]');
+        const title = $('.Text__title1').text();
+        const PC = $('[data-testid="pagesFormat"]').text();
+        // const PD = $('.').text();
+        // const rate = $('.').text();
+        // const author = $('.').text();//TODO: convert name to ID in DB
+        // const about = $('.').text();
+        // const tags = $('.').text();
 
-        // Example: Extract the text content of a specific element
-        const title = $('title').text();
+        // console.log('Cover:', cover);
         console.log('Title:', title);
+        console.log('PC:', PC);
 
     })
     .catch(error => {

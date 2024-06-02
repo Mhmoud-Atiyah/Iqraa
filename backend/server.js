@@ -4,7 +4,8 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-
+const { createLoginWindow } = require('./front');
+const { favouriteSave } = require('./misc');
 //TODO: Covert fetch method of function send data to server
 
 const { readJson, editJsonFile, readCSS } = require('./files');
@@ -43,7 +44,7 @@ const server = http.createServer((req, res) => {
             try {
                 const Users = JSON.parse(content);
                 for (const user of Users) {
-                    if (user.userName == userName && user.password == passWord) {
+                    if (user.userName == userName && user.passWord == passWord) {
                         res.writeHead(200, { 'Content-Type': 'application/json' });
                         res.write(JSON.stringify(user.id));
                         res.end();
@@ -175,13 +176,9 @@ const server = http.createServer((req, res) => {
             "current": {
                 "id": "",
                 "cover": "${ASSETSPATH}/bookCover.jpg",
-                "title": "اختر كتاب تقراءه حالياَ",
-                "path": ""
+                "title": "اختر كتاب تقراءه حالياَ"
             },
-            "lastSearch": [],
-            "read": "${id.slice(4)}_read.json",
-            "want": "${id.slice(4)}_want.json",
-            "notes": "${id.slice(4)}_notes.json"
+            "lastSearch": []
         }
         `, (err) => {
                 if (err) {
@@ -215,7 +212,7 @@ const server = http.createServer((req, res) => {
                 if (err) {
                     console.error('Error writing to file', err);
                 } else {
-                    console.log(`Successfully User ${firstName.slice(4)} ${lasttName.slice(4)}'s Read Books Created`);
+                    console.log(`Successfully User ${firstName.slice(4)} ${lasttName.slice(4)}'s Wanted Books Created`);
                 }
             });
             /* Create Suggest File */
@@ -229,7 +226,7 @@ const server = http.createServer((req, res) => {
                 if (err) {
                     console.error('Error writing to file', err);
                 } else {
-                    console.log(`Successfully User ${firstName.slice(4)} ${lasttName.slice(4)}'s Read Books Created`);
+                    console.log(`Successfully User ${firstName.slice(4)} ${lasttName.slice(4)}'s Siggested Books Created`);
                 }
             });
             /* Create notes File */

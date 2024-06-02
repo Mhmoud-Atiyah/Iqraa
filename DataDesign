@@ -1,0 +1,52 @@
+DB1 ==>
+(
+    myNotes--> table
+                |__: Notes ==> [ "id" |  "tags":[]  | "notes":[]  ]
+                |__:       ==> [  NUM | ARRAY:[STR] | ARRAY:[STR] ]
+                |__:                                         |__: [ "id" |  "DATA"  ]
+                |__:                                         |__: [  NUM |  FUTURE! ]
+
+    myBooks--> Two tables 
+                |__: Read ==> [ "id" |  "tags":[]  | "books":[]  ]
+                |__:      ==> [  NUM | ARRAY:[STR] | ARRAY:[STR] ]
+                |__:                                         |__: [ "id" | "cover" | "title" | "review" ]
+                |__:                                         |__: [  NUM | STRING  |  STRING |  STRING  ]
+                |__:                                                 ||   
+                |__: Suggest ==> [ "id" |  "tags":[]  | "books":[] ] ||     {TODO}==> Dynamically created based on some factors
+                |__:         ==> [  NUM | ARRAY:[STR] | ARRAY:[STR]] ||
+                |__:                                         |__: [ "id" | "cover" | "title" | "review" ]
+                |__:                                         |__: [  NUM | STRING  |  STRING |  STRING  ]
+                |__:                                                 ||
+                |__: Want ==> [ "id" |  "tags":[]  | "books":[]  ]   ||
+                |__:      ==> [  NUM | ARRAY:[STR] | ARRAY:[STR] ]   ||
+                |__:                                         |__: [ "id" | "cover" | "title" | "review" ]
+                |__:                                         |__: [  NUM | STRING  |  STRING |  STRING  ]
+                                                                     ||
+                                                                     ||
+                   __________________________________________________//
+                  /__________________________________________________/
+                 //
+                //
+    Books = [ "id"| "coverSrc"| "title"| "pagesCount"| "pubDate"| "rating"| "author"| "about"| "tags":[]      ]
+    Books = [ NUM |   STRING  | STRING |     NUM     |    DATE  |    NUM  |   NUM   | STRING | ARRAY:[STRING] ]
+)                                                                              ||
+                                                                               ||
+                     __________________________________________________________//
+                    /__________________________________________________________/
+DB2 ==>            //
+(                 //
+     AUTHOR = [ "id"| "name"| "birth"| "info" | "profile"| "path" | "books":[]     ]
+     AUTHOR = [ NUM | STRING|  DATE  | STRING |  SRTING  | STRING | ARRAY:[STRING] ]
+)
+
+DB3 ==> "On Loading App To Internet"
+(
+    Books's Comments 
+                |__: Book's table ==> [ "BookId" |  "Comments":[] ]
+                |__:              ==> [    NUM   |   ARRAY:[STR]  ]
+                |__:                                         |__: [ "UserID" | "ThreadID" | "UserName" | "time" | "Comment" ]
+                |__:                                         |__: [    NUM   |     NUM    |   SRTING   |  TIME  |   SRTING  ] {TODO}==> اعمل حاجة تربط الريفيوز ببعض
+
+     USER_COMMENT = [ "BOOKID" | "books":[]     ]
+     USER_COMMENT = [    NUM   | ARRAY:[STRING] ]
+)

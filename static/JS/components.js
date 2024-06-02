@@ -17,7 +17,7 @@ const profileBt = document.getElementById("profile-pic");
 const current = document.getElementById("current");
 const settingBt = document.getElementById("settings");
 const openBookBt = document.getElementsByClassName("openBookBt");
-const searchList = document.getElementById("search-list");
+const searchBt = document.getElementById("searchBt");
 const searchInput = document.getElementById("search-input");
 const book_view = {
     view: document.getElementsByClassName("book_view")[0],
@@ -33,7 +33,6 @@ const book_view = {
     purchaseBt: document.getElementById("book_view_purchaseBt"),
     authorName: document.getElementById("authorName"),
     authorProfile: document.getElementById("authorProfile"),
-    authorBirth: document.getElementById("authorBirth"),
     authorInfo: document.getElementById("authorInfo"),
     bookAbout: document.getElementById("book_viewAbout"),
     bookTags: document.getElementsByClassName("book_tag_bt"),

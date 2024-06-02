@@ -69,6 +69,15 @@ window.onload = () => {
             }
         };
         accountBt.innerText = userData.firstName + " " + userData.lasttName;
+        if (userData.current.id != "") {
+            current.src = userData.current.cover;
+            current.title = userData.current.title;
+            current.className = "cursorBt openBookBt";
+        } else {
+            current.src = userData.current.cover;
+            current.title = userData.current.title;
+            current.className = "cursorBt";
+        }
         profileBt.src = userData.profile;
         profileBt.alt = userData.account;
         current.src = userData.current.cover;
@@ -78,7 +87,8 @@ window.onload = () => {
             let elem = document.createElement("li");
             elem.className = "dropdown-item";
             elem.innerText = userData.lastSearch[index];
-            searchList.append(elem);
+            //TODO: Append last search to tags Bar
+            // searchList.append(elem);
         }
     })
     document.getElementById("main").style.height = window.innerHeight - 60 + 'px';
@@ -140,7 +150,7 @@ themeBt.onclick = () => {
         });
     }
 }
-addBookBt.onclick = () => { 
+addBookBt.onclick = () => {
     window.IPC.openAddBookWindow();
 }
 /* Setting button */

@@ -32,6 +32,10 @@
             background-color: var(--App-panelBorderColor);
         }
 
+        .cursorBt {
+            cursor: pointer;
+        }
+
         #book_viewAbout {
             color: var(--App-textColor);
             font-family: arbicNormal;
@@ -140,13 +144,12 @@
                     <div class="col pe-4 pt-2 d-flex flex-column position-static"
                         style="font-family: arbicNormal;word-spacing: 2px;">
                         <div class="d-inline-block fs-3 fw-bold" style="letter-spacing: 1px;">المؤلف</div>
-                        <div class="mb-0 fs-4 fw-bold" id="authorName"></div>
-                        <div class="mb-1 fs-4" id="authorBirth"></div>
+                        <div class="mb-0 fs-4 fw-bold cursorBt" id="authorName"></div>
                         <p class="card-text mb-auto fs-4" id="authorInfo"></p>
                     </div>
                     <!-- Author Profile -->
                     <div class="col-auto d-none d-lg-block p-3">
-                        <img id="authorProfile" class="rounded" src="assets/authorProfile.png" width="200" height="250"
+                        <img id="authorProfile" class="rounded cursorBt" src="assets/authorProfile.png" width="200" height="250"
                             style="filter: grayscale(100%);">
                     </div>
                 </div>

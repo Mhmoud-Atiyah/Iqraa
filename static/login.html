@@ -53,7 +53,7 @@
                     <div class="card" style="border-radius: 1rem;" id="login_card">
                         <div class="row g-0">
                             <div>
-                                <img height="100%" width="400px" src="assets/login_wall.avif"
+                                <img height="100%" width="400px" src="assets/login_wall.avif" id="login_wall"
                                     style="border-radius: 1rem 0 0 1rem;position: absolute;left: 0px;" />
                             </div>
                             <div class="col-md-6 col-lg-7 d-flex align-items-center">
@@ -105,6 +105,7 @@
                 /* Dark mode setting */
                 if (config.mode === "dark") { // Now is Dark
                     loadTheme("darkTheme");
+                    document.getElementById("login_wall").style.filter = "grayscale(80%)"
                 } else {    // Now is Light
                     loadTheme("lightTheme");
                 }

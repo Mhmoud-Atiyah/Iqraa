@@ -1,0 +1,368 @@
+body {
+    font-family: arbicNormal;
+}
+
+.cursorBt {
+    cursor: pointer;
+}
+
+header {
+    border-bottom: solid 1px var(--App-panelBorderColor);
+}
+
+.headerBt {
+    width: 18px;
+}
+
+#conversationUsers {
+    display: none;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: absolute;
+    z-index: 1;
+    top: 40px;
+    right: 5px;
+    padding-top: 10px;
+    padding-left: 10px;
+    height: 320px;
+    width: 320px;
+    overflow: scroll;
+    background-color: var(--App-navBgColor);
+    border: solid 1px var(--App-panelBorderColor);
+}
+
+.conversationUser {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+    width: 64px;
+    margin-bottom: 10px;
+}
+
+.conversationUserImg {
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 5px;
+}
+
+.conversationUserTitle {
+    display: block;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 40px;
+    width: 100%;
+}
+
+.conversationUserName {
+    display: inline-block;
+    height: 20px;
+    overflow: hidden;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.conversationUserStatus {
+    display: inline-block;
+    height: 20px;
+    text-align: center;
+}
+
+#markers {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    top: 70px;
+    right: 20px;
+    width: 40px;
+    /* height: 100px; */
+    text-align: center;
+    background-color: var(--App-panelBgColor);
+    border: solid 1px var(--App-panelBorderColor);
+}
+
+#markersBt {
+    display: block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    position: relative;
+    /* padding: 5px 10px 5px 10px; */
+}
+
+.markerPen {
+    display: block;
+    position: relative;
+    padding: 3px;
+}
+
+.markerPenRotate {
+    transform: rotate(45deg);
+}
+
+#markersList {
+    display: none;
+    position: absolute;
+    margin-top: 10px;
+    /* height: 50px; */
+    width: 100%;
+    background-color: var(--App-panelBgColor);
+    border: solid 1px var(--App-panelBorderColor);
+}
+
+#initSessionBt,
+#joinSessionBt {
+    color: var(--App-textColor);
+    letter-spacing: 1px;
+    word-spacing: 3px;
+}
+
+#initBt:hover,
+#initSessionBt:hover,
+#joinSessionBt:hover,
+#markersBt:hover,
+.markerPen:hover {
+    background-color: var(--App-panelBorderColor);
+}
+
+#initSession {
+    position: absolute;
+    z-index: 1;
+    left: 20px;
+    bottom: 60px;
+    height: auto;
+    width: 278px;
+    background-color: var(--App-navBgColor);
+    border: solid 1px var(--App-panelBorderColor);
+    animation-name: initSessionModal;
+    animation-duration: 2s;
+}
+
+@keyframes initSessionModal {
+    from {
+        bottom: -270px
+    }
+
+    to {
+        bottom: 60px;
+    }
+}
+
+#initBt {
+    display: block;
+    position: fixed;
+    bottom: 10px;
+    left: 20px;
+    background-color: var(--App-navBgColor);
+    border: solid 1px var(--App-panelBorderColor);
+}
+
+
+.fa-microphone {
+    position: relative;
+    left: 4px;
+}
+
+#main {
+    display: block;
+    position: relative;
+    right: 0px;
+    top: 0px;
+}
+
+#mainSide {
+    display: block;
+    position: relative;
+    bottom: 0px;
+    right: 0px;
+}
+
+#Side {
+    display: block;
+    height: 100%;
+    width: 220px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 220px;
+    background-color: var(--App-navBgColor);
+    border-right: solid 1px var(--App-panelBorderColor);
+}
+
+#conversation {
+    display: block;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    font-family: TheYearofTheCamelLight;
+}
+
+#conversationChat {
+    position: relative;
+    top: 22%;
+    right: 22%;
+    display: block;
+    color: var(--App-textColor);
+}
+
+.chatUser {
+    display: block;
+    height: auto;
+    width: 250px;
+    background-color: var(--App-panelBgColor);
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.chatImg {
+    display: inline-block;
+    height: 48px;
+    width: 48px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    border-radius: 50%;
+}
+
+.chatUserName {
+    display: inline-block;
+    width: 80%;
+    overflow: hidden;
+}
+
+.commentArea {
+    display: block;
+    position: relative;
+    right: 5%;
+    height: auto;
+    width: 90%;
+    text-align: right;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.chatUserTime {
+    display: inline-block;
+    height: 20px;
+    position: absolute;
+    bottom: 0px;
+    right: 12px;
+    font-family: TheYearofTheCamelBold;
+    font-size: 14px;
+    color: var(--App-panelBorderColor);
+}
+
+#messageInput {
+    display: block;
+    height: 60px;
+    position: relative;
+    bottom: 0px;
+    left: 0px;
+    background-color: var(--App-panelBgColor);
+    border-top: solid 1px var(--App-panelBorderColor);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 22px;
+    /* TODO: Set Font for Inputs */
+}
+
+#messageInput_ {
+    display: block;
+    position: absolute;
+    top: 10px;
+    left: 1%;
+    width: 98%;
+    height: 40px;
+    background-color: var(--App-panelBorderColor);
+}
+
+#messageInput_buttons {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: 10px;
+    top: 5px;
+}
+
+#messageMicVid_buttons {
+    display: block;
+    position: relative;
+    top: 5px;
+    right: 7px;
+}
+
+#messageInputText_in {
+    display: block;
+    height: 34px;
+    position: absolute;
+    z-index: 1;
+    left: 100px;
+    top: 4px;
+    text-indent: 3px;
+    border: none;
+    background-color: var(--App-panelBorderColor);
+    color: var(--App-textColor);
+    font-size: 18px;
+}
+
+.emoji-picker {
+    display: none;
+    position: absolute;
+    top: -384px;
+    left: -6px;
+    z-index: 1;
+    --border-color: none;
+    --background: var(--App-panelBorderColor);
+    --input-font-color: var(--App-buttonTextColor);
+    outline: var(--App-panelBorderColor) solid 4px;
+    border-radius: 4px;
+    width: 350px;
+    height: 370px;
+}
+
+/* #messageInputAddScreen{
+    display: block;
+    position: absolute;
+    top: -415px;
+    right: 0px;
+    height: 400px;
+    width: 400px;
+    background-color: rebeccapurple;
+} */
+
+#myScreen {
+    display: block;
+    height: 200px;
+    width: 100%;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    background-color: red;
+}
+
+#myScreen img,
+#otherScreen img {
+    display: block;
+    height: 200px;
+    width: 100%;
+}
+
+#otherScreen {
+    display: block;
+    height: 100px;
+    width: 100%;
+    position: relative;
+    top: 0px;
+}
+
+#SessionNotes {
+    display: block;
+    height: auto;
+    width: 100%;
+    position: relative;
+    top: 0px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}

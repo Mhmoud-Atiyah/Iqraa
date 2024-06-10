@@ -1,9 +1,22 @@
 //---------------------------------------------------------
 // Windows Creating Routines
 //---------------------------------------------------------
+
+/* Main Libraries */
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { MAINPATH, ASSETSPATH } = require('./config')
+
+/* Global Variables Hold IF Windows Duplicated */
+var notesWindow = false,
+    libraryWindow = false,
+    settingWindow = false,
+    riwaqWindow = false;
+
+//---------------------------------------------------------
+// Windows
+//---------------------------------------------------------
+
 /** Login Modal **/
 function createLoginWindow() {
     const win = new BrowserWindow({
@@ -22,6 +35,26 @@ function createLoginWindow() {
     })
     win.loadFile(path.join(MAINPATH, "static/login.html"));
 }
+/** Register New User **/
+function createsignUpWindow() {
+    const win = new BrowserWindow({
+        minHeight: 720,
+        minWidth: 1280,
+        width: 1280,
+        height: 720,
+        center: true,
+        autoHideMenuBar: true,
+        icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
+        webPreferences: {
+            preload: path.join(MAINPATH, 'preload.js'),
+            contextIsolation: true,
+            enableRemoteModule: false,
+            nodeIntegration: false
+        }
+    })
+    win.loadFile(path.join(MAINPATH, 'static/signUp.html'));
+};
+
 /** Main Window **/
 function createMainWindow(id) {
     const win = new BrowserWindow({
@@ -75,100 +108,114 @@ function createAddbookWindow() {
     })
     win.loadFile(path.join(MAINPATH, 'static/Addbook.html'));
 }
-/** Riwaq Window **/
-function createRiwaqWindow() {
-    const win = new BrowserWindow({
-        minHeight: 720,
-        minWidth: 720,
-        width: 720,
-        height: 720,
-        center: true,
-        autoHideMenuBar: true,
-        icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
-        webPreferences: {
-            preload: path.join(MAINPATH, 'preload.js'),
-            contextIsolation: true,
-            enableRemoteModule: false,
-            nodeIntegration: false
-        }
-    })
-    win.loadFile(path.join(MAINPATH, 'static/riwaq.html'));
-};
+
+//---------------------------------------------------------
+// Dock Buttons
+//---------------------------------------------------------
+
 /** Notes Window **/
 function createNotesWindow() {
-    const win = new BrowserWindow({
-        minHeight: 720,
-        minWidth: 720,
-        width: 720,
-        height: 720,
-        center: true,
-        autoHideMenuBar: true,
-        icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
-        webPreferences: {
-            preload: path.join(MAINPATH, 'preload.js'),
-            contextIsolation: true,
-            enableRemoteModule: false,
-            nodeIntegration: false
-        }
-    })
-    win.loadFile(path.join(MAINPATH, 'static/notes.html'));
+    if (!notesWindow) {
+        notesWindow = true;
+        const win = new BrowserWindow({
+            minHeight: 720,
+            minWidth: 720,
+            width: 720,
+            height: 720,
+            center: true,
+            autoHideMenuBar: true,
+            icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
+            webPreferences: {
+                preload: path.join(MAINPATH, 'preload.js'),
+                contextIsolation: true,
+                enableRemoteModule: false,
+                nodeIntegration: false
+            }
+        })
+        win.loadFile(path.join(MAINPATH, 'static/notes.html'));
+        win.on('closed', () => {
+            notesWindow = false;
+        });
+    }
 };
 /** Library Window **/
 function createLibraryWindow() {
-    const win = new BrowserWindow({
-        minHeight: 720,
-        minWidth: 720,
-        width: 720,
-        height: 720,
-        center: true,
-        autoHideMenuBar: true,
-        icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
-        webPreferences: {
-            preload: path.join(MAINPATH, 'preload.js'),
-            contextIsolation: true,
-            enableRemoteModule: false,
-            nodeIntegration: false
-        }
-    })
-    win.loadFile(path.join(MAINPATH, 'static/library.html'));
+    if (!libraryWindow) {
+        libraryWindow = true;
+
+        const win = new BrowserWindow({
+            minHeight: 720,
+            minWidth: 720,
+            width: 720,
+            height: 720,
+            center: true,
+            autoHideMenuBar: true,
+            icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
+            webPreferences: {
+                preload: path.join(MAINPATH, 'preload.js'),
+                contextIsolation: true,
+                enableRemoteModule: false,
+                nodeIntegration: false
+            }
+        })
+        win.loadFile(path.join(MAINPATH, 'static/library.html'));
+        win.on('close', () => {
+            libraryWindow = false;
+        })
+    }
+};
+/** Riwaq Window **/
+function createRiwaqWindow(id) {
+    if (!riwaqWindow) {
+        riwaqWindow = true;
+        const win = new BrowserWindow({
+            minHeight: 720,
+            minWidth: 720,
+            width: 1280,
+            height: 720,
+            center: true,
+            autoHideMenuBar: true,
+            icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
+            webPreferences: {
+                preload: path.join(MAINPATH, 'preload.js'),
+                contextIsolation: true,
+                enableRemoteModule: false,
+                nodeIntegration: false
+            }
+        })
+        win.loadURL(`file://${path.join(MAINPATH, 'static/riwaq.html')}?userId=${id}`);
+
+        win.on('close', () => {
+            riwaqWindow = false;
+        })
+    }
 };
 /** Settings Window **/
 function createSettingsWindow() {
-    const win = new BrowserWindow({
-        minHeight: 720,
-        minWidth: 720,
-        width: 720,
-        height: 720,
-        center: true,
-        autoHideMenuBar: true,
-        icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
-        webPreferences: {
-            preload: path.join(MAINPATH, 'preload.js'),
-            contextIsolation: true,
-            enableRemoteModule: false,
-            nodeIntegration: false
-        }
-    })
-    win.loadFile(path.join(MAINPATH, 'static/settings.html'));
-};
-/** Register New User **/
-function createsignUpWindow() {
-    const win = new BrowserWindow({
-        minHeight: 720,
-        minWidth: 1280,
-        width: 1280,
-        height: 720,
-        center: true,
-        autoHideMenuBar: true,
-        icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
-        webPreferences: {
-            preload: path.join(MAINPATH, 'preload.js'),
-            contextIsolation: true,
-            enableRemoteModule: false,
-            nodeIntegration: false
-        }
-    })
-    win.loadFile(path.join(MAINPATH, 'static/signUp.html'));
+    if (!settingWindow) {
+        settingWindow = true;
+
+        const win = new BrowserWindow({
+            minHeight: 720,
+            minWidth: 720,
+            width: 720,
+            height: 720,
+            center: true,
+            autoHideMenuBar: true,
+            icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
+            webPreferences: {
+                preload: path.join(MAINPATH, 'preload.js'),
+                contextIsolation: true,
+                enableRemoteModule: false,
+                nodeIntegration: false
+            }
+        })
+        win.loadFile(path.join(MAINPATH, 'static/settings.html'));
+
+        win.on('closed', () => {
+            settingWindow = false;
+        });
+    }
 };
 
 module.exports = {
@@ -181,4 +228,4 @@ module.exports = {
     createLibraryWindow,
     createSettingsWindow,
     createsignUpWindow
-}
+};

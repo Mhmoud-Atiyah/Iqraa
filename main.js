@@ -1,7 +1,8 @@
 const fs = require('fs');
 const { app, ipcMain } = require('electron');
 const server = require('./backend/server');
-const { MAINPATH, init, DATAPATH, PORT } = require('./backend/config');
+const sqlite = require('./backend/sqlite');
+const { MAINPATH, USERDB, init, DATAPATH, PORT } = require('./backend/config');
 const { copyFile } = require('./backend/files');
 const { isItfirstTime, checkOnline } = require('./backend/misc');
 const {
@@ -9,7 +10,7 @@ const {
     createMainWindow,
     createBookWindow,
     createAddbookWindow,
-    createRiwaqWindow, 
+    createRiwaqWindow,
     createNotesWindow,
     createLibraryWindow,
     createSettingsWindow,
@@ -19,9 +20,23 @@ const {
 /**
  * Start Backend
 */
+// 0. Start Data Server
 server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+// 1. Start Database Server
+sqlite.checkDatabaseExists(USERDB).then((exists) => {
+    if (exists) {
+        console.log(`Database: [${USERDB}] exists and has tables.`);
+    } else {
+        console.log(`Database: [${USERDB}] does not exist or has no tables.`);
+        // Create Database
+        sqlite.createAllDatabases();
+    }
+}).catch((error) => {
+    console.error(error);
+});
+
 /* 
     Start Front End
 */
@@ -52,8 +67,8 @@ app.whenReady().then(() => {
     ipcMain.on('open-Library-window', () => {
         createLibraryWindow();
     });
-    ipcMain.on('open-riwaq-window', () => {
-        createRiwaqWindow();
+    ipcMain.on('open-riwaq-window', (event, data) => {
+        createRiwaqWindow(data);
     });
 })
 /* 

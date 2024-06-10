@@ -150,40 +150,15 @@ themeBt.onclick = () => {
         });
     }
 }
-addBookBt.onclick = () => {
-    window.IPC.openAddBookWindow();
-}
+addBookBt.onclick = () => { window.IPC.openAddBookWindow(); }
 /* Setting button */
-settings.onclick = () => {
-    window.IPC.openSettingWindow();
-}
+settings.onclick = () => { window.IPC.openSettingWindow(); }
 /* Notes button */
-notesBt.onclick = () => {
-    if (notesBt.getAttribute("data-opened") === "true") {
-        //TODO: create Alarm That's "Notes Window Already Opened"
-        return;
-    }
-    notesBt.setAttribute("data-opened", "true");
-    window.IPC.openNotesWindow();
-}
+notesBt.onclick = () => { window.IPC.openNotesWindow(); }
 /* Library button */
-libraryBt.onclick = () => {
-    if (libraryBt.getAttribute("data-opened") === "true") {
-        //TODO: create Alarm That's "Notes Window Already Opened"
-        return;
-    }
-    libraryBt.setAttribute("data-opened", "true");
-    window.IPC.openLibraryWindow();
-}
+libraryBt.onclick = () => { window.IPC.openLibraryWindow(); }
 /* Riwaq button */
-riwaqBt.onclick = () => {
-    if (riwaqBt.getAttribute("data-opened") === "true") {
-        //TODO: create Alarm That's "Notes Window Already Opened"
-        return;
-    }
-    riwaqBt.setAttribute("data-opened", "true");
-    window.IPC.openRiwaqWindow();
-}
+riwaqBt.onclick = () => { window.IPC.openRiwaqWindow(ID); }
 //---------------------------------------------------------
 // Back End Work
 //---------------------------------------------------------

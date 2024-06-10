@@ -1,4 +1,4 @@
-DB1 ==>
+DB1 ("USER") ==>
 (
     myNotes--> table
                 |__: Notes ==> [ "id" |  "tags":[]  | "notes":[]  ]
@@ -25,21 +25,21 @@ DB1 ==>
                                                                      ||
                    __________________________________________________//
                   /__________________________________________________/
-                 //
-                //
-    Books = [ "id"| "coverSrc"| "title"| "pagesCount"| "pubDate"| "rating"| "author"| "about"| "tags":[]      ]
+)                //
+DB2 ("BOOKS")   //
+(   Books = [ "id"| "coverSrc"| "title"| "pagesCount"| "pubDate"| "rating"| "author"| "about"| "tags":[]      ]
     Books = [ NUM |   STRING  | STRING |     NUM     |    DATE  |    NUM  |   NUM   | STRING | ARRAY:[STRING] ]
 )                                                                              ||
                                                                                ||
                      __________________________________________________________//
                     /__________________________________________________________/
-DB2 ==>            //
+DB3 ("Authors")    //
 (                 //
      AUTHOR = [ "id"| "name"| "birth"| "info" | "profile"| "path" | "books":[]     ]
      AUTHOR = [ NUM | STRING|  DATE  | STRING |  SRTING  | STRING | ARRAY:[STRING] ]
 )
 
-DB3 ==> "On Loading App To Internet"
+DB4 ==> "On Loading App To Internet"
 (
     Books's Comments 
                 |__: Book's table ==> [ "BookId" |  "Comments":[] ]

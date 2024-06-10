@@ -37,3 +37,23 @@ const book_view = {
     bookAbout: document.getElementById("book_viewAbout"),
     bookTags: document.getElementsByClassName("book_tag_bt"),
 }
+const riwaq = {
+    initBt: document.getElementById("initBt"),
+    initModal: document.getElementById("initSession"),
+    initIcon: document.getElementById("initIcon"),
+    markersBt: document.getElementById("markersBt"),
+    markersModal: document.getElementById("markersList"),
+    markersIcon: document.getElementById("markersIcon"),
+    micIcon: document.getElementById("microphone-icon"),
+    speakerIcon: document.getElementById("speaker-icon"),
+    cameraIcon: document.getElementById("camera-icon"),
+    UsersBt: document.getElementById("users-icon"),
+    UsersWindow: document.getElementById("conversationUsers"),
+    messageInput: document.getElementById("messageInputText_in"),
+    emojiBt: document.getElementById("messageInputEmoji"),
+    emojiPicker: document.getElementById("emoji-picker"),
+    addFileBt: document.getElementById("messageInputAdd"),
+    addFileIn: document.getElementById("messageInputAddFile"),
+    addFileScreen: document.getElementById("messageInputAddScreen"),
+
+}

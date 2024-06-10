@@ -12,6 +12,10 @@ function isItfirstTime(path) {
         false;
     }
 };
+// Function to generate unique random numbers
+function generateUniqueRandomNumber() {
+    return Math.floor(Math.random() * 1000000); // Adjust the range as needed
+}
 /**
  * Converts a hyphen-separated string of favorite items into a JSON array string.
  * 
@@ -108,6 +112,7 @@ function convertToArabicNumeral(number) {
 module.exports = {
     isItfirstTime,
     favouriteSave,
+    generateUniqueRandomNumber,
     checkOnline,
     isArabic,
     convertToArabicNumeral

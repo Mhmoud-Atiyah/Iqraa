@@ -1,0 +1,35 @@
+/* Arabic_text */
+@font-face {
+    font-family: Moharram;
+    src: url(./fonts/moharram-bold.ttf);
+}
+
+@font-face {
+    font-family: TheYearofTheCamelLight;
+    src: url(./fonts/TheYearofTheCamel-ExtraLight.otf);
+}
+
+@font-face {
+    font-family: TheYearofTheCamelBold;
+    src: url(./fonts/TheYearofTheCamel-Bold.otf);
+}
+
+@font-face {
+    font-family: DecorationFont1;
+    src: url(./fonts/DiwaniBent.ttf);
+}
+
+@font-face {
+    font-family: DecorationFont2;
+    src: url(./fonts/DTHULUTH.ttf);
+}
+
+@font-face {
+    font-family: DecorationFont3;
+    src: url(./fonts/Old\ Antic\ Decorative.ttf);
+}
+
+@font-face {
+    font-family: NumberFont;
+    src: url(./fonts/ArabicNumbers.ttf);
+}

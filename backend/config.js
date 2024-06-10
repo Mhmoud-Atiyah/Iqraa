@@ -4,10 +4,12 @@ const { copyFile } = require('./files')
 const { checkOnline } = require('./misc')
 /* Some Defualt Values */
 const MAINPATH = path.join(__dirname + '/../');
-const ASSETSPATH = path.join(MAINPATH, "static/assets");
+const ASSETSPATH = path.join(MAINPATH, "static/assets");//TODO: delete this also
 const DATAPATH = path.join(MAINPATH, "/data");
-const BOOKSPATH = path.join(DATAPATH, "/books");
-const IQRAADB = path.join(MAINPATH, "/IQRAA.db");
+const BOOKSPATH = path.join(DATAPATH, "/books");//TODO: Delete this
+const USERDB = path.join(DATAPATH, "/user.db");
+const BOOKSDB = path.join(DATAPATH, "/books.db");
+const AUTHORSDB = path.join(DATAPATH, "/authors.db");
 const PORT = process.env.PORT || 1999;
 // SOME SPEICAL DEFINE
 const max = 1000000; // maximum ID of Books
@@ -19,25 +21,6 @@ function init() {
         if (err) throw err;
         console.log(`Directory: ${DATAPATH} created successfully`);
     });
-    /* Books Database */
-    // Create a Books Table
-    db.run(`CREATE TABLE IF NOT EXISTS books (
-        id INTEGER PRIMARY KEY UNIQUE,
-        cover TEXT NOT NULL,
-        title TEXT NOT NULL,
-        pCount INTEGER NOT NULL,
-        pDate DATE NOT NULL,
-        rate INTEGER NOT NULL,
-        author INTEGER NOT NULL,
-        about TEXT NOT NULL,
-         TEXT NOT NULL UNIQUE
-        )`, (err) => {
-        if (err) {
-            console.error('Error creating table:', err.message);
-        } else {
-            console.log('Table created successfully.');
-        }
-    })
     /* Themes Directory */
     fs.mkdir(`${DATAPATH}/themes`, (err) => {
         if (err) throw err;
@@ -93,6 +76,9 @@ module.exports = {
     ASSETSPATH,
     DATAPATH,
     BOOKSPATH,
+    USERDB,
+    BOOKSDB,
+    AUTHORSDB,
     PORT,
     max,
     min

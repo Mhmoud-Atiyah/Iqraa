@@ -2,7 +2,7 @@ const fs = require('fs');
 const { app, ipcMain } = require('electron');
 const server = require('./backend/server');
 const sqlite = require('./backend/sqlite');
-const { MAINPATH, USERDB, init, DATAPATH, PORT } = require('./backend/config');
+const { MAINPATH, DBPath, init, DATAPATH, PORT } = require('./backend/config');
 const { copyFile } = require('./backend/files');
 const { isItfirstTime, checkOnline } = require('./backend/misc');
 const {
@@ -25,17 +25,17 @@ server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 // 1. Start Database Server
-sqlite.checkDatabaseExists(USERDB).then((exists) => {
+sqlite.checkDatabaseExists(DBPath).then((exists) => {
     if (exists) {
-        console.log(`Database: [${USERDB}] exists and has tables.`);
+        console.log(`Database: [${DBPath}] exists and has tables.`);
     } else {
-        console.log(`Database: [${USERDB}] does not exist or has no tables.`);
+        console.log(`Database: [${DBPath}] does not exist or has no tables.`);
         // Create Database
-        sqlite.createAllDatabases();
+        sqlite.createDatabases();
     }
 }).catch((error) => {
     console.error(error);
-});
+})
 
 /* 
     Start Front End
@@ -52,8 +52,8 @@ app.whenReady().then(() => {
     ipcMain.on('open-signUp-window', () => {
         createsignUpWindow();
     });
-    ipcMain.on('open-book-window', (event, data) => {
-        createBookWindow(data);
+    ipcMain.on('open-book-window', (event, bookId) => {
+        createBookWindow(bookId);
     });
     ipcMain.on('open-settings-window', () => {
         createSettingsWindow();
@@ -64,11 +64,11 @@ app.whenReady().then(() => {
     ipcMain.on('open-Notes-window', () => {
         createNotesWindow();
     });
-    ipcMain.on('open-Library-window', () => {
-        createLibraryWindow();
+    ipcMain.on('open-Library-window', (event, ID) => {
+        createLibraryWindow(ID);
     });
-    ipcMain.on('open-riwaq-window', (event, data) => {
-        createRiwaqWindow(data);
+    ipcMain.on('open-riwaq-window', (event, ID) => {
+        createRiwaqWindow(ID);
     });
 })
 /* 
@@ -76,6 +76,14 @@ app.whenReady().then(() => {
 */
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit()
+        app.quit();
+        //TODO: server.closeAllConnections();
+        // Close the database connection
+        sqlite.DB.close((err) => {
+            if (err) {
+                console.error(err.message);
+            }
+            console.log(`Close the database:[${DBPath}] connection.`);
+        });
     }
 })

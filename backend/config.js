@@ -7,9 +7,7 @@ const MAINPATH = path.join(__dirname + '/../');
 const ASSETSPATH = path.join(MAINPATH, "static/assets");//TODO: delete this also
 const DATAPATH = path.join(MAINPATH, "/data");
 const BOOKSPATH = path.join(DATAPATH, "/books");//TODO: Delete this
-const USERDB = path.join(DATAPATH, "/user.db");
-const BOOKSDB = path.join(DATAPATH, "/books.db");
-const AUTHORSDB = path.join(DATAPATH, "/authors.db");
+const DBPath = path.join(DATAPATH, "/iqraa.db");
 const PORT = process.env.PORT || 1999;
 // SOME SPEICAL DEFINE
 const max = 1000000; // maximum ID of Books
@@ -27,8 +25,8 @@ function init() {
         console.log(`Directory: ${DATAPATH}/themes created successfully`);
         copyFile(`${MAINPATH}static/style/darkTheme.css`, `${DATAPATH}/themes/darkTheme.css`);
         copyFile(`${MAINPATH}static/style/lightTheme.css`, `${DATAPATH}/themes/lightTheme.css`);
-        copyFile(`${MAINPATH}static/style/arabic_text.ttf`, `${DATAPATH}/themes/arabic_text.ttf`);
-        copyFile(`${MAINPATH}static/style/Old Antic Decorative.ttf`, `${DATAPATH}/themes/Old Antic Decorative.ttf`);
+        // copyFile(`${MAINPATH}static/style/arabic_text.ttf`, `${DATAPATH}/themes/arabic_text.ttf`);
+        // copyFile(`${MAINPATH}static/style/Old Antic Decorative.ttf`, `${DATAPATH}/themes/Old Antic Decorative.ttf`);
     });
     // Check Connection
     var isOnline = false;
@@ -43,15 +41,26 @@ function init() {
     /* Create Config File */
     fs.writeFile(`${DATAPATH}/config.json`, `
         {
+            "id": "0",
+            "new": "true",
+            "riwaqnew": "true",
+            "librarynew": "true",
+            "firstName": "firstName",
+            "lasttName": "lasttName",
+            "account": "account",
+            "profile": "profile",
+            "current": {
+                "id": "",
+                "cover": "${ASSETSPATH}/bookCover.jpg",
+                "title": "title"
+            },
+            "lastSearch": [],
             "connection": "${isOnline}",
             "mode": "light",
             "dock": "show",
-            "theme": [
-                "bg-primary",
-                "bg-success",
-                "bg-danger",
-                "bg-warning"
-            ]
+            "microphone": "off",
+            "speaker": "off",
+            "camera": "off"
         }
         `, (err) => {
         if (err) {
@@ -76,9 +85,7 @@ module.exports = {
     ASSETSPATH,
     DATAPATH,
     BOOKSPATH,
-    USERDB,
-    BOOKSDB,
-    AUTHORSDB,
+    DBPath,
     PORT,
     max,
     min

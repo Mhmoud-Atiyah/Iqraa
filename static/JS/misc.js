@@ -13,6 +13,35 @@ function getData(path) {
     }).then(response => response.json())
     return obj;
 };
+/**
+ * Sends a POST request to the specified path with the given data.
+ * 
+ * @param {string} path - The endpoint path where the request will be sent.
+ * @param {object} data - The data to be sent in the body of the POST request.
+ * @returns {Promise<object>} - A promise that resolves to the response data as JSON.
+ */
+function postData(path, data) {
+    // Send a POST request to the specified path
+    let obj = fetch(`http://localhost:1999/${path}`, {
+        method: 'POST', // Specify the request method as POST
+        headers: {
+            "Content-Type": "application/json", // Indicate that the request body is JSON
+            "Accept": "application/json" // Indicate that the response should be JSON
+        },
+        body: JSON.stringify(data) // Convert the data object to a JSON string for the request body
+    })
+        .then(response => {
+            // Check if the response is successful (status code 200-299)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            // Parse the response body as JSON
+            return response.json();
+        });
+    // Return the promise that resolves to the response data
+    return obj;
+};
+
 // Function to get ID Of User
 function getQueryParams() {
     const query = window.location.search.substring(1);

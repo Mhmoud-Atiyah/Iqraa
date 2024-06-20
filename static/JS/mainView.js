@@ -26,20 +26,40 @@ window.onload = () => {
         } else if (config.dock === "auto-hide") {
             //TODO: Do it's staff
         }
-        /* Theme Settings */
-        //TODO: 
-    })
-    getData(`userData/${ID}`).then((userData) => { // Current User Data
-        if (userData.new === "true") { // First look User
+        /* Main View Components */
+        accountBt.innerText = config.firstName + " " + config.lasttName;
+        if (config.current.id != "") {
+            current.src = config.current.cover;
+            current.title = config.current.title;
+            current.className = "cursorBt openBookBt";
+        } else {
+            current.src = config.current.cover;
+            current.title = config.current.title;
+            current.className = "cursorBt";
+        }
+        profileBt.src = config.profile;
+        profileBt.alt = config.account;
+        current.src = config.current.cover;
+        current.title = config.current.title;
+        current.setAttribute("data-path", config.current.id);
+        for (let index = 0; index < config.lastSearch.length; index++) {
+            let elem = document.createElement("li");
+            elem.className = "dropdown-item";
+            elem.innerText = config.lastSearch[index];
+            //TODO: Append last search to tags Bar
+            // searchList.append(elem);
+        }
+        // First look User ( run one time !)
+        if (config.new === "true") {
             let element =
                 `
                 <div class="newSection position-relative overflow-hidden m-md-2 text-center rounded">
                     <div class="col-md-5 p-lg-5 mx-auto" style="letter-spacing: 1px;">
-                        <h1 class="text-warning" style="font-family: arbicDecorative;">أنا من بدل بالكتب الصحابا<br> لم أجد لي وافيا إلا الكتابا</h1>
+                        <h1 class="text-warning" style="font-family: DecorationFont3;">أنا من بدل بالكتب الصحابا<br> لم أجد لي وافيا إلا الكتابا</h1>
                         <h1 class="display-4 fw-normal">يبدو أنك مستعد</h1>
                         <p class="lead fw-normal fs-3"> لديك خيارات مختلفة لتجميع مكتبتك<br>
                             &nbsp بالبحث عن الكتاب&nbsp أو&nbsp إضافة كتاب يدوي<br> أو&nbspبجلبها من مكان آخر</p>
-                        <a class="btn fw-bold fs-4 ms-1" style="line-height: 1em;color: var(--App-navTextColor);" href="#" id="browse_file">
+                        <a class="btn fw-bold fs-4 ms-1 border" style="line-height: 1em;color: var(--App-navTextColor);" href="#" id="browse_file">
                             اختر ملف<i class="fa-solid fa-file-import me-1"></i>
                                 <input class="form-control" type="file" style="display:none" id="browse_file_input" accept=".json">
                             </a>
@@ -58,38 +78,33 @@ window.onload = () => {
             //TODO: browse Excel File Iqraa (export)
             document.getElementById("browse_file").onclick = () => {
                 document.getElementById("browse_file_input").click();
-                if (document.getElementById("browse_file_input").value != "") {
-                    let filePath = document.getElementById("browse_file_input").files[0].path;
-                    getData(`goodreads/${ID}|${filePath}`).then((res) => {
-                        if (res) {
-                            console.log("data loaded");
-                        }
-                    });
+                document.getElementById("browse_file_input").onchange = () => {
+                    if (document.getElementById("browse_file_input").value != "") {
+                        let filePath = document.getElementById("browse_file_input").files[0].path;
+                        postData(`goodreads`, { id: ID, filepath: filePath })
+                            .then(() => {
+                                getData(`editConfig/new|false`).then((res) => {
+                                    if (res) {
+                                        console.log("data loaded");
+                                        // Clear Screen
+                                        while (mainView.firstChild) {
+                                            // Remove each child element
+                                            mainView.removeChild(mainView.firstChild);
+                                        }
+                                        //TODO: Loading Message or sign or gif
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 2000);
+                                    }
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
                 }
             }
         };
-        accountBt.innerText = userData.firstName + " " + userData.lasttName;
-        if (userData.current.id != "") {
-            current.src = userData.current.cover;
-            current.title = userData.current.title;
-            current.className = "cursorBt openBookBt";
-        } else {
-            current.src = userData.current.cover;
-            current.title = userData.current.title;
-            current.className = "cursorBt";
-        }
-        profileBt.src = userData.profile;
-        profileBt.alt = userData.account;
-        current.src = userData.current.cover;
-        current.title = userData.current.title;
-        current.setAttribute("data-path", userData.current.id);
-        for (let index = 0; index < userData.lastSearch.length; index++) {
-            let elem = document.createElement("li");
-            elem.className = "dropdown-item";
-            elem.innerText = userData.lastSearch[index];
-            //TODO: Append last search to tags Bar
-            // searchList.append(elem);
-        }
     })
     document.getElementById("main").style.height = window.innerHeight - 60 + 'px';
 }
@@ -156,7 +171,7 @@ settings.onclick = () => { window.IPC.openSettingWindow(); }
 /* Notes button */
 notesBt.onclick = () => { window.IPC.openNotesWindow(); }
 /* Library button */
-libraryBt.onclick = () => { window.IPC.openLibraryWindow(); }
+libraryBt.onclick = () => { window.IPC.openLibraryWindow(ID); }
 /* Riwaq button */
 riwaqBt.onclick = () => { window.IPC.openRiwaqWindow(ID); }
 //---------------------------------------------------------

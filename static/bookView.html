@@ -7,12 +7,8 @@
     <link rel="icon" href="assets/book-open-reader-solid.svg">
     <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/fonts.css">
     <style>
-        @font-face {
-            font-family: 'arbicNormal';
-            src: url('style/arabic_text.ttf') format('truetype');
-        }
-
         body {
             padding-top: 20px;
             padding-bottom: 30px;
@@ -38,8 +34,8 @@
 
         #book_viewAbout {
             color: var(--App-textColor);
-            font-family: arbicNormal;
-            font-size: 24px;
+            font-family: TheYearofTheCamelLight;
+            font-size: 18px;
             word-spacing: 2px;
         }
 
@@ -125,6 +121,7 @@
                                 قراءه&nbsp;
                                 <i class="fa-brands fa-readme"></i>
                             </a>
+                            <!--TODO: add relation between this button and the data of library where i buy it -->
                             <a class="book_purchase_bt Btn fw-bold" id="book_view_purchaseBt" href="#">شراء&nbsp;
                                 <i class="fa-solid fa-bag-shopping"></i>
                             </a>
@@ -162,11 +159,8 @@
 
                 <article class="blog-post mb-4" id="book_viewAbout"></article>
 
-                <nav class="blog-pagination" aria-label="Pagination">
-                    <a class="book_tag_bt Btn" data-path=""></a>
-                    <a class="book_tag_bt Btn" data-path=""></a>
-                    <a class="book_tag_bt Btn" data-path=""></a>
-                    <a class="book_tag_bt Btn" data-path=""></a>
+                <nav class="blog-pagination" aria-label="Pagination" id="book_tags">
+                    <!-- placeholder for Book tags -->
                 </nav>
 
             </div>

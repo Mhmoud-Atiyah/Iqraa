@@ -36,9 +36,8 @@ window.onload = () => {
             riwaq.cameraIcon.className = "fa-solid fa-video-slash";
             riwaq.cameraIcon.setAttribute("data-mode", "off");
         }
-    })
-    getData(`userData/${ID}`).then((userData) => { // Current User Data
-        if (userData.riwaqnew === "true") { // First look riwaq
+        // Current User Data
+        if (config.riwaqnew === "true") { // First look riwaq
             let element =
                 `
                 <div class="newSection position-relative overflow-hidden m-md-2 text-center rounded" style="border: solid 1px var(--App-panelBorderColor);">
@@ -56,9 +55,9 @@ window.onload = () => {
             Div.innerHTML = element;
             mainView.append(Div);
         };
-        accountBt.innerText = userData.firstName + " " + userData.lasttName;
-        profileBt.src = userData.profile;
-        profileBt.alt = userData.account;
+        accountBt.innerText = config.firstName + " " + config.lasttName;
+        profileBt.src = config.profile;
+        profileBt.alt = config.account;
     })
     document.getElementById("main").style.height = window.innerHeight - 50 + 'px';
     document.getElementById("mainSide").style.height = window.innerHeight - 50 + 'px';
@@ -75,9 +74,9 @@ window.onload = () => {
     //     // conversationUsers.windows.height = "auto";
     //}
     riwaq.initModal.style.display = "none";
-    riwaq.emojiPicker.setAttribute("data-display", 'none');
-    riwaq.UsersWindow.setAttribute("data-display", 'none');
     riwaq.initBt.setAttribute("data-show", "hide");
+    riwaq.UsersWindow.setAttribute("data-display", 'none');
+    riwaq.emojiPicker.setAttribute("data-display", 'none');
     riwaq.markersBt.setAttribute("data-show", "hide");
     riwaq.UsersWindow.style.display = "none";
 }

@@ -1,4 +1,3 @@
-
 /* 
     عدل الاتنين اللي في داتا معاهم وكدا كدا الملف دا هيتطبع في الداتا بعدين
 */
@@ -83,7 +82,6 @@ header {
 
 .secondry-nav-item:hover {
     background-color: var(--App-footerBgColor);
-    color: var(--App-buttonBgColor);
 }
 
 .newSection {

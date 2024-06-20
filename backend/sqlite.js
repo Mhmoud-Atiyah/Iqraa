@@ -1,73 +1,16 @@
 const sqlite3 = require('sqlite3').verbose();
-const { USERDB, BOOKSDB, AUTHORSDB } = require("./config");
+const { DBPath } = require("./config");
 const fs = require("fs");
 const { generateUniqueRandomNumber } = require("./misc");
+const { table } = require('console');
 
-// SQL statements to create tables for DB1 ("User Tables")
-const db1Tables = [
-    `
-    CREATE TABLE IF NOT EXISTS read (
-        book INTEGER,
-        tags TEXT
-    );`,
-    `CREATE TABLE IF NOT EXISTS want (
-        book INTEGER,
-        tags TEXT
-    );`,
-    `CREATE TABLE IF NOT EXISTS notes (
-        notes TEXT,
-        tags TEXT
-    );`,
-    `CREATE TABLE IF NOT EXISTS suggest (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-        book INTEGER,
-        tags TEXT,
-    );`
-];
-// SQL statements to create tables for DB2 ("Books Database")
-const db2Tables = [
-    `CREATE TABLE IF NOT EXISTS Books (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    coverSrc TEXT,
-    title TEXT,
-    pagesCount INTEGER,
-    pubDate DATE,
-    rating INTEGER,
-    author INTEGER,
-    about TEXT,
-    tags TEXT
-  );`
-];
-// SQL statements to create tables for DB3
-const db3Tables = [
-    `CREATE TABLE IF NOT EXISTS AUTHOR (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    birth DATE,
-    info TEXT,
-    profile TEXT,
-    path TEXT,
-    books TEXT
-  );`
-];
-// SQL statements to create tables for DB3
-const db4Tables = [
-    `CREATE TABLE IF NOT EXISTS Books_Comments (
-    BookId INTEGER,
-    Comments TEXT
-  );`,
-    `CREATE TABLE IF NOT EXISTS Books_Comments_Details (
-    UserID INTEGER,
-    ThreadID INTEGER,
-    UserName TEXT,
-    time TIME,
-    Comment TEXT
-  );`,
-    `CREATE TABLE IF NOT EXISTS USER_COMMENT (
-    BOOKID INTEGER,
-    books TEXT
-  );`
-];
+// Global database connection
+const DB = new sqlite3.Database(DBPath, (err) => {
+    if (err) {
+        console.error(err.message);
+    }
+    console.log(`Connected to the ${DBPath} SQLite database.`);
+});
 
 /**
  * @brief Checks if an SQLite database exists and contains tables.
@@ -81,19 +24,6 @@ const db4Tables = [
  * 
  * @throws {Error} If an error occurs while opening or querying the database.
  * 
- * @example
- * const dbPath = 'example.db';
- * checkDatabaseExists(dbPath)
- *   .then((exists) => {
- *     if (exists) {
- *       console.log("Database exists and has tables.");
- *     } else {
- *       console.log("Database does not exist or has no tables.");
- *     }
- *   })
- *   .catch((error) => {
- *     console.error(error);
- *   });
  */
 function checkDatabaseExists(dbPath) {
     return new Promise((resolve, reject) => {
@@ -118,16 +48,8 @@ function checkDatabaseExists(dbPath) {
         });
     });
 }
-/**
- * @brief Creates an SQLite database file and adds tables to it based on the provided schema.
- * 
- * @param {string} dbPath The path where the SQLite database file should be created.
- * @param {Array<Object>} tables Array of table creation SQL statements.
- * @return {Promise<void>} A promise that resolves when the database and tables are successfully created.
- * 
- * @throws {Error} If an error occurs while creating the database or tables.
- */
-function createDatabase(dbPath, tables) {
+
+function createTables(dbPath, tables) {
     return new Promise((resolve, reject) => {
         const db = new sqlite3.Database(dbPath, (err) => {
             if (err) {
@@ -155,92 +77,198 @@ function createDatabase(dbPath, tables) {
         });
     });
 }
-// Creating databases
-const createAllDatabases = async () => {
+// Creating database
+const createDatabases = async () => {
+    // SQL statements to create tables of DB
+    const db0Tables = [
+        `CREATE TABLE IF NOT EXISTS books (
+    bookID INTEGER PRIMARY KEY,
+    title TEXT,
+    author TEXT,
+    myRating INTEGER,
+    avgRating INTEGER,
+    publisher TEXT,
+    pagesCount INTEGER,
+    pubDate DATE,
+    tags TEXT,
+    about TEXT,
+    coverSrc TEXT
+  );`,
+        `CREATE TABLE IF NOT EXISTS authors (
+    id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+    name TEXT,
+    birth DATE,
+    info TEXT,
+    profile TEXT,
+    path TEXT,
+    books TEXT
+  );`,
+        `CREATE TABLE IF NOT EXISTS read (
+        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+        cover TEXT,
+        title TEXT,
+        review TEXT,
+        tags TEXT,
+        FOREIGN KEY (id) REFERENCES books(bookID)
+  );`,
+        `CREATE TABLE IF NOT EXISTS want (
+        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+        cover TEXT,
+        title TEXT,
+        review TEXT,
+        tags TEXT,
+        FOREIGN KEY (id) REFERENCES books(bookID)
+  );`,
+        `CREATE TABLE IF NOT EXISTS suggest (
+        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+        cover TEXT,
+        title TEXT,
+        review TEXT,
+        tags TEXT,
+        FOREIGN KEY (id) REFERENCES books(bookID)
+  );`,
+        `CREATE TABLE IF NOT EXISTS notes (
+        notes TEXT,
+        tags TEXT
+  );`
+    ];
+
+    // TODO: Organize it
+    /* const Books_Comments = [
+        `CREATE TABLE IF NOT EXISTS Books_Comments (
+        BookId INTEGER,
+        Comments TEXT
+      );`,
+        `CREATE TABLE IF NOT EXISTS Books_Comments_Details (
+        UserID INTEGER,
+        ThreadID INTEGER,
+        UserName TEXT,
+        time TIME,
+        Comment TEXT
+      );`,
+        `CREATE TABLE IF NOT EXISTS USER_COMMENT (
+        BOOKID INTEGER,
+        books TEXT
+      );`
+    ]; */
+
     try {
-        await createDatabase(BOOKSDB, db2Tables);
-        console.log("Books DB created successfully.");
-        await createDatabase(USERDB, db1Tables);
-        console.log("User DB created successfully.");
-        // await createDatabase('DB3.sqlite', db3Tables);
-        // console.log("DB3 created successfully.");
+        await createTables(DBPath, db0Tables);
+        console.log("IQraa DB created successfully.");
     } catch (error) {
         console.error(error);
     }
 };
 
-// Middleware to parse JSON bodies
-const bodyParser = (req, callback) => {
-    let body = '';
-    req.on('data', chunk => {
-        body += chunk.toString();
-    });
-    req.on('end', () => {
-        callback(JSON.parse(body));
+/**
+ * @brief Inserts a new record into a specified table.
+ *
+ * This function takes an input object containing the table name and the data to be inserted.
+ * It constructs an SQL command to insert a new record into the specified table with columns 
+ * id, cover, title, review, and tags. After a successful insertion, it logs the row ID of the inserted record.
+ *
+ * @param INP An object containing the table name and the data to be inserted. The object should have the following structure:
+ *            - table: The name of the table into which the record should be inserted.
+ *            - Mydata: An array containing the values to be inserted into the table. The order of values in the array should match the columns: [id, cover, title, review, tags].
+ *
+ * @note The function logs an error message to the console if the insertion fails.
+ *       On successful insertion, it logs the row ID of the new record.
+ *
+ * Example usage:
+ * @code
+ * const input = {
+ *     table: "books",
+ *     Mydata: [1, "cover.jpg", "Book Title", "This is a review", "Fiction"]
+ * };
+ * InsertToMyTable(input);
+ * @endcode
+ */
+function InsertToMyTable(INP) {
+    let command = `INSERT INTO ${INP.table} (id, cover, title, review, tags) VALUES (?, ?, ?, ?, ?)`;
+    DB.run(command, INP.Mydata, function (err) {
+        if (err) {
+            return console.error(err.message);
+        }
+        // Get the last insert id
+        console.log(`A row has been inserted with rowid ${this.lastID}`);
     });
 };
-
-function SQL(userId, method, command, req, res) {
-    if (userId) { //TODO: check if user have permsision
-        if (method === "GET") {
-            db.all(command, [], (err, rows) => {
-                if (err) {
-                    res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ error: 'Internal Server Error' }));
-                } else {
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify(rows));
-                }
-            });
-        } else if (method === "POST") {
-            bodyParser(req, (body) => {
-                const { name, email } = body;
-                db.run('INSERT INTO users (name, email) VALUES (?, ?)', [name, email], function (err) {
-                    if (err) {
-                        res.writeHead(500, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: 'Internal Server Error' }));
-                    } else {
-                        res.writeHead(201, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ id: this.lastID }));
-                    }
-                });
-            });
+/**
+ * @brief Inserts a new book record into the books table.
+ *
+ * This function takes an array of book data and inserts it into the books table
+ * in the database. The columns being inserted are bookID, title, author, myRating,
+ * avgRating, publisher, pagesCount, pubDate, tags, about, and coverSrc. 
+ * After a successful insertion, it logs the row ID of the inserted record.
+ *
+ * @param data An array containing the values to be inserted into the books table.
+ *             The order of values in the array should match the columns in the table:
+ *             [bookID, title, author, myRating, avgRating, publisher, pagesCount, pubDate, tags, about, coverSrc].
+ *
+ * @note The function logs an error message to the console if the insertion fails.
+ *       On successful insertion, it logs the row ID of the new record.
+ *
+ * Example usage:
+ * @code
+ * const bookData = [1, "Book Title", "Author Name", 5, 4.5, "Publisher Name", 350, "2024-06-20", "Fiction", "This is a book about...", "cover.jpg"];
+ * InsertToBooksTable(bookData);
+ * @endcode
+ */
+function InsertToBooksTable(data) {
+    DB.run(`INSERT INTO books (bookID, title, author, myRating, avgRating, publisher, pagesCount, pubDate, tags, about, coverSrc) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, data, function (err) {
+        if (err) {
+            return console.error(err.message);
         }
-    } else {
-        console.log("Sorry but you're not allowed");
-    }
+        // Get the last insert id
+        console.log(`A row has been inserted with rowid ${this.lastID}`);
+    });
+};
+/**
+ * @brief Reads data from an SQLite database based on the provided query.
+ * 
+ * This function executes the given SQL query and calls the provided callback with the results.
+ *
+ * @param {string} query - The SQL query to execute.
+ * @param {function} callback - The callback function to call with the results or any errors encountered.
+ */
+function readFromDatabase(query, callback) {
+    DB.all(query, [], (err, rows) => {
+        if (err) {
+            console.error('Error executing query:', err.message);
+            callback(err, null);
+            return;
+        }
+        callback(null, rows);
+    });
+}
+/**
+ * @brief Retrieves records from the database based on the provided query and returns them as a string.
+ * 
+ * This function calls the `readFromDatabase` function to execute the given SQL query
+ * and returns a promise that resolves to the retrieved rows as a string.
+ *
+ * @param {string} query - The SQL query to execute.
+ * @return {Promise<string>} A promise that resolves to the rows retrieved from the database as a string.
+ */
+function getRecord(query) {
+    return new Promise((resolve, reject) => {
+        readFromDatabase(query, (err, rows) => {
+            if (err) {
+                console.error('Error reading from database:', err);
+                reject(err);
+            } else {
+                resolve(JSON.stringify(rows));
+            }
+        });
+    });
 }
 
-/* Main Database Routine */
-// 1. DB1 ("User")
-const db1 = new sqlite3.Database(USERDB, (err) => {
-    if (err) {
-        console.error('Error opening database:', err.message);
-    } else {
-        console.log(`Connected to database [${USERDB}].`);
-    }
-});
-// 2. DB2 ("Books")
-const db2 = new sqlite3.Database(BOOKSDB, (err) => {
-    if (err) {
-        console.error('Error opening database:', err.message);
-    } else {
-        console.log(`Connected to database [${BOOKSDB}].`);
-    }
-});
-// 3. DB3 ("Authors")
-const db3 = new sqlite3.Database(AUTHORSDB, (err) => {
-    if (err) {
-        console.error('Error opening database:', err.message);
-    } else {
-        console.log(`Connected to database [${AUTHORSDB}].`);
-    }
-});
-
 module.exports = {
-    db1,
-    db2,
-    db3,
+    DB,
     checkDatabaseExists,
-    createAllDatabases
+    createDatabases,
+    InsertToMyTable,
+    InsertToBooksTable,
+    getRecord
 };

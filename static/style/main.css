@@ -1,13 +1,3 @@
-@font-face {
-    font-family: 'arbicDecorative';
-    src: url('Old\ Antic\ Decorative.ttf') format('truetype');
-}
-
-@font-face {
-    font-family: 'arbicNormal';
-    src: url('arabic_text.ttf') format('truetype');
-}
-
 ::-webkit-scrollbar {
     display: none;
 }
@@ -66,19 +56,18 @@ header {
 
 #secondry-nav {
     direction: rtl;
-    font-size: 22px;
-    height: 45px;
     width: 600px;
     overflow-x: scroll;
     overflow-y: hidden;
-    line-height: 1.8em;
+    line-height: 2em;
 }
 
 .secondry-nav-item {
+    font-family: TheYearofTheCamelBold;
+    font-size: 16px;
     margin-left: 5px;
-    padding-left: 3px;
-    padding-right: 3px;
-    border-radius: 5px;
+    padding-right: 4px;
+    padding-left: 4px;
 }
 
 #main {

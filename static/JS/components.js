@@ -35,7 +35,8 @@ const book_view = {
     authorProfile: document.getElementById("authorProfile"),
     authorInfo: document.getElementById("authorInfo"),
     bookAbout: document.getElementById("book_viewAbout"),
-    bookTags: document.getElementsByClassName("book_tag_bt"),
+    bookTagsList: document.getElementById("book_tags"),
+    bookTag: document.getElementsByClassName("book_tag_bt")
 }
 const riwaq = {
     initBt: document.getElementById("initBt"),
@@ -55,5 +56,22 @@ const riwaq = {
     addFileBt: document.getElementById("messageInputAdd"),
     addFileIn: document.getElementById("messageInputAddFile"),
     addFileScreen: document.getElementById("messageInputAddScreen"),
+
+}
+const library = {
+    mainModal: document.getElementById("mainModal"),
+    MM_HeaderTitle: document.getElementById("mainModalHeader_"),
+    MM_Body: document.getElementById("mainModalBody"),
+    MM_Bt: document.getElementById("mainModalBt_"),
+    initBt: document.getElementById("initBt"),
+    initModal: document.getElementById("initLibrary"),
+    IM_LibraryName: document.getElementById("LibraryName"),
+    IM_LibraryID: document.getElementById("LibraryID"),
+    IM_initLibraryBt: document.getElementById("initLibraryBt"),
+    IM_joinLibraryBt: document.getElementById("joinLibraryBt"),
+    initIcon: document.getElementById("initIcon"),
+    OCRBt: document.getElementById("OCRBt"),
+    LibraryInfoBt: document.getElementById("LibraryInfoBt"),
+    ExtensionsBt: document.getElementById("ExtensionsBt"),
 
 }

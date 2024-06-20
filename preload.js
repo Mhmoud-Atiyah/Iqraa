@@ -7,6 +7,6 @@ contextBridge.exposeInMainWorld('IPC', {
   openAddBookWindow: () => ipcRenderer.send('open-Addbook-window'),
   openSettingWindow: () => ipcRenderer.send('open-settings-window'),
   openNotesWindow: () => ipcRenderer.send('open-Notes-window'),
-  openLibraryWindow: () => ipcRenderer.send('open-Library-window'),
+  openLibraryWindow: (userId) => ipcRenderer.send('open-Library-window', userId),
   openRiwaqWindow: (userId) => ipcRenderer.send('open-riwaq-window', userId)
 });

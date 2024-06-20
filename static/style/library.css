@@ -1,0 +1,213 @@
+ul {
+    list-style: none;
+}
+
+body {
+    font-family: Moharram;
+}
+
+#main {
+    padding-top: 30px;
+    background-color: var(--App-bgColor);
+    color: var(--App-textColor);
+}
+
+#mainModal {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    bottom: 35%;
+    right: 35%;
+    color: var(--App-textColor);
+    background-color: var(--App-panelBgColor);
+    border: solid 1px var(--App-secondaryTextColor);
+    height: auto;
+    width: 30%;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-duration: 1s;
+}
+
+@keyframes fadeInOpacity {
+    from {
+        bottom: 5%;
+    }
+
+    to {
+        bottom: 35%;
+    }
+}
+
+#mainModalHeader {
+    display: block;
+    width: 100%;
+    height: 30px;
+    background-color: var(--App-panelBorderColor);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    text-align: center;
+    user-select: none;
+}
+
+#mainModalHeader span {
+    position: relative;
+    top: -10px;
+    font-family: Moharram;
+    font-size: 28px;
+    word-spacing: 2px;
+}
+
+#mainModalBt {
+    display: block;
+    position: absolute;
+    bottom: 7%;
+    padding-right: 7%;
+    height: 30px;
+    width: 100%;
+}
+
+#mainModalBt span {
+    background-color: var(--App-panelBorderColor);
+    position: relative;
+    font-family: TheYearofTheCamelBold;
+    font-size: 18px;
+    padding: 8px 15px 5px 15px;
+    user-select: none;
+}
+
+#mainModalBt span:hover {
+    background-color: var(--App-panelBgColor);
+    cursor: pointer;
+}
+
+#mainModalBody {
+    display: block;
+    padding: 10px;
+    margin-bottom: 55px;
+    color: var(--App-textColor);
+    font-family: TheYearofTheCamelBold;
+    word-spacing: 2px;
+    font-size: 16px;
+}
+
+.containerBook {
+    padding: 15px 40px 20px 30px;
+    background-color: var(--App-panelBgColor);
+    border-top: solid 1px var(--App-panelBorderColor);
+}
+
+.rowTitle {
+    display: inline-block;
+    margin-bottom: 15px;
+    user-select: none;
+    position: relative;
+    right: -5px;
+}
+
+.bookItem {
+    display: block;
+    background-color: var(--App-bgColor);
+    border: solid 1px var(--App-panelBorderColor);
+    width: 140px;
+    margin-left: 15px;
+}
+
+.bookCover {
+    padding-top: 10px;
+    margin-bottom: 12px;
+    height: 180px;
+    width: 100%;
+}
+
+.bookItemData {
+    text-align: center;
+}
+
+.bookItemTitle {
+    display: inline-block;
+    font-weight: bold;
+    width: 90%;
+    height: 24px;
+    overflow: hidden;
+    margin-bottom: 3px;
+    font-size: 16px;
+}
+
+.bookItemAuthor {
+    display: inline-block;
+    font-weight: bold;
+    width: 90%;
+    height: 24px;
+    overflow: hidden;
+    margin-bottom: 3px;
+}
+
+.bookItemPrice {
+    display: block;
+    position: relative;
+    right: 3px;
+    padding-bottom: 10px;
+    width: 100%;
+    font-family: NumberFont;
+}
+
+.bookItemPriceBt {
+    display: block;
+    position: relative;
+    padding: 10px 18px 5px 10px;
+    left: -7px;
+    bottom: 2px;
+    float: left;
+    background-color: var(--App-panelBgColor);
+}
+
+.bookItemPriceBt::after {
+    content: "";
+    position: absolute;
+    right: 0%;
+    top: 12px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent var(--App-bgColor) transparent transparent;
+}
+
+.bookItemPriceText {
+    position: relative;
+    top: 7px;
+}
+
+.bookItemPriceTextCurrency {
+    font-family: TheYearofTheCamelBold;
+    letter-spacing: 2px;
+    position: relative;
+    top: -2px;
+    right: 2px;
+}
+
+.bookItemPriceBt:hover {
+    background-color: var(--App-secondaryTextColor);
+}
+
+.cursorBt:hover {
+    color: var(--App-secondaryTextColor);
+}
+
+#browse_excelFileBt {
+    color: var(--App-textColor);
+    padding: 7px 5px 3px 5px;
+    background-color: #1D6F42;
+}
+
+#CoverOCR {
+    color: var(--App-textColor);
+    padding: 7px 5px 3px 5px;
+    background-color: var(--App-panelBorderColor);
+}
+
+.OCRScreen {
+    display: block;
+    position: relative;
+    height: auto;
+    width: 200px;
+    
+}

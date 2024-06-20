@@ -139,14 +139,14 @@ function createNotesWindow() {
     }
 };
 /** Library Window **/
-function createLibraryWindow() {
+function createLibraryWindow(id) {
     if (!libraryWindow) {
         libraryWindow = true;
 
         const win = new BrowserWindow({
             minHeight: 720,
-            minWidth: 720,
-            width: 720,
+            minWidth: 1024,
+            width: 1280,
             height: 720,
             center: true,
             autoHideMenuBar: true,
@@ -158,7 +158,8 @@ function createLibraryWindow() {
                 nodeIntegration: false
             }
         })
-        win.loadFile(path.join(MAINPATH, 'static/library.html'));
+        win.loadURL(`file://${path.join(MAINPATH, 'static/library.html')}?userId=${id}`);
+
         win.on('close', () => {
             libraryWindow = false;
         })

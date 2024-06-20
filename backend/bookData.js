@@ -1,9 +1,9 @@
+//TODO: do function right
 function getCover(title) {
-    //TODO: do function right
     return "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1706818727i/206741391.jpg";
 }
-
-function bookAbout(title) {
+//TODO: do function right
+function getAbout(title) {
     return "Set on the French Riviera in the late 1920s, Tender Is the Night is the tragic romance of the young actress Rosemary Hoyt and the stylish American couple Dick and Nicole Diver. A brilliant young psychiatrist at the time of his marriage, Dick is both husband and doctor to Nicole, whose wealth goads him into a lifestyle not his own, and whose growing strength highlights Dick's harrowing demise. A profound study of the romantic concept of character, Tender Is the Night is lyrical, expansive, and hauntingly evocative."
 }
 
@@ -23,4 +23,10 @@ function createBook(id) {
             console.log(`Book of Id[${id}] File Created`);
         }
     });
+}
+module.exports = {
+    getCover,
+    getAbout,
+    authorData,
+    createBook
 }

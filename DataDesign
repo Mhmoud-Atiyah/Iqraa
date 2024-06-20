@@ -6,42 +6,45 @@ DB1 ("USER") ==>
                 |__:                                         |__: [ "id" |  "DATA"  ]
                 |__:                                         |__: [  NUM |  FUTURE! ]
 
-    myBooks--> Two tables 
-                |__: Read ==> [ "id" |  "tags":[]  | "books":[]  ]
-                |__:      ==> [  NUM | ARRAY:[STR] | ARRAY:[STR] ]
-                |__:                                         |__: [ "id" | "cover" | "title" | "review" ]
-                |__:                                         |__: [  NUM | STRING  |  STRING |  STRING  ]
-                |__:                                                 ||   
-                |__: Suggest ==> [ "id" |  "tags":[]  | "books":[] ] ||     {TODO}==> Dynamically created based on some factors
-                |__:         ==> [  NUM | ARRAY:[STR] | ARRAY:[STR]] ||
-                |__:                                         |__: [ "id" | "cover" | "title" | "review" ]
-                |__:                                         |__: [  NUM | STRING  |  STRING |  STRING  ]
-                |__:                                                 ||
-                |__: Want ==> [ "id" |  "tags":[]  | "books":[]  ]   ||
-                |__:      ==> [  NUM | ARRAY:[STR] | ARRAY:[STR] ]   ||
-                |__:                                         |__: [ "id" | "cover" | "title" | "review" ]
-                |__:                                         |__: [  NUM | STRING  |  STRING |  STRING  ]
-                                                                     ||
-                                                                     ||
-                   __________________________________________________//
-                  /__________________________________________________/
+    myBooks--> three tables
+                |__: Read ==> [ "id" | "cover" | "title" | "review" | "tags":[] ]
+                |__:      ==> [  NUM | STRING  |  STRING |  STRING  |   STRING  ]
+                |__:             ||
+                |__:             \\____________________________________________________
+                |__:              \____________________________________________________\
+                |__:                                                                   ||
+                |__: Suggest ==> [ "id" | "cover" | "title" | "review" |  "tags":[]  ] || {TODO}==> Dynamically created based on some factors
+                |__:         ==> [  NUM | STRING  |  STRING |  STRING  | ARRAY:[STR] ] ||
+                |__:                ||                                                 ||
+                |__:                \\_________________________________________________||
+                |__:                 \_________________________________________________ |
+                |__:                                                                   ||
+                |__: Want ==> [ "id" | "cover" | "title" | "review" |  "tags":[]  ]    ||
+                |__:      ==> [  NUM | STRING  |  STRING |  STRING  | ARRAY:[STR] ]    ||
+                |__:              ||                                                   ||
+                |__:              \\___________________________________________________||
+                |__:               \___________________________________________________ |
+                |__:                                                                   ||
+                                                                                       ||
+                   ___________________________________________________________________/ |
+                  /____________________________________________________________________/
 )                //
-DB2 ("BOOKS")   //
-(   Books = [ "id"| "coverSrc"| "title"| "pagesCount"| "pubDate"| "rating"| "author"| "about"| "tags":[]      ]
-    Books = [ NUM |   STRING  | STRING |     NUM     |    DATE  |    NUM  |   NUM   | STRING | ARRAY:[STRING] ]
-)                                                                              ||
-                                                                               ||
-                     __________________________________________________________//
-                    /__________________________________________________________/
-DB3 ("Authors")    //
-(                 //
-     AUTHOR = [ "id"| "name"| "birth"| "info" | "profile"| "path" | "books":[]     ]
-     AUTHOR = [ NUM | STRING|  DATE  | STRING |  SRTING  | STRING | ARRAY:[STRING] ]
+DB0 ("BOOKS")   //                                                                                                         {TODO}     {TODO}
+(   Books = [ "id" | "title" | "author" | "myrating" | "Avgrating" | "Publisher"| "pagesCount" | "pubDate" | "tags":[] | "coverSrc" | "about" ]
+    Books = [ NUM  |  STRING |  STRING  |     NUM    |     NUM     |   STRING   |     NUM      |    DATE   |   STRING  |   STRING   |  STRING ]
+)                                 ||
+                            ______//
+                           /______/
+DB00 ("Authors")          //
+(                        //               { CPP IQRAA Author SW }
+                        //
+     AUTHOR = [ "id" | "name" | "birth" | "info" | "profile" | "path" | "books":[] ]
+     AUTHOR = [  NUM | STRING |   DATE  | STRING |  SRTING   | STRING |   STRING   ]
 )
 
 DB4 ==> "On Loading App To Internet"
 (
-    Books's Comments 
+    Books's Comments
                 |__: Book's table ==> [ "BookId" |  "Comments":[] ]
                 |__:              ==> [    NUM   |   ARRAY:[STR]  ]
                 |__:                                         |__: [ "UserID" | "ThreadID" | "UserName" | "time" | "Comment" ]

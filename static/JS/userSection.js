@@ -7,7 +7,6 @@ function bookCard(parent, bookData) {
                 <img src="${bookData.cover}"
                     title="${bookData.title}"
                     data-id="${bookData.id}"
-                    data-path="${bookData.path}"
                     class="openBookBt"
                     style="border-top-left-radius: 7px;border-top-right-radius: 7px;" height="255px">
             </div>
@@ -15,17 +14,19 @@ function bookCard(parent, bookData) {
         `;
     parent.append(book);
 }
-//TODO: Filter Items Based on Tag
+
 function showOpt(parent, showOptData) {
     let element = document.createElement("li");
-    element.className = "secondry-nav-item cursorBt";
+    element.className = "secondry-nav-item cursorBt rounded";
     element.innerText = showOptData;
     parent.append(element)
 }
 
 function loadSection(section) {
     getData(`loadUserSection/${ID}|${section}`).then((sectionData) => {
-        if (sectionData.books.length == 0) { /* No Books Here */
+        const books = JSON.parse(sectionData["books"]);
+        const tags = JSON.parse(sectionData["tags"]);
+        if (books.length == 0) { /* No Books Here */
             return;
         }
         let Div = document.createElement('div');
@@ -39,18 +40,18 @@ function loadSection(section) {
         Div.append(Container);
         mainView.append(Div);
         /* Create Books Elements */
-        for (let index = 0; index < sectionData.books.length; index++) {
-            bookCard(Row, sectionData.books[index]);
-        }
-        /* Create Books Tags */
-        for (let index = 0; index < sectionData.tags.length; index++) {
-            showOpt(showOptions, sectionData.tags[index])
-        }
+        for (let index = 0; index < books.length; index++) {
+            bookCard(Row, books[index]);
+        };
         /* Add Click Listener */
         for (let index = 0; index < openBookBt.length; index++) {
             openBookBt[index].onclick = () => {
                 window.IPC.openBookWindow(openBookBt[index].getAttribute("data-id"));
             }
+        };
+        /* Create Books Tags */
+        for (let index = 0; index < tags.length; index++) {
+            showOpt(showOptions, tags[index].tag);
         }
     })
 };

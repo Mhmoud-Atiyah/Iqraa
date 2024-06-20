@@ -2,6 +2,10 @@ body {
     font-family: arbicNormal;
 }
 
+input {
+    font-family: TheYearofTheCamelLight;
+}
+
 .cursorBt {
     cursor: pointer;
 }
@@ -115,21 +119,23 @@ header {
 }
 
 #initSessionBt,
-#joinSessionBt {
+#joinSessionBt,
+#initLibraryBt,
+#joinLibraryBt {
     color: var(--App-textColor);
     letter-spacing: 1px;
     word-spacing: 3px;
 }
 
 #initBt:hover,
-#initSessionBt:hover,
-#joinSessionBt:hover,
+.initModalBt:hover,
 #markersBt:hover,
 .markerPen:hover {
     background-color: var(--App-panelBorderColor);
 }
 
-#initSession {
+#initSession,
+#initLibrary {
     position: absolute;
     z-index: 1;
     left: 20px;
@@ -160,7 +166,6 @@ header {
     background-color: var(--App-navBgColor);
     border: solid 1px var(--App-panelBorderColor);
 }
-
 
 .fa-microphone {
     position: relative;

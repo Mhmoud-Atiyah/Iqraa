@@ -1,7 +1,7 @@
 const ID = getQueryParams().userId; // get ID of User Open The Window
 // Main Routine On start
 window.onload = () => {
-    getData("loadConfig").then((config) => { // Global Config not User Config
+    getData(`loadConfig/${ID}`).then((config) => { // Global Config not User Config
         /* Dark mode setting */
         if (config.mode === "dark") { // Now is Dark
             themeBt.className = "fa-solid fa-sun";
@@ -83,7 +83,7 @@ window.onload = () => {
                         let filePath = document.getElementById("browse_file_input").files[0].path;
                         postData(`goodreads`, { id: ID, filepath: filePath })
                             .then(() => {
-                                getData(`editConfig/new|false`).then((res) => {
+                                getData(`editConfig/${ID}/new|false`).then((res) => {
                                     if (res) {
                                         console.log("data loaded");
                                         // Clear Screen
@@ -124,7 +124,7 @@ for (let index = 0; index < openBookBt.length; index++) {
 //TODO: اقفل او افتح اللي مفروض يتعمل بعد قفل او فتح الاتصال
 statusBt.onclick = () => {
     if (statusBt.getAttribute("data-mode") === "on") {
-        getData(`editConfig/connection|false`).then((res) => {
+        getData(`editConfig/${ID}/connection|false`).then((res) => {
             if (res) {
                 setTimeout(() => {
                     statusBt.setAttribute("data-mode", "off");
@@ -133,7 +133,7 @@ statusBt.onclick = () => {
             }
         });
     } else {
-        getData(`editConfig/connection|true`).then((res) => {
+        getData(`editConfig/${ID}/connection|true`).then((res) => {
             if (res) {
                 setTimeout(() => {
                     statusBt.setAttribute("data-mode", "on");
@@ -146,7 +146,7 @@ statusBt.onclick = () => {
 // Theme Button
 themeBt.onclick = () => {
     if (themeBt.getAttribute("data-mode") === "light") {
-        getData(`editConfig/mode|dark`).then((res) => {
+        getData(`editConfig/${ID}/mode|dark`).then((res) => {
             if (res) {
                 document.querySelector("style").remove();
                 themeBt.setAttribute("data-mode", "dark");
@@ -155,7 +155,7 @@ themeBt.onclick = () => {
             }
         });
     } else {
-        getData(`editConfig/mode|light`).then((res) => {
+        getData(`editConfig/${ID}/mode|light`).then((res) => {
             if (res) {
                 document.querySelector("style").remove();
                 themeBt.setAttribute("data-mode", "light");

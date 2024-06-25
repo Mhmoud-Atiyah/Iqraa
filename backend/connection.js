@@ -1,5 +1,36 @@
 const { exec } = require('child_process');
 const { platform } = require('os');
+const net = require('net');
+const http = require('http');
+
+
+function portListening(host, port, timeout = 1000) {
+    return new Promise((resolve, reject) => {
+        const socket = new net.Socket();
+
+        socket.setTimeout(timeout);
+
+        socket.on('connect', () => {
+            console.log(`Port ${port} on ${host} is open`);
+            socket.destroy();
+            resolve(true);
+        });
+
+        socket.on('timeout', () => {
+            console.log(`Port ${port} on ${host} is closed (timeout)`);
+            socket.destroy();
+            resolve(false);
+        });
+
+        socket.on('error', (err) => {
+            console.log(`Port ${port} on ${host} is closed [First time!] (error: ${err.message})`);
+            socket.destroy();
+            resolve(false);
+        });
+
+        socket.connect(port, host);
+    });
+}
 
 function setAirplaneMode(state) {
     var command = "";
@@ -27,3 +58,39 @@ function setAirplaneMode(state) {
 
 // Turn on airplane mode
 setAirplaneMode(false);
+
+function checkOnline() {
+    return new Promise((resolve) => {
+        const options = {
+            hostname: 'www.google.com',
+            port: 80,
+            path: '/',
+            timeout: 5000,
+        };
+
+        const req = http.request(options, (res) => {
+            if (res.statusCode === 200) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+
+        req.on('error', () => {
+            resolve(false);
+        });
+
+        req.on('timeout', () => {
+            req.abort();
+            resolve(false);
+        });
+
+        req.end();
+    });
+}
+
+module.exports = {
+    portListening,
+    setAirplaneMode,
+    checkOnline
+}

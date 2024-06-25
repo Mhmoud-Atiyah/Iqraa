@@ -1,4 +1,10 @@
-DB1 ("USER") ==>
+Table0 ==> "Users's Table"
+(
+     USER = [ "id" | "fName" | "lName" | "birth" | "country" | "gender" | "account" | "profile" | "pass" ]
+     USER = [  NUM | String  | String  |  DATE   |  STRING   |  STRING  |   STRING  |   STRING  | STRING ]
+)
+
+Table1 ("USER") ==>
 (
     myNotes--> table
                 |__: Notes ==> [ "id" |  "tags":[]  | "notes":[]  ]
@@ -26,23 +32,23 @@ DB1 ("USER") ==>
                 |__:               \___________________________________________________ |
                 |__:                                                                   ||
                                                                                        ||
-                   ___________________________________________________________________/ |
-                  /____________________________________________________________________/
-)                //
-DB0 ("BOOKS")   //                                                                                                         {TODO}     {TODO}
+                       _______________________________________________________________/ |
+                      /________________________________________________________________/
+)                    //
+Table00 ("BOOKS")   //                                                                                                         {TODO}     {TODO}
 (   Books = [ "id" | "title" | "author" | "myrating" | "Avgrating" | "Publisher"| "pagesCount" | "pubDate" | "tags":[] | "coverSrc" | "about" ]
     Books = [ NUM  |  STRING |  STRING  |     NUM    |     NUM     |   STRING   |     NUM      |    DATE   |   STRING  |   STRING   |  STRING ]
 )                                 ||
                             ______//
                            /______/
-DB00 ("Authors")          //
+Table000 ("Authors")      //
 (                        //               { CPP IQRAA Author SW }
                         //
      AUTHOR = [ "id" | "name" | "birth" | "info" | "profile" | "path" | "books":[] ]
      AUTHOR = [  NUM | STRING |   DATE  | STRING |  SRTING   | STRING |   STRING   ]
 )
 
-DB4 ==> "On Loading App To Internet"
+DB ==> "On Loading App To Internet"
 (
     Books's Comments
                 |__: Book's table ==> [ "BookId" |  "Comments":[] ]

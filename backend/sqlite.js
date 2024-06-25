@@ -2,9 +2,63 @@ const sqlite3 = require('sqlite3').verbose();
 const { DBPath } = require("./config");
 const fs = require("fs");
 const { generateUniqueRandomNumber } = require("./misc");
-const { table } = require('console');
 
-// Global database connection
+// SQL statements to create tables of DB
+const db0Tables = [
+    `CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+        fName TEXT,
+        lName TEXT,
+        birth DATE,
+        country TEXT,
+        gender TEXT,
+        account TEXT,
+        profile TEXT,
+        pass TEXT
+    );`,
+    `CREATE TABLE IF NOT EXISTS books (
+        bookID INTEGER PRIMARY KEY,
+        title TEXT,
+        author TEXT,
+        myRating INTEGER,
+        avgRating INTEGER,
+        publisher TEXT,
+        pagesCount INTEGER,
+        pubDate DATE,
+        tags TEXT,
+        about TEXT,
+        coverSrc TEXT
+    );`,
+    `CREATE TABLE IF NOT EXISTS authors (
+        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+        name TEXT,
+        birth DATE,
+        info TEXT,
+        profile TEXT,
+        path TEXT,
+        books TEXT
+    );`
+];
+// TODO: Organize it
+/* const Books_Comments = [
+    `CREATE TABLE IF NOT EXISTS Books_Comments (
+    BookId INTEGER,
+    Comments TEXT
+  );`,
+    `CREATE TABLE IF NOT EXISTS Books_Comments_Details (
+    UserID INTEGER,
+    ThreadID INTEGER,
+    UserName TEXT,
+    time TIME,
+    Comment TEXT
+  );`,
+    `CREATE TABLE IF NOT EXISTS USER_COMMENT (
+    BOOKID INTEGER,
+    books TEXT
+  );`
+]; */
+
+// 00. Global database connection
 const DB = new sqlite3.Database(DBPath, (err) => {
     if (err) {
         console.error(err.message);
@@ -78,83 +132,10 @@ function createTables(dbPath, tables) {
     });
 }
 // Creating database
-const createDatabases = async () => {
-    // SQL statements to create tables of DB
-    const db0Tables = [
-        `CREATE TABLE IF NOT EXISTS books (
-    bookID INTEGER PRIMARY KEY,
-    title TEXT,
-    author TEXT,
-    myRating INTEGER,
-    avgRating INTEGER,
-    publisher TEXT,
-    pagesCount INTEGER,
-    pubDate DATE,
-    tags TEXT,
-    about TEXT,
-    coverSrc TEXT
-  );`,
-        `CREATE TABLE IF NOT EXISTS authors (
-    id INTEGER PRIMARY KEY NOT NULL UNIQUE,
-    name TEXT,
-    birth DATE,
-    info TEXT,
-    profile TEXT,
-    path TEXT,
-    books TEXT
-  );`,
-        `CREATE TABLE IF NOT EXISTS read (
-        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
-        cover TEXT,
-        title TEXT,
-        review TEXT,
-        tags TEXT,
-        FOREIGN KEY (id) REFERENCES books(bookID)
-  );`,
-        `CREATE TABLE IF NOT EXISTS want (
-        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
-        cover TEXT,
-        title TEXT,
-        review TEXT,
-        tags TEXT,
-        FOREIGN KEY (id) REFERENCES books(bookID)
-  );`,
-        `CREATE TABLE IF NOT EXISTS suggest (
-        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
-        cover TEXT,
-        title TEXT,
-        review TEXT,
-        tags TEXT,
-        FOREIGN KEY (id) REFERENCES books(bookID)
-  );`,
-        `CREATE TABLE IF NOT EXISTS notes (
-        notes TEXT,
-        tags TEXT
-  );`
-    ];
-
-    // TODO: Organize it
-    /* const Books_Comments = [
-        `CREATE TABLE IF NOT EXISTS Books_Comments (
-        BookId INTEGER,
-        Comments TEXT
-      );`,
-        `CREATE TABLE IF NOT EXISTS Books_Comments_Details (
-        UserID INTEGER,
-        ThreadID INTEGER,
-        UserName TEXT,
-        time TIME,
-        Comment TEXT
-      );`,
-        `CREATE TABLE IF NOT EXISTS USER_COMMENT (
-        BOOKID INTEGER,
-        books TEXT
-      );`
-    ]; */
-
+const createToDatabases = async (query) => {
     try {
-        await createTables(DBPath, db0Tables);
-        console.log("IQraa DB created successfully.");
+        await createTables(DBPath, query);
+        console.log(`Table [${DBPath}] created successfully.`);
     } catch (error) {
         console.error(error);
     }
@@ -263,12 +244,47 @@ function getRecord(query) {
         });
     });
 }
+// Write to Database
+function writeToDatabase(query, params, callback) {
+    DB.run(query, params, function (err) {
+        if (err) {
+            console.error('Error executing query:', err.message);
+            callback(err, null);
+            return;
+        }
+        callback(null, { lastID: this.lastID, changes: this.changes });
+    });
+}
+/**
+ * @brief Inserts or updates records in the database based on the provided query and parameters.
+ * 
+ * This function calls the `writeToDatabase` function to execute the given SQL query
+ * with the provided parameters and returns a promise that resolves to the result of the query.
+ *
+ * @param {string} query - The SQL query to execute.
+ * @param {Array} params - The parameters for the SQL query.
+ * @return {Promise<object>} A promise that resolves to the result of the query execution.
+ */
+function setRecord(query, params) {
+    return new Promise((resolve, reject) => {
+        writeToDatabase(query, params, (err, result) => {
+            if (err) {
+                console.error('Error writing to database:', err);
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
 
 module.exports = {
+    db0Tables,
     DB,
     checkDatabaseExists,
-    createDatabases,
+    createToDatabases,
     InsertToMyTable,
     InsertToBooksTable,
-    getRecord
+    getRecord,
+    setRecord
 };

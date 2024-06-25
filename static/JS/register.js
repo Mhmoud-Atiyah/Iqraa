@@ -11,7 +11,7 @@ var user_Data =
 {
     "id": "",
     "firstName": "",
-    "lasttName": "",
+    "lastName": "",
     "age": "",
     "Country": "",
     "gender": "",
@@ -88,7 +88,7 @@ document.getElementById("login-window").addEventListener('click', async () => {
     // first name
     user_Data.firstName = controlBt[0].value;
     // last name
-    user_Data.lasttName = controlBt[1].value;
+    user_Data.lastName = controlBt[1].value;
     // Age
     user_Data.age = controlBt[2].value;
     // Country
@@ -111,21 +111,18 @@ document.getElementById("login-window").addEventListener('click', async () => {
     user_Data.favouriteBooks = getSelectValues(selectBt[2]);
     // interests
     user_Data.interests = getSelectValues(selectBt[3]);
-    user_Data_ = `
-    ${user_Data.id}|
-    ${user_Data.firstName}|
-    ${user_Data.lasttName}|
-    ${user_Data.age}|
-    ${user_Data.Country}|
-    ${user_Data.gender}|
-    ${user_Data.account}|
-    ${user_Data.profile}|
-    ${user_Data.password}|
-    ${user_Data.about}|
-    ${getSelectValues(selectBt[2]).join("-")}|
-    ${getSelectValues(selectBt[3]).join("-")}|
-    `
-    fetch(`http://localhost:1999/createUser/${user_Data_}`);
+
+    postData('createUser', {
+        id: user_Data.id,
+        firstName: user_Data.firstName,
+        lastName: user_Data.lastName,
+        age: user_Data.age,
+        Country: user_Data.Country,
+        gender: user_Data.gender,
+        account: user_Data.account,
+        profile: user_Data.profile,
+        password: user_Data.password
+    });
     document.body.innerHTML = "";
     //TODO: اعمل صفحة بسيطة انك سجلت باسم كذا وهتقفل ذاتي بعد 5 ثواني أو تقدر تقفل الصفحة دي
     let TODO = document.createElement("h1").innerText = "You Can Close this Window Now!";

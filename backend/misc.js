@@ -44,35 +44,6 @@ function favouriteSave(list) {
     // Return the JSON array string
     return str;
 };
-function checkOnline() {
-    return new Promise((resolve) => {
-        const options = {
-            hostname: 'www.google.com',
-            port: 80,
-            path: '/',
-            timeout: 5000,
-        };
-
-        const req = http.request(options, (res) => {
-            if (res.statusCode === 200) {
-                resolve(true);
-            } else {
-                resolve(false);
-            }
-        });
-
-        req.on('error', () => {
-            resolve(false);
-        });
-
-        req.on('timeout', () => {
-            req.abort();
-            resolve(false);
-        });
-
-        req.end();
-    });
-}
 /**
  * Checks if a string contains Arabic language characters.
  *
@@ -113,7 +84,6 @@ module.exports = {
     isItfirstTime,
     favouriteSave,
     generateUniqueRandomNumber,
-    checkOnline,
     isArabic,
     convertToArabicNumeral
 };

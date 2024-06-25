@@ -4,7 +4,8 @@ const server = require('./backend/server');
 const sqlite = require('./backend/sqlite');
 const { MAINPATH, DBPath, init, DATAPATH, PORT } = require('./backend/config');
 const { copyFile } = require('./backend/files');
-const { isItfirstTime, checkOnline } = require('./backend/misc');
+const { isItfirstTime } = require('./backend/misc');
+const { portListening } = require('./backend/connection');
 const {
     createLoginWindow,
     createMainWindow,
@@ -16,22 +17,34 @@ const {
     createSettingsWindow,
     createsignUpWindow
 } = require('./backend/front');
-
-/**
- * Start Backend
-*/
-// 0. Start Data Server
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+//-------------------------//
+//---- Pre-Start Check ----//
+//-------------------------//
+/** Check If it's First App Look ? */
+if (isItfirstTime(DATAPATH)) {
+    init();
+};
+//-----------------------//
+//---- Start Backend ----//
+//-----------------------//
+/* 0. Start Iqraa Server */
+portListening('localhost', PORT).then((isOpen) => {
+    if (!isOpen) {  // First Client
+        server.listen(PORT, () => {
+            console.log(`Server is running on http://localhost:${PORT}`);
+        });
+    } else { // Already Opened
+        return;
+    }
 });
-// 1. Start Database Server
+/* 00. Start Database Server */
 sqlite.checkDatabaseExists(DBPath).then((exists) => {
     if (exists) {
         console.log(`Database: [${DBPath}] exists and has tables.`);
     } else {
         console.log(`Database: [${DBPath}] does not exist or has no tables.`);
         // Create Database
-        sqlite.createDatabases();
+        sqlite.createToDatabases(sqlite.db0Tables);
     }
 }).catch((error) => {
     console.error(error);
@@ -41,10 +54,6 @@ sqlite.checkDatabaseExists(DBPath).then((exists) => {
     Start Front End
 */
 app.whenReady().then(() => {
-    /** Check If it's First App Look ? */
-    if (isItfirstTime(DATAPATH)) {
-        init();
-    };
     createLoginWindow();
     ipcMain.on('open-main-window', (event, data) => {
         createMainWindow(data);

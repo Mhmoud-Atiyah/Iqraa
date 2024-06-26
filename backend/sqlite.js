@@ -226,7 +226,7 @@ function readFromDatabase(query, callback) {
 /**
  * @brief Retrieves records from the database based on the provided query and returns them as a string.
  * 
- * This function calls the `readFromDatabase` function to execute the given SQL query
+ * This function calls the readFromDatabase function to execute the given SQL query
  * and returns a promise that resolves to the retrieved rows as a string.
  *
  * @param {string} query - The SQL query to execute.

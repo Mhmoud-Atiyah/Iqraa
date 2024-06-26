@@ -14,9 +14,7 @@ const {
     createRiwaqWindow,
     createNotesWindow,
     createLibraryWindow,
-    createSettingsWindow,
-    createsignUpWindow
-} = require('./backend/front');
+    createSettingsWindow } = require('./backend/front');
 //-------------------------//
 //---- Pre-Start Check ----//
 //-------------------------//
@@ -58,9 +56,6 @@ app.whenReady().then(() => {
     ipcMain.on('open-main-window', (event, data) => {
         createMainWindow(data);
     });
-    ipcMain.on('open-signUp-window', () => {
-        createsignUpWindow();
-    });
     ipcMain.on('open-book-window', (event, bookId) => {
         createBookWindow(bookId);
     });
@@ -86,7 +81,7 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
-        //TODO: server.closeAllConnections();
+        //TODO: server.closeAllConnections(); ask if if all connections closed
         // Close the database connection
         sqlite.DB.close((err) => {
             if (err) {

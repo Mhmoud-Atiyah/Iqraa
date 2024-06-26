@@ -75,7 +75,6 @@ window.onload = () => {
             Div.id = "mainChild";
             Div.innerHTML = element;
             mainView.append(Div);
-            //TODO: browse Excel File Iqraa (export)
             document.getElementById("browse_file").onclick = () => {
                 document.getElementById("browse_file_input").click();
                 document.getElementById("browse_file_input").onchange = () => {

@@ -19,6 +19,20 @@ const settingBt = document.getElementById("settings");
 const openBookBt = document.getElementsByClassName("openBookBt");
 const searchBt = document.getElementById("searchBt");
 const searchInput = document.getElementById("search-input");
+const sign = {
+    alertPlaceholder: document.getElementById('alertPlaceholder'),
+    signWindow: document.getElementById("signWindow"),
+    signForm: document.getElementById("signForm"),
+    signProfile: document.getElementById("signProfileImg"),
+    loginBt: document.getElementById("loginBt"),
+    signUpBt: document.getElementById('signUpBt'),
+    username: document.getElementById("username"),
+    password: document.getElementById("password"),
+    passwordIcon: document.getElementById("passwordIcon"),
+    remeberMe: document.getElementById("remeberMe"),
+    signUpGoogleBt: document.getElementById("signUpGoogleBt"),
+    signUpMSBt: document.getElementById("signUpMSBt")
+};
 const book_view = {
     view: document.getElementsByClassName("book_view")[0],
     cover: document.getElementById("book_view_cover"),

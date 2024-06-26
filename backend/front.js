@@ -35,25 +35,6 @@ function createLoginWindow() {
     })
     win.loadFile(path.join(MAINPATH, "static/login.html"));
 }
-/** Register New User **/
-function createsignUpWindow() {
-    const win = new BrowserWindow({
-        minHeight: 720,
-        minWidth: 1280,
-        width: 1280,
-        height: 720,
-        center: true,
-        autoHideMenuBar: true,
-        icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
-        webPreferences: {
-            preload: path.join(MAINPATH, 'preload.js'),
-            contextIsolation: true,
-            enableRemoteModule: false,
-            nodeIntegration: false
-        }
-    })
-    win.loadFile(path.join(MAINPATH, 'static/signUp.html'));
-};
 
 /** Main Window **/
 function createMainWindow(id) {
@@ -228,5 +209,4 @@ module.exports = {
     createNotesWindow,
     createLibraryWindow,
     createSettingsWindow,
-    createsignUpWindow
 };

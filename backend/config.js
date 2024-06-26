@@ -4,10 +4,9 @@ const { copyFile } = require('./files')
 const { checkOnline } = require('./connection')
 /* Some Defualt Values */
 const MAINPATH = path.join(__dirname + '/../');
-const ASSETSPATH = path.join(MAINPATH, "static/assets");//TODO: delete this also
+const ASSETSPATH = path.join(MAINPATH, "static/assets");
 const DATAPATH = path.join(MAINPATH, "/data");
 const USERSPATH = path.join(DATAPATH, "/users");
-const BOOKSPATH = path.join(DATAPATH, "/books");//TODO: Delete this
 const DBPath = path.join(DATAPATH, "/iqraa.db");
 const PORT = process.env.PORT || 1999;
 // SOME SPEICAL DEFINE
@@ -42,7 +41,6 @@ module.exports = {
     ASSETSPATH,
     DATAPATH,
     USERSPATH,
-    BOOKSPATH,
     DBPath,
     PORT,
     max,

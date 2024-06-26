@@ -5,14 +5,17 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { createLoginWindow } = require('./front');
-const { favouriteSave } = require('./misc');
-const { generateHash } = require("./encryption")
-//TODO: Covert fetch method of function send data to server
+const { favouriteSave, idUsed, generateUniqueId } = require('./misc');
+const { generateHash, encrypt } = require("./encryption")
 const { InsertToMyTable, InsertToBooksTable, getRecord, setRecord, createToDatabases } = require('./sqlite');
 const { getCover, getAbout } = require('./bookData');
 const { readJson, editJsonFile, readCSS } = require('./files');
 const { ASSETSPATH, DATAPATH, USERSPATH } = require('./config');
-const { checkOnline } = require("./connection")
+const { checkOnline } = require("./connection");
+// SOME SPEICAL DEFINE
+const max = 1000000; // maximum number of users
+const min = 1;// minimum number of users
+
 // Main Backend Server
 const server = http.createServer((req, res) => {
     if (req.url === '/') {
@@ -38,12 +41,25 @@ const server = http.createServer((req, res) => {
             try {
                 /* Get credentials */
                 const { username, password } = JSON.parse(body);
+                var record;
+                if (password.includes("|||")) { // hashed from local storage
+                    // TODO: Need Solution to Avoid SQL Injection
+                    record = `SELECT * FROM users WHERE account = "${username}" AND pass = "${password.split("|||")[1]}";`;
+                } else {
+                    record = `SELECT * FROM users WHERE account = "${username}" AND pass = "${generateHash(password)}";`;
+                }
                 /* If User Exist ? */
-                getRecord(`SELECT * FROM users WHERE account = "${username}" AND pass = "${generateHash(password)}";`).then(userData => {
+                getRecord(record).then(userData => {
                     if (userData.length > 2) { // User Exist
                         const Id = JSON.parse(userData)[0].id;
+                        const Profile = JSON.parse(userData)[0].profile;
+                        const EncryptedPass = JSON.parse(userData)[0].pass;
                         res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.write(JSON.stringify({ id: Id }));
+                        res.write(JSON.stringify({
+                            id: Id,
+                            profile: Profile,
+                            encryptedPass: EncryptedPass
+                        }));
                         res.end();
                     } else {
                         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -164,11 +180,11 @@ const server = http.createServer((req, res) => {
         });
         req.on('end', () => {
             try {
-                const {
+                var {
                     id,
                     firstName,
                     lastName,
-                    age,
+                    dob,
                     country,
                     gender,
                     account,
@@ -187,6 +203,7 @@ const server = http.createServer((req, res) => {
                         isOnline = false;
                     }
                 })();
+                // TODO: Check if userName Exist
                 //  Add User To Users's Table
                 setRecord(`
                     INSERT INTO users (id, fName, lName, birth, country, gender, account, profile, pass) 
@@ -194,7 +211,7 @@ const server = http.createServer((req, res) => {
                     `${id}`,
                     `${firstName}`,
                     `${lastName}`,
-                    `${age}`,
+                    `${dob}`,
                     `${country}`,
                     `${gender}`,
                     `${account}`,
@@ -259,7 +276,6 @@ const server = http.createServer((req, res) => {
         });
         req.on('end', () => {
             try {
-                // TODO: In near Future Add Data to Table of User like {table: "read_123"}
                 const { id, filepath } = JSON.parse(body);
                 // Create Read, Want and Suggest Tables for User
                 createToDatabases([

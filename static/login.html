@@ -11,35 +11,84 @@
     <link rel="stylesheet" href="style/main.css">
     <link rel="stylesheet" href="style/fonts.css">
     <style>
-        #login_card {
-            background-color: var(--App-panelBgColor);
+        #signWindow {
+            display: block;
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            border-radius: 1rem;
             border: solid 1px var(--App-panelBorderColor);
-        }
-
-        strong,
-        span,
-        div {
-            font-size: 24px;
-        }
-
-        div {
+            background-color: var(--App-footerBgColor);
             color: var(--App-textColor);
         }
 
+        #login_wall {
+            width: 40%;
+        }
 
-        #username,
-        #password {
-            font-family: TheYearofTheCamelBold;
-            background-color: var(--App-panelBgColor);
+        #signForm {
+            position: relative;
+            display: block;
+            width: 55%;
+            border-top-right-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+
+        .form-control,
+        .form-select,
+        .form-check-input,
+        option {
             color: var(--App-textColor);
+            user-select: none;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            word-spacing: 2px;
+            cursor: text;
+        }
+
+        #signProfile {
+            display: block;
+            text-align: center;
+        }
+
+        #passwordIcon {
+            display: block;
+            /* Note: height zero for remeber me Button span */
+            height: 0px;
+            cursor: pointer;
+            font-size: 18px;
+            position: relative;
+            float: left;
+            top: -28px;
+            left: 14px;
+            color: var(--App-textColor);
+        }
+
+        .divider:after,
+        .divider:before {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--App-textColor);
         }
 
         .alert {
             position: fixed;
+            height: 50px;
+            line-height: 1em;
             left: 50%;
-            bottom: 10px;
+            bottom: -5px;
             transform: translateX(-50%);
-            z-index: 1050;
+            font-size: 24px;
+            word-spacing: 2px;
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        .alert span {
+            position: relative;
+            top: -5px;
         }
     </style>
 </head>
@@ -47,124 +96,104 @@
 <body>
     <!-- Placeholder for Alert -->
     <div id="alertPlaceholder"></div>
-    <section class="vh-100">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col col-xl-10">
-                    <div class="card" style="border-radius: 1rem;" id="login_card">
-                        <div class="row g-0">
-                            <div>
-                                <img height="100%" width="400px" src="assets/login_wall.avif" id="login_wall"
-                                    style="border-radius: 1rem 0 0 1rem;position: absolute;left: 0px;" />
+    <div id="signWindow" style="font-family: Moharram;">
+        <div class="container">
+            <div class="row">
+                <div>
+                    <img height="100%" src="assets/login_wall.jpg" id="login_wall"
+                        style="border-radius: 1rem 0 0 1rem;position: absolute;left: 0px;" />
+                </div>
+                <div id="signForm" class="pt-3 me-3">
+                    <!-- Placeholder for Sign Form -->
+                    <form class="pt-4">
+                        <!-- Profile -->
+                        <div class="row mb-4" id="signProfile">
+                            <div class="col">
+                                <img src="assets/profile.png" class="cursorBt border rounded-circle p-1"
+                                    id="signProfileImg" alt="صورة المستخدم" height="80px" width="80px"
+                                    title="صورة المستخدم">
                             </div>
-                            <div class="col-md-6 col-lg-7 d-flex align-items-center">
-                                <div class="card-body p-4 p-lg-5">
-                                    <form>
-                                        <div class="d-flex align-items-center mb-3 pb-1"
-                                            style="position: relative;right: 25%;letter-spacing: 2px;">
-                                            <i class="fa-solid fa-book-open-reader fa-2x me-2"></i>
-                                            <span class="h1 fw-bold mb-0 me-4">أقرأ</span>
-                                        </div>
-                                        <div class="fw-bold" style="letter-spacing: 1px;font-size: 24px;">اسم المستخدم
-                                        </div>
-                                        <div class="form-outline mb-4">
-                                            <input id="username" type="email" class="form-control form-control-lg" />
-                                        </div>
-                                        <div class="form-outline mb-2">
-                                            <div class="fw-bold" style="letter-spacing: 1px;font-size: 24px">كلمة المرور
-                                            </div>
-                                            <input type="password" id="password"
-                                                style="font-family: Arial, Helvetica, sans-serif;"
-                                                class="form-control form-control-lg" />
-                                        </div>
-                                        <div class="pt-1 mb-4">
-                                            <button id="loginBt" class="btn btn-secondary btn-lg btn-block fw-bold"
-                                                type="button">دخول</button>
-                                            <button id="signUpBt" type="button"
-                                                class="btn btn-secondary me-1 btn-lg btn-block fw-bold">تسجيل مستخدم
-                                                جديد</button>
-                                        </div>
-                                    </form>
+                        </div>
+                        <!-- userName -->
+                        <div class="row mb-2">
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="اسم المستخدم" required
+                                    id="username">
+                            </div>
+                        </div>
+                        <!-- Password -->
+                        <div class="row mb-2">
+                            <div class="col">
+                                <input type="password" class="form-control" required placeholder="كلمة المرور"
+                                    id="password">
+                                <i class="fa-regular fa-eye-slash" id="passwordIcon"></i>
+                            </div>
+                        </div>
+                        <!-- remember me -->
+                        <div class="form-check mb-2">
+                            <input class="form-check-input float-end me-2 ms-2" type="checkbox" value=""
+                                style="cursor: pointer;" id="remeberMe">
+                            <label class="form-check-label" for="remeberMe"
+                                style="position: relative;top: -6px;font-size: 24px;">تذكرني</label>
+                        </div>
+                        <!-- Login Button -->
+                        <div class="row mb-3 m-0">
+                            <button type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="loginBt"
+                                class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
+                                style="word-spacing: 2px;text-align: center;font-size: 22px;background-color: var(--App-panelBorderColor);"
+                                aria-pressed="true">تسجيل الدخول</button>
+
+                        </div>
+                        <!-- Or Divider -->
+                        <div class="divider d-flex align-items-center mb-3">
+                            <p class="text-center fw-bold mx-3 mb-0 text-muted"
+                                style="font-size: 22px;letter-spacing: 2px;">أو</p>
+                        </div>
+                        <!-- Manual sign up -->
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpBt"
+                                    class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
+                                    style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
+                                    aria-pressed="true">
+                                    تسجيل مستخدم جديد
+                                    <i class="fa-solid fa-book-open-reader me-2"
+                                        style="color: var(--App-textColor);position: relative;top: 2px;"></i>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <!-- Sign up Use 3rd=party -->
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpGoogleBt"
+                                    class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
+                                    style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
+                                    aria-pressed="true">
+                                    التسجيل بإستخدام جوجل
+                                    <img src="assets/google_logo.png" alt="" height="18px" class="me-2">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpMSBt"
+                                    class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
+                                    style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
+                                    aria-pressed="true">
+                                    التسجيل بإستخدام مايكروسوفت
+                                    <img src="assets/microsoft_logo.png" alt="" height="18px" class="me-2">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
     <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="../preload.js"></script>
+    <script src="JS/components.js"></script>
     <script src="JS/misc.js"></script>
     <script src="JS/theme.js"></script>
-
-    <script>
-        const alertPlaceholder = document.getElementById('alertPlaceholder');
-        const signUpBt = document.getElementById('signUpBt');
-
-        function Alert() {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
-            alertDiv.setAttribute('data-mdb-position', 'bottom-center');
-            alertDiv.role = 'alert';
-            alertDiv.innerHTML = `
-                        <strong style="font-size:24px;"> خطأ ! </strong>
-                        <span style="font-size:24px"> أنت غير مسجل أو بيانات خاطئة </span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-            alertPlaceholder.appendChild(alertDiv);
-            signUpBt.className = "btn btn-warning me-1 btn-lg btn-block fw-bold";
-            // Remove the alert after a few seconds
-            setTimeout(() => {
-                alertDiv.classList.remove('show');
-                alertDiv.classList.add('hide');
-                alertDiv.addEventListener('transitionend', () => alertDiv.remove());
-            }, 3000);
-        }
-
-        window.onload = () => {
-            //TODO: Only One theme available for Login
-            loadTheme("lightTheme");
-            // document.getElementById("login_wall").style.filter = "grayscale(80%)"
-            window.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter' && document.getElementById("username").value && document.getElementById("password").value) {
-                    event.preventDefault();  // Prevent the form from submitting
-                    document.getElementById("loginBt").click()
-                }
-            });
-        }
-        /* 
-            Login Button
-        */
-        document.getElementById("loginBt").onclick = () => {
-            //TODO: Add encrption
-            userName = document.getElementById("username").value;
-            passWord = document.getElementById("password").value;
-            if (!userName || !passWord) {
-                //TODO: say fill form first ==> Alert();
-                console.log("fill");
-            } else {
-                //TODO: check error of inputs (formats-allowed letters)
-                postData("login", {
-                    username: userName,
-                    password: passWord
-                }).then((res) => {
-                    if (res.id) { // If returned ID
-                        window.IPC.openMainWindow(res.id);
-                        window.close();
-                    } else {
-                        Alert();
-                    }
-                });
-            }
-        }
-        /* 
-                Sign-Up Button
-        */
-        signUpBt.onclick = () => {
-            window.IPC.opensignUpWindow();
-            window.close();
-        }
-    </script>
+    <script src="JS/sign.js"></script>
 </body>
 
 </html>

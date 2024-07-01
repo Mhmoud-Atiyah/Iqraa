@@ -1,5 +1,5 @@
-class SearchAPI{
-    constructor(){
-        
+class SearchAPI {
+    constructor() {
+
     }
 }

@@ -5,7 +5,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { createLoginWindow } = require('./front');
-const { favouriteSave, idUsed, generateUniqueId } = require('./misc');
+const { favouriteSave, idUsed, generateUniqueRandomNumber } = require('./misc');
 const { generateHash, encrypt } = require("./encryption")
 const { InsertToMyTable, InsertToBooksTable, getRecord, setRecord, createToDatabases } = require('./sqlite');
 const { getCover, getAbout } = require('./bookData');
@@ -81,13 +81,18 @@ const server = http.createServer((req, res) => {
     } else if (req.url.includes('search')) { // Search
         /* Get User ID */
         const query_ = req.url.split('/search/')[1];
-        const query = decodeURIComponent(query_).split(" ");
+        const query = decodeURIComponent(query_).split(" ");// Array of Query
         //TODO: Search Backend Work
-        res.write(JSON.stringify(
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.write(JSON.stringify([
             {
-                "Success": "1",
-                "result": "Ok!"
-            }));
+                id: 132,
+                tittle: "book title",
+                author: "author name",
+                authorId: 132434,
+                cover: "assets/bookCover.jpg"
+            }
+        ]));
         res.end();
     } else if (req.url.includes('loadUserSection')) { // Load User's Section Data
         const query_ = req.url.split('/loadUserSection/')[1];
@@ -364,6 +369,36 @@ const server = http.createServer((req, res) => {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({}));
                 })
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Error parsing JSON' }));
+            }
+        });
+    } else if (req.url.includes('addbook')) { // Add New Book From outside The Database
+        let body = '';
+
+        req.on('data', (chunk) => {
+            body += chunk.toString(); // Accumulate incoming data chunks
+        });
+        req.on('end', () => {
+            try {
+                const { bookCover, bookName, bookAuthor, bookPC, bookPubDate, bookPublisher, bookRating, bookAbout } = JSON.parse(body);
+                //TODO: on input if Name exist in DB then Just Redirect to Book Page
+                InsertToBooksTable([
+                    generateUniqueRandomNumber(), // bookID
+                    bookName, // title
+                    bookAuthor, // author
+                    bookRating, // myRating
+                    "1", // avgRating
+                    bookPublisher, // publisher
+                    bookPC, // pagesCount
+                    bookPubDate, // pubDate
+                    bookAbout,
+                    bookCover
+                ])
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({}));
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 res.writeHead(400, { 'Content-Type': 'application/json' });

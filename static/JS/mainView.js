@@ -42,13 +42,6 @@ window.onload = () => {
         current.src = config.current.cover;
         current.title = config.current.title;
         current.setAttribute("data-path", config.current.id);
-        for (let index = 0; index < config.lastSearch.length; index++) {
-            let elem = document.createElement("li");
-            elem.className = "dropdown-item";
-            elem.innerText = config.lastSearch[index];
-            //TODO: Append last search to tags Bar
-            // searchList.append(elem);
-        }
         // First look User ( run one time !)
         if (config.new === "true") {
             let element =
@@ -106,6 +99,8 @@ window.onload = () => {
         };
     })
     document.getElementById("main").style.height = window.innerHeight - 60 + 'px';
+    SecondaryWindow.setAttribute("data-show", "hide");
+    SecondaryWindow.style.display = "none";
 }
 //---------------------------------------------------------
 // Global Event Listener
@@ -164,9 +159,10 @@ themeBt.onclick = () => {
         });
     }
 }
-addBookBt.onclick = () => { window.IPC.openAddBookWindow(); }
 /* Setting button */
-settings.onclick = () => { window.IPC.openSettingWindow(); }
+settings.onclick = () => {
+    showHideSecondaryWindow();
+}
 /* Notes button */
 notesBt.onclick = () => { window.IPC.openNotesWindow(); }
 /* Library button */
@@ -177,26 +173,69 @@ riwaqBt.onclick = () => { window.IPC.openRiwaqWindow(ID); }
 // Back End Work
 //---------------------------------------------------------
 /* Search Staff */
-
-searchInput.onclick = () => {
-    searchList.style.display = "block"
+function searchResponse(id, tittle, author, authorId, cover) {
+    let li = document.createElement("li");
+    li.className = "search-inputListItem pt-2 pe-3";
+    li.innerHTML = `
+    <div class="row">
+        <div class="col-4">
+            <img src="${cover}" height="64px" width="64px" class="openBookBt rounded" data-id="${id}">
+        </div>
+        <div class="col-8">
+            <p data-id="${id}" class="openBookBt">${tittle}</p>
+            <span data-authorId="${authorId}" class="viewAuthorBt"><a href="#">${author}</a></span>
+        </div>
+    </div>
+    `;
+    searchList.append(li);
+}
+function doSearch(query) {
+    getData(`search/${query}`).
+        then((response) => {
+            // Front Tip
+            if (response.length > 3) {
+                searchinputList.style.height = "270px";
+            } else {
+                searchinputList.style.height = "auto";
+            }
+            // Append Responses to view
+            for (let index = 0; index < response.length; index++) {
+                searchResponse(response[index].id,
+                    response[index].tittle.slice(0, 30),
+                    response[index].author.slice(0, 30),
+                    response[index].authorId,
+                    response[index].cover);
+            };
+            // Add two Event Handlers for same response to open Book View
+            const openBookBt_ = document.getElementsByClassName("openBookBt");
+            for (let index = 0; index < openBookBt_.length; index++) {
+                openBookBt_[index].onclick = () => {
+                    window.IPC.openBookWindow(openBookBt_[index].getAttribute("data-id"));
+                }
+            }
+            // Add one Event Handler to View Author Page
+            const viewAuthorBt_ = document.getElementsByClassName("viewAuthorBt");
+            for (let index = 0; index < viewAuthorBt_.length; index++) {
+                viewAuthorBt_[index].onclick = () => {
+                    window.IPC.openBookWindow(viewAuthorBt_[index].getAttribute("data-authorId"));
+                }
+            }
+        });
 };
 searchInput.oninput = () => {
     if (searchInput.value.length >= 3) {
-        searchList.innerHTML = "";
+        searchinputList.style.display = "block";
+        // clear Window first
+        searchList.innerHTML = ``;
+        doSearch(searchInput.value);
+    } else {
+        searchinputList.style.display = "none";
     }
 }
-
+// Searching Routine
 searchInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();  // Prevent the form from submitting
-        getData(`search/${query}`).then((res) => {
-            if (res.Success == "1") {
-                //TODO: Do Showing of results staff
-
-            } else {
-                console.log("Error Search!");
-            }
-        })
+        doSearch(searchInput.value);
     }
 });

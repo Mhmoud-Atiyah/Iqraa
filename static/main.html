@@ -19,18 +19,26 @@
             <div class="container-fluid">
                 <!-- Search Input -->
                 <form class="d-flex" role="search">
+                    <!-- Add Book button -->
                     <button id="addBookBt" class="btn btn-outline-warning d-inline-flex align-items-center fw-bold"
-                    type="button">اضف كتاب</button>
-                    <button id="searchBt" style="position: absolute;left: 90px;" class="btn d-inline-flex align-items-center rounded fs-4"
-                        type="button"><i class="fa-brands fa-searchengin"></i></button>
+                        type="button">اضف كتاب</button>
+                    <!-- Search Book -->
                     <div>
+                        <button id="searchBt" style="position: absolute;left: 90px;"
+                            class="btn d-inline-flex align-items-center rounded fs-4" type="button"><i
+                                class="fa-brands fa-searchengin"></i></button>
                         <input class="form-control ms-2 me-4" id="search-input" type="search" placeholder="بحث">
+                        <div id="search-inputList">
+                            <ul id="search-inputListItems">
+                                <!-- placeholder for Search Reponses -->
+                            </ul>
+                        </div>
                     </div>
                 </form>
                 <!-- Secondry Show Options -->
                 <div class="navbar-collapse" id="navbarCollapse">
                     <ul id="secondry-nav" class="navbar-nav mb-2 mb-md-0">
-                        <!-- PLACEHOLDER For  secondry Show Items-->
+                        <!-- PLACEHOLDER For Books Tags -->
                     </ul>
                 </div>
                 <!-- User Profile -->
@@ -66,6 +74,13 @@
     <div id="settings" class="cursorBt">
         <i class="fa-solid fa-sliders" style="padding: 5px;"></i>
     </div>
+    <!-- Secondary Window -->
+    <div id="SecondaryWindow" class="rounded">
+        <span id="SecondaryWindowHeader"><span id="SecondaryWindowHeader_"></span></span>
+        <span id="SecondaryWindowBody"></span>
+        <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
+    </div>
+
     <!-- External Scripts -->
     <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="JS/components.js"></script><!-- App Components like header and buttons -->
@@ -73,6 +88,8 @@
     <script src="JS/theme.js"></script><!-- Dark Mode and Themes -->
     <script src="JS/userSection.js"></script><!-- Load and remove User Sections -->
     <script src="JS/mainView.js"></script><!-- Main Routines -->
+    <script src="JS/SecondaryWindow.js"></script><!-- SecondaryWindow -->
+    <script src="JS/addBook.js"></script><!-- Add Book -->
 </body>
 
 </html>

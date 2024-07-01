@@ -72,24 +72,6 @@ function createBookWindow(bookId) {
     })
     win.loadURL(`file://${path.join(MAINPATH, 'static/bookView.html')}?bookId=${bookId}`);
 }
-/** Add Book View Window **/
-function createAddbookWindow() {
-    const win = new BrowserWindow({
-        height: 720,
-        width: 1024,
-        minWidth: 1024,
-        minHeight: 600,
-        center: true,
-        autoHideMenuBar: true,
-        icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
-        webPreferences: {
-            preload: path.join(MAINPATH, 'preload.js'),
-            nodeIntegration: false
-        }
-    })
-    win.loadFile(path.join(MAINPATH, 'static/Addbook.html'));
-}
-
 //---------------------------------------------------------
 // Dock Buttons
 //---------------------------------------------------------
@@ -172,41 +154,12 @@ function createRiwaqWindow(id) {
         })
     }
 };
-/** Settings Window **/
-function createSettingsWindow() {
-    if (!settingWindow) {
-        settingWindow = true;
-
-        const win = new BrowserWindow({
-            minHeight: 720,
-            minWidth: 720,
-            width: 720,
-            height: 720,
-            center: true,
-            autoHideMenuBar: true,
-            icon: path.join(ASSETSPATH, '/book-open-reader-solid.svg'),
-            webPreferences: {
-                preload: path.join(MAINPATH, 'preload.js'),
-                contextIsolation: true,
-                enableRemoteModule: false,
-                nodeIntegration: false
-            }
-        })
-        win.loadFile(path.join(MAINPATH, 'static/settings.html'));
-
-        win.on('closed', () => {
-            settingWindow = false;
-        });
-    }
-};
 
 module.exports = {
     createLoginWindow,
     createMainWindow,
     createBookWindow,
-    createAddbookWindow,
     createRiwaqWindow,
     createNotesWindow,
-    createLibraryWindow,
-    createSettingsWindow,
+    createLibraryWindow
 };

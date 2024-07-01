@@ -19,6 +19,8 @@ const settingBt = document.getElementById("settings");
 const openBookBt = document.getElementsByClassName("openBookBt");
 const searchBt = document.getElementById("searchBt");
 const searchInput = document.getElementById("search-input");
+const searchinputList = document.getElementById("search-inputList");
+const searchList = document.getElementById("search-inputListItems");
 const sign = {
     alertPlaceholder: document.getElementById('alertPlaceholder'),
     signWindow: document.getElementById("signWindow"),

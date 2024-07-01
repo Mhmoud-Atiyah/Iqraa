@@ -59,12 +59,6 @@ app.whenReady().then(() => {
     ipcMain.on('open-book-window', (event, bookId) => {
         createBookWindow(bookId);
     });
-    ipcMain.on('open-settings-window', () => {
-        createSettingsWindow();
-    });
-    ipcMain.on('open-Addbook-window', () => {
-        createAddbookWindow();
-    });
     ipcMain.on('open-Notes-window', () => {
         createNotesWindow();
     });

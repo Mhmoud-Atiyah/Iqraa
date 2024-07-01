@@ -35,7 +35,7 @@ Table1 ("USER") ==>
                        _______________________________________________________________/ |
                       /________________________________________________________________/
 )                    //
-Table00 ("BOOKS")   //                                                                                                         {TODO}     {TODO}
+Table00 ("BOOKS")   //                                                                                                         {TODO}  {TODO}
 (   Books = [ "id" | "title" | "author" | "myrating" | "Avgrating" | "Publisher"| "pagesCount" | "pubDate" | "tags":[] | "coverSrc" | "about" ]
     Books = [ NUM  |  STRING |  STRING  |     NUM    |     NUM     |   STRING   |     NUM      |    DATE   |   STRING  |   STRING   |  STRING ]
 )                                 ||

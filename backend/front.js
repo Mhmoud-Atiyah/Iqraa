@@ -10,9 +10,7 @@ const { MAINPATH, ASSETSPATH } = require('./config')
 /* Global Variables Hold IF Windows Duplicated */
 var notesWindow = false,
     libraryWindow = false,
-    settingWindow = false,
     riwaqWindow = false;
-
 //---------------------------------------------------------
 // Windows
 //---------------------------------------------------------
@@ -56,7 +54,7 @@ function createMainWindow(id) {
     win.loadURL(`file://${path.join(MAINPATH, 'static/main.html')}?userId=${id}`);
 };
 /** Book View Window **/
-function createBookWindow(bookId) {
+function createBookWindow(bookId, userId) {
     const win = new BrowserWindow({
         height: 690,
         width: 1024,
@@ -70,7 +68,7 @@ function createBookWindow(bookId) {
             nodeIntegration: false
         }
     })
-    win.loadURL(`file://${path.join(MAINPATH, 'static/bookView.html')}?bookId=${bookId}`);
+    win.loadURL(`file://${path.join(MAINPATH, 'static/bookView.html')}?userId=${userId}&bookId=${bookId}`);
 }
 //---------------------------------------------------------
 // Dock Buttons

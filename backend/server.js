@@ -5,13 +5,14 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { createLoginWindow } = require('./front');
-const { favouriteSave, idUsed, generateUniqueRandomNumber } = require('./misc');
-const { generateHash, encrypt } = require("./encryption")
-const { InsertToMyTable, InsertToBooksTable, getRecord, setRecord, createToDatabases } = require('./sqlite');
-const { getCover, getAbout } = require('./bookData');
+const { generateUniqueRandomNumber } = require('./misc');
+const { generateHash } = require("./encryption")
+const { InsertToMyTable, InsertToBooksTable, getRecord, setRecord, createToDatabases, checkExist } = require('./sqlite');
+const { getCover, getAbout, getBookData } = require('./bookData');
 const { readJson, editJsonFile, readCSS } = require('./files');
-const { ASSETSPATH, DATAPATH, USERSPATH } = require('./config');
+const { ASSETSPATH, DATAPATH, USERSPATH, CACHEPATH } = require('./config');
 const { checkOnline } = require("./connection");
+const { Search } = require("./searchEngine");
 // SOME SPEICAL DEFINE
 const max = 1000000; // maximum number of users
 const min = 1;// minimum number of users
@@ -81,19 +82,40 @@ const server = http.createServer((req, res) => {
     } else if (req.url.includes('search')) { // Search
         /* Get User ID */
         const query_ = req.url.split('/search/')[1];
-        const query = decodeURIComponent(query_).split(" ");// Array of Query
-        //TODO: Search Backend Work
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.write(JSON.stringify([
-            {
-                id: 132,
-                tittle: "book title",
-                author: "author name",
-                authorId: 132434,
-                cover: "assets/bookCover.jpg"
+        const query = decodeURIComponent(query_);
+        /*TODO: Search Local Databse */
+        /* checkExist("books", "title", `${query}`, (err, exist) => {
+            if (err) {
+                console.error('Error:', err);
+            } else if (exist) {
+                getRecord(`SELECT * FROM books WHERE title = "${query}";`).then(bookData => {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.write(bookData);
+                    res.end();
+                }).catch(err => {
+                    console.error('Error:', err);
+                })
+                return;
+            } else {
+                console.log(`Query does not exist in table books.`);
             }
-        ]));
-        res.end();
+        }); */
+        /* Check Cache then Goodreads */
+        if (fs.existsSync(CACHEPATH + `/search: ${query}.json`)) { /* Check Cache First */
+            readJson(CACHEPATH + `/search: ${query}.json`, req, res);
+        } else { /* Search Goodreads */
+            /* Do Search */
+            (async () => {
+                try {
+                    const querys = await Search(query);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.write(JSON.stringify(querys));
+                    res.end();
+                } catch (error) {
+                    console.error(`Error in Search [${query}]:`, error);
+                }
+            })();
+        }
     } else if (req.url.includes('loadUserSection')) { // Load User's Section Data
         const query_ = req.url.split('/loadUserSection/')[1];
         const [id, section] = decodeURIComponent(query_).split('|');
@@ -144,17 +166,67 @@ const server = http.createServer((req, res) => {
     } else if (req.url.includes('loadBookData')) { // Load User Data
         /* Get Book ID */
         const ID = req.url.split('/loadBookData/')[1];
-        getRecord(`SELECT * FROM books WHERE bookID = ${ID};`).then(bookData => {
+        /* Check if book Cached From Search (do it first for performance) */
+        if (fs.existsSync(CACHEPATH + `/${ID}.json`)) {
+            // response to User
+            readJson(CACHEPATH + `/${ID}.json`, req, res);
+            // Write Data To Database
+            fs.readFile(CACHEPATH + `/${ID}.json`, 'utf8', function (err, data) {
+                if (err) throw err;
+                let Data = JSON.parse(data);
+                setRecord(`
+                    INSERT INTO books (bookID, title, author, myRating,	avgRating, publisher, pagesCount, pubDate, tags, about, coverSrc, readCount) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+                    `${Data.id}`,
+                    `${Data.title}`,
+                    `${Data.author.name}`,
+                    `0`,
+                    `${Data.rating}`,
+                    `مكتبة`,//TODO: Get it in c++
+                    `${Data.pagesCount}`,
+                    `${Data.pubDate}`,
+                    `${Data.tags.join("")}`,
+                    `${Data.about}`,
+                    `${Data.coverSrc}`,
+                    `1`
+                ]).then(result => {
+                    // Delete json File
+                    fs.unlink(CACHEPATH + `/${ID}.json`, (err) => {
+                        if (err) {
+                            console.error('Error removing file:', err);
+                            return;
+                        }
+                        console.log(`Book[${Data.title}]: inserted successfully`, result);
+                    });
+                }).catch(err => {
+                    console.error(`Error inserting Book[${title}]:`, err);
+                });
+            })
+        } else { // Get Data from Database
+            getRecord(`SELECT * FROM books WHERE bookID = ${ID};`).then(bookData => {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.write(bookData);
+                res.end();
+            }).catch(err => {
+                console.error('Error:', err);
+            })
+        }
+    } else if (req.url.includes('downloadBookData')) { // Download Book's Data from Goodreads
+        /* Get Book ID */
+        const ID = req.url.split('/downloadBookData/')[1];
+        /* Use IQraa To Download Data Using ID of Book */
+        getBookData(ID).then((obj) => {
+            console.log(`Book With Id [${ID}] Retrieved From Goodreads`);
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.write(bookData);
+            res.write(JSON.stringify({}));
             res.end();
-        }).catch(err => {
-            console.error('Error:', err);
-        })
+        }).catch((err) => {
+            console.error(err);
+        });
     } else if (req.url.includes('editConfig')) { // Edit Config Key
         const query_ = req.url.split('/editConfig/')[1];
         const id = decodeURIComponent(query_).split('/')[0];
-        const config = decodeURIComponent(query_).split('/')[1].split('|');
+        const config = decodeURIComponent(query_).slice(query_.indexOf("/") + 1).split('|');
         try {
             editJsonFile(`${USERSPATH}/${id}/config.json`, 1, config);
             res.writeHead(200, { 'Content-Type': 'application/json' });

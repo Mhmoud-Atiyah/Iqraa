@@ -1,6 +1,6 @@
 async function loadTheme(themeName) {
     try {
-        const response = await fetch(`http://localhost:1999/loadStyle/${themeName}`, {
+        const response = await fetch(`https://${DOMAIN}/loadStyle/${themeName}`, {
             method: 'GET',
             headers: {
                 "Accept": "text/css"
@@ -16,4 +16,4 @@ async function loadTheme(themeName) {
     } catch (error) {
         console.error('Error fetching the CSS file:', error);
     }
-};
+}

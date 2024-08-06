@@ -65,7 +65,7 @@ function readJson(file, req, res) {
  * @param {string|object} data - The data to be deleted, edited or append . 
  * If `opt` is 0, it should be a string representing the key to be deleted.
  * If `opt` is 1, it should be an object containing the key-value pairs to be edited.
- * If `opt` is 2, it should be an object containing the key-value pairs to be appended
+ * If `opt` is 2, it should be an object containing the key-value pairs to be appended or Enclosed Object
  * @returns {void}
  */
 function editJsonFile(path, opt, data) {
@@ -77,8 +77,19 @@ function editJsonFile(path, opt, data) {
                 delete Input[`${data}`]
             }
         } else if (opt === 1 && typeof data === 'object') {
-            // Edit Data
-            Input[data[0]] = data[1];
+            const keyToWrite = data[0];
+            // Check if Data is Enclosed object
+            if (typeof data[1] === 'boolean' || typeof data[1] === 'number' || typeof data[1] === 'string' && data[1].includes("{") === false) {
+                // Edit Single key Data
+                Input[keyToWrite] = data[1];
+            } else if (typeof JSON.parse(data[1]) === 'object') {
+                const Config = JSON.parse(data[1]);
+                for (const key in Config) {
+                    if (Object.hasOwnProperty.call(Config, key)) {
+                        Input[keyToWrite][key] = Config[key];
+                    };
+                };
+            }
         } else if (opt === 2 && typeof data === 'object') {
             // append Data
             Input.push(data);
@@ -90,7 +101,7 @@ function editJsonFile(path, opt, data) {
         // Write it back
         fs.writeFile(path, JSON.stringify(Input), 'utf8', (err) => {
             if (err) throw err;
-            console.log(`Data of file:${path} updated successfully`);
+            console.log(`Data of file:${path} updated successfully in ['${data[0]}']`);
         });
     });
 }

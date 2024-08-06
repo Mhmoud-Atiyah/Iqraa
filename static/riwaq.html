@@ -9,220 +9,242 @@
     <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="style/fonts.css">
     <link rel="stylesheet" href="style/riwaq.css">
+    <link rel="stylesheet" href="style/responsive/riwaqRes.css">
 </head>
 
 <body>
-    <!-- Header -->
-    <header dir="ltr">
-        <nav class="navbar navbar-expand-md">
-            <div class="container-fluid">
-                <div class="navbar-collapse">
-                    <ul id="secondry-nav" class="navbar-nav mb-2 ms-3 mb-md-0">
-                        <!-- TODO: -->
-                        <!-- هنا معلومات عن الكتاب او احصائبات عن الموضوع وشوية زراير زي الوصول للكتاب وزرار ايقونة للمولف -->
-                        <!-- أو لو مش كتاب نحط هنا نقط او نوتس للحوار -->
-                    </ul>
-                </div>
-                <!-- User Profile -->
-                <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
+<!-- Header -->
+<header dir="ltr">
+    <nav class="navbar navbar-expand-md">
+        <div class="container-fluid">
+            <div class="navbar-collapse">
+                <ul id="secondary-nav" class="navbar-nav ms-3">
+                    <!-- TODO: -->
+                    <!-- هنا معلومات عن الكتاب او احصائبات عن الموضوع وشوية زراير زي الوصول للكتاب وزرار ايقونة للمولف -->
+                    <!-- أو لو مش كتاب نحط هنا نقط او نوتس للحوار -->
+                </ul>
+            </div>
+            <!-- User Profile -->
+            <span class="align-items-right fw-bold ms-1" aria-expanded="false" style="user-select: none;">
                     <strong id="profile-name" class="me-1" style="letter-spacing: 1px;"></strong>
                     <img id="profile-pic" width="32" height="32" class="rounded-circle">
                 </span>
-                <!-- Session's Users -->
-                <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
+            <!-- Session's Side -->
+            <span class="align-items-right ms-3 me-1 cursorBt headerBt" aria-expanded="false">
+                    <i class="fa-solid fa-users-viewfinder" id="SessionSideBt"></i>
+                </span>
+            <!-- Academy Mode -->
+            <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
+                    <i class="fa-solid fa-building-columns" id="AcademyModeBt"></i>
+                </span>
+            <!-- Session's Info -->
+            <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
+                    <i class="fa-solid fa-qrcode" id="SessionInfoBt"></i>
+                </span>
+            <!-- Session's Users -->
+            <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
                     <i class="fa-solid fa-user-group" id="users-icon"></i>
-                    <!-- Session's Users Window -->
+                <!-- Session's Users Window -->
                     <div id="conversationUsers" class="rounded col-md-12">
                         <!-- TODO: Put id of user as attribute on div of user to open as sparate for viewing-->
                         <!-- PlaceHolder for Users -->
                     </div>
                 </span>
-                <!-- Session's Side -->
-                <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
-                    <i class="fa-solid fa-users-viewfinder" id="SessionSideBt"></i>
-                </span>
-                <!-- User's Microphone -->
-                <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
+            <!-- User's Microphone -->
+            <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
                     <i class="" id="microphone-icon"></i> </span>
-                <!-- User's Camera -->
-                <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
+            <!-- User's Camera -->
+            <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
                     <i class="fa-solid fa-video-slash" id="camera-icon"></i> </span>
-                <!-- User's Speaker -->
-                <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
+            <!-- User's Speaker -->
+            <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
                     <i class="" id="speaker-icon"></i></span>
-                <!-- Academy Mode -->
-                <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
-                    <i class="fa-solid fa-building-columns" id="AcademyModeBt"></i>
-                </span>
-                <!-- Session's Info -->
-                <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
-                    <i class="fa-solid fa-qrcode" id="SessionInfoBt"></i>
-                </span>
-            </div>
-        </nav>
-    </header>
-    <!--  Main View -->
-    <div id="main">
-        <!-- Coversation Data -->
-        <div id="Side">
-            <div id="myScreen">
-                <!--TODO: put COntrols of which part to share on top of screen and MAX button to maximize screen to conversation part-->
-                <!--TODO: put COntrols like speaker and signal of whom speak on left bottom-->
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYGw5HM5arri3W9eu6vgh-Nz7VpIoUQMxR5un-pluXFdbhNTwGIcIMNXivxK3kT-HPEAw&usqp=CAU"
-                    alt="" srcset="">
-            </div>
-            <div id="otherScreen">
-                <!--TODO: put COntrols of MAX button to maximize screen to conversation part in case of Course-->
-                <!-- TODO: on academy mode ==> Add video player controls to video over Conversation 
-                            as above layer with X button 
-                            and the side will roadmap of course-->
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYGw5HM5arri3W9eu6vgh-Nz7VpIoUQMxR5un-pluXFdbhNTwGIcIMNXivxK3kT-HPEAw&usqp=CAU"
-                    alt="" srcset="" style="transform: scaleX(-1);filter: grayscale(77%);">
-            </div>
-            <div id="SessionNotes">
-                <!-- TODO: put related Data -->
-            </div>
+            <!-- App Dark Mode -->
+            <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
+                <i id="theme-icon" class="#"></i></span>
+            <!-- App Connection Status -->
+            <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
+                <i id="status-icon" style="transform: scaleX(-1);" class="#"></i></span>
+            <!-- Exit Session Button -->
+            <span class="align-items-right ms-3 me-1 cursorBt headerBt" id="SessionExitBt" aria-expanded="false"
+                  style="display: none">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
         </div>
-        <!-- Conversation -->
-        <div id="mainSide">
-            <!-- List of Conversation Items -->
-            <div id="conversation" class="col-md-8">
-                <!-- TODO: Create graph like tree or ring attach all cards -->
-                <div id="conversationChat">
-                    <div class="chatUser rounded">
+    </nav>
+</header>
+<!--  Main View -->
+<div id="main">
+    <!-- Conversation Data -->
+    <div id="Side">
+        <div id="myScreen">
+            <!--TODO: put CControls of which part to share on top of screen and MAX button to maximize screen to conversation part-->
+            <!--TODO: put CControls like speaker and signal of whom speak on left bottom-->
+            <img src="assets/riwaq_profile.png" class="rounded p-4 mt-2 sideScreenProfile" alt="">
+            <video id="myScreenVideo" autoplay></video>
+        </div>
+        <div id="otherScreen">
+            <!--TODO: put Controls of MAX button to maximize screen to conversation part in case of Course-->
+            <!-- TODO: on academy mode ==> Add video player controls to video over Conversation
+                        as above layer with X button
+                        and the side will roadmap of course-->
+            <img src="assets/riwaq_profile.png" class="rounded p-4 mt-2 sideScreenProfile" alt="">
+        </div>
+        <div id="SessionNotes">
+            <!-- TODO: put related Data -->
+        </div>
+    </div>
+    <!-- Conversation -->
+    <div id="mainSide">
+        <!-- List of Conversation Items -->
+        <div id="conversation" class="col-md-8">
+            <!-- TODO: Create graph like tree or ring attach all cards -->
+            <div id="conversationChat">
+                <div class="chatUser rounded">
                         <span>
                             <img class="chatImg" src="https://bootdey.com/img/Content/user_3.jpg" alt="user Name">
                         </span>
-                        <!-- TODO: add buttons for edit and move this card -->
-                        <div class="chatBody rounded">
-                            <strong class="chatUserName">سامي سعدالدين</strong>
-                            <p class="commentArea border rounded"> شوية كلام فاضي شوية كلام فاضي شوية كلام فاضي شوية
-                                كلام فاضي شوية كلام فاضي شوية كلام فاضي شوية كلام فاضي </p>
-                            <span class="chatUserTime">
+                    <!-- TODO: add buttons for edit and move this card -->
+                    <div class="chatBody rounded">
+                        <strong class="chatUserName">سامي سعدالدين</strong>
+                        <p class="commentArea border rounded"> شوية كلام فاضي شوية كلام فاضي شوية كلام فاضي شوية
+                            كلام فاضي شوية كلام فاضي شوية كلام فاضي شوية كلام فاضي </p>
+                        <span class="chatUserTime">
                                 <i class="fa fa-clock-o"></i>
                                 منذ 12 دقيقة
                             </span>
-                        </div>
                     </div>
                 </div>
             </div>
-            <!-- Messenger Input -->
-            <div id="messageInput">
-                <div id="messageInput_" class="rounded">
-                    <!-- Inpput Text -->
-                    <span id="messageInputText">
+        </div>
+        <!-- Messenger Input -->
+        <div id="messageInput">
+            <div id="messageInput_" class="rounded ps-1 pe-1">
+                <!-- Input Text -->
+                <span id="messageInputText">
                         <input id="messageInputText_in" type="text" class="rounded" placeholder="تعليقك !">
                     </span>
-                    <!-- Emoji, Poll and Files(Doc,Pic,Sound) Buttons -->
-                    <div id="messageInput_buttons" class="rounded">
-                        <!-- Emoji Picker Button -->
-                        <span class="cursorBt ms-1" id="messageInputEmoji">
+                <!-- Emoji, Poll and Files(Doc,Pic,Sound) Buttons -->
+                <div id="messageInput_buttons" class="rounded">
+                    <!-- Emoji Picker Button -->
+                    <span class="cursorBt ms-1" id="messageInputEmoji">
                             <i class="fa-solid fa-face-smile"></i>
-                            <!-- TODO: Make An Arabic Support -->
+                        <!-- TODO: Make An Arabic Support -->
                             <emoji-picker class="emoji-picker dark" id="emoji-picker" dir="ltr"></emoji-picker>
                         </span>
-                        <!-- Poll Button -->
-                        <span class="cursorBt ms-1" id="messageInputPoll">
+                    <!-- Poll Button -->
+                    <span class="cursorBt ms-1" id="messageInputPoll">
                             <i class="fa-solid fa-square-poll-horizontal"></i>
                         </span>
-                        <!-- Add File Button -->
-                        <span class="cursorBt" id="messageInputAdd">
+                    <!-- Add File Button -->
+                    <span class="cursorBt" id="messageInputAdd">
                             <i class="fa-solid fa-circle-plus"></i>
                             <input class="form-control" type="file" style="display: none;" id="messageInputAddFile">
                         </span>
-                    </div>
-                    <!-- Voice and Video Message -->
-                    <div id="messageMicVid_buttons" class="rounded">
-                        <!-- Voice Message Button -->
-                        <span class="cursorBt me-2" id="#">
-                            <i class="fa-solid fa-microphone"></i>
+                </div>
+                <!-- Voice and Video Message -->
+                <div id="messageMicVid_buttons" class="rounded">
+                    <!-- Voice Message Button -->
+                    <span class="cursorBt me-2" id="messageMic_button">
+                            <i class="fa-solid fa-microphone" style="color: #ff4e44"></i>
                         </span>
-                        <!-- Video Message Button -->
-                        <span class="cursorBt" id="#">
+                    <!-- Video Message Button -->
+                    <span class="cursorBt" id="messageVid_button">
                             <i class="fa-solid fa-camera"></i>
                         </span>
-                    </div>
+                    <!-- Voice Message Input -->
+                    <span id="messageMicModal" class="rounded"></span>
                 </div>
             </div>
         </div>
     </div>
-    <!--  initiate Session -->
-    <!-- TODO: The Session Creator Will have more permissions like mute all parties and so on 
-       and all data about session will be on info screeb up beside the join data-->
-    <div id="initSession" class="rounded">
-        <!-- Book Name -->
-        <div class="container">
-            <div class="row align-items-start">
-                <div class="mb-3 col">
-                    <label for="BookName" class="form-label fw-bold me-1 fs-4"
-                        style="color: var(--App-textColor);word-spacing: 3px;">اسم
-                        الكتاب</label>
-                    <input type="text" class="form-control required" id="BookName" placeholder="اسم الكتاب"
-                        style="font-family: Arial, Helvetica, sans-serif;">
-                </div>
+</div>
+<!--  initiate Session -->
+<div id="initSession" class="rounded">
+    <!-- Book Name Or Title -->
+    <div class="container" id="BookNameField">
+        <div class="row align-items-start">
+            <div class="mb-1 col">
+                <label for="BookName" class="form-label fw-bold me-1 fs-4"
+                       style="color: var(--App-textColor);word-spacing: 3px;">عنوان المناقشة أو الكتاب</label>
+                <input type="text" class="form-control required" id="BookName" placeholder="عنوان اكثر من ٣ حروف">
             </div>
         </div>
-        <!-- Session Title -->
-        <div class="container">
-            <div class="row align-items-start">
-                <div class="mb-3 col">
-                    <label for="BookName" class="form-label fw-bold me-1 fs-4"
-                        style="color: var(--App-textColor);word-spacing: 3px;">عنوان المناقشة أو الرقم
-                        التعريفي</label>
-                    <input type="text" class="form-control required" id="BookName"
-                        placeholder="الرقم التعريفي (الانضمام)" style="font-family: Arial, Helvetica, sans-serif;">
-                </div>
+    </div>
+    <!-- Session id -->
+    <div class="container" id="sessionIdField">
+        <div class="row align-items-start">
+            <div class="mb-3 col">
+                <label for="BookName" class="form-label fw-bold me-1 fs-4"
+                       style="color: var(--App-textColor);word-spacing: 3px;">الرقم التعريفي</label>
+                <input type="text" class="form-control required" id="sessionId"
+                       placeholder="الرقم التعريفي" style="font-family: GilroyLight, serif;">
             </div>
         </div>
-        <!-- Modal Buttons -->
-        <div class="container pb-2" id="initModal">
-            <a class="btn fw-bold border rounded ms-2 me-1 initModalBt" href="#" id="initSessionBt">البدأ</a>
-            <a class="btn fw-bold border rounded initModalBt" href="#" id="joinSessionBt">الانضمام</a>
-        </div>
-
     </div>
-    <!-- Markers and Highlighter -->
-    <div id="markers" class="rounded">
-        <div class="align-items-right cursorBt rounded" id="markersBt">
-            <i class="fa-solid fa-pen-nib" id="markersIcon"></i>
-            <!-- Markers and Highlighter Window -->
-        </div>
-        <div id="markersList" class="rounded col-md-12">
-            <!-- Normal Pen_1 -->
-            <span class="markerPen cursorBt"><i class="fa-solid fa-pen markerPenRotate"></i></span>
-            <!-- Normal Pen_2 -->
-            <span class="markerPen cursorBt"><i class="fa-solid fa-pen markerPenRotate"></i></span>
-            <!-- Highlighter Pen -->
-            <span class="markerPen cursorBt"><i class="fa-solid fa-highlighter markerPenRotate"></i></span>
-            <!-- Shape Creator -->
-            <span class="markerPen cursorBt"><i class="fa-solid fa-square"></i></span>
-            <!-- Eraser -->
-            <span class="markerPen cursorBt"><i class="fa-solid fa-eraser"></i></span>
-            <!-- Text -->
-            <span class="markerPen cursorBt"><i class="fa-solid fa-font"></i></span>
-        </div>
-
+    <!-- Modal Buttons -->
+    <div class="container pb-2" id="initModal">
+        <div class="btn fw-bold border rounded ms-2 me-1 initModalBt" id="initSessionBt">البدأ</div>
+        <div class="btn fw-bold border rounded initModalBt" id="joinSessionBt">الانضمام</div>
     </div>
-    <!--  initBt -->
-    <div id="initBt" class="btn fs-5 fw-bold rounded">
-        <i class="fa-solid fa-users" style="position:relative;top:2px" id="initIcon"></i>
+</div>
+<!-- Markers and Highlighter -->
+<div id="markers" class="rounded">
+    <div class="align-items-right cursorBt rounded" id="markersBt">
+        <i class="fa-solid fa-pen-nib" id="markersIcon"></i>
+        <!-- Markers and Highlighter Window -->
     </div>
-    <!-- External Scripts -->
-    <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="JS/components.js"></script><!-- Dark Mode and Themes -->
-    <script src="JS/misc.js"></script><!-- Helpful Routines -->
-    <script src="JS/theme.js"></script><!-- Dark Mode and Themes -->
-    <script src="JS/riwaq.js" type="module"></script><!-- Dark Mode and Themes -->
+    <div id="markersList" class="rounded col-md-12">
+        <!-- Normal Pen_1 -->
+        <span class="markerPen cursorBt"><i class="fa-solid fa-pen markerPenRotate"></i></span>
+        <!-- Normal Pen_2 -->
+        <span class="markerPen cursorBt"><i class="fa-solid fa-pen markerPenRotate"></i></span>
+        <!-- Highlighter Pen -->
+        <span class="markerPen cursorBt"><i class="fa-solid fa-highlighter markerPenRotate"></i></span>
+        <!-- Shape Creator -->
+        <span class="markerPen cursorBt"><i class="fa-solid fa-square"></i></span>
+        <!-- Eraser -->
+        <span class="markerPen cursorBt"><i class="fa-solid fa-eraser"></i></span>
+        <!-- Text -->
+        <span class="markerPen cursorBt"><i class="fa-solid fa-font"></i></span>
+    </div>
 
+</div>
+<!--  initBt -->
+<div id="initBt" class="btn fs-5 fw-bold rounded">
+    <i class="fa-solid fa-users" id="initIcon"></i>
+</div>
+<!-- Secondary Window -->
+<div id="SecondaryWindow" class="rounded">
+    <span id="SecondaryWindowHeader"><span id="SecondaryWindowHeader_"></span></span>
+    <span id="SecondaryWindowBody"></span>
+    <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
+</div>
+<!-- External Scripts -->
+<script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+<script src="JS/components.js"></script><!-- Dark Mode and Themes -->
+<script src="JS/misc.js"></script><!-- Helpful Routines -->
+<script src="JS/theme.js"></script><!-- Dark Mode and Themes -->
+<script src="JS/SecondaryWindow.js"></script><!-- SecondaryWindow -->
+<script src="JS/header.js"></script><!-- Top Header -->
+<script src="JS/riwaq.js" type="module"></script><!-- Dark Mode and Themes -->
 </body>
 
 
+<!--
 
-<!-- 
+design Database for Riwaq
 
 هتعمل الرسالة html and css
 
 -->
+<!-- TODO: The Session Creator Will have more permissions like mute all parties and so on and all data about session will be on info screeb up beside the join data-->
 
+<!-- Graphing
+https://visjs.org/
+-->
 
+<!-- RTP Project
+https://github.com/pjsip/pjproject?tab=readme-ov-file
+-->
 </html>

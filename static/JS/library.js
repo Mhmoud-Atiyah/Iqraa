@@ -63,18 +63,18 @@ library.MM_Bt.onclick = () => {
 }
 // Main Routine On start
 window.onload = () => {
-    getData("loadConfig").then((config) => { // Global Config not User Config
+    getData(`loadConfig/${ID}`).then((config) => { // Global Config not User Config
         /* Dark mode setting */
-        if (config.mode === "dark") { // Now is Dark
+        if (config.thememode === "dark") { // Now is Dark
             loadTheme("darkTheme");
         } else {    // Now is Light
             loadTheme("lightTheme");
         }
         // Current User Data
-        if (config.librarynew === "true") { // First look Library
+        if (config.newlibrary) { // First look Library
             let element =
                 `
-                <div class="newSection position-relative overflow-hidden m-md-2 text-center rounded" style="border: solid 1px var(--App-panelBorderColor);">
+                <div class="newSection position-relative overflow-hidden m-md-2 text-center rounded p-4" style="border: solid 1px var(--App-panelBorderColor);font-family: Moharram, serif">
                     <div class="col-md-5 p-lg-5 mx-auto" style="letter-spacing: 1px;">
                         <h1 class="text-warning" style="font-family: DecorationFont2;"> وأرضك من حلي التاريخ رق<br> سماؤك من حلى الماضي كتاب</h1>
                         <h1 class="display-4 fw-normal">ما زالت المكتبة <span class="text-danger">فارغة</span></h1>
@@ -89,7 +89,7 @@ window.onload = () => {
             Div.innerHTML = element;
             mainView.append(Div);
         };
-        accountBt.innerText = config.firstName + " " + config.lasttName;
+        accountBt.innerText = config.fname + " " + config.lname;
         profileBt.src = config.profile;
         profileBt.alt = config.account;
     })
@@ -116,7 +116,7 @@ window.onload = () => {
     // /* Open Book */
     // for (let index = 0; index < openBookBt.length; index++) {
     //     openBookBt[index].onclick = () => {
-    //         window.IPC.openBookWindow(openBookBt[index].getAttribute("data-id"));
+    //         window.IPC.openBookWindow(openBookBt[index].getAttribute("data-id"),ID);
     //     }
     // }
 }

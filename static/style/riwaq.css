@@ -1,9 +1,9 @@
 body {
-    font-family: arbicNormal;
+    font-family: arbicNormal, serif;
 }
 
 input {
-    font-family: TheYearofTheCamelLight;
+    font-family: TheYearofTheCamelLight, serif;
 }
 
 .cursorBt {
@@ -19,7 +19,6 @@ header {
 }
 
 #conversationUsers {
-    display: none;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -55,7 +54,6 @@ header {
 }
 
 .conversationUserTitle {
-    display: block;
     display: flex;
     flex-direction: column;
     font-family: Arial, Helvetica, sans-serif;
@@ -137,7 +135,7 @@ header {
 #initSession,
 #initLibrary {
     position: absolute;
-    z-index: 1;
+    z-index: 3;
     left: 20px;
     bottom: 60px;
     height: auto;
@@ -146,25 +144,32 @@ header {
     border: solid 1px var(--App-panelBorderColor);
     animation-name: initSessionModal;
     animation-duration: 2s;
+    font-family: Moharram, serif;
 }
 
 @keyframes initSessionModal {
     from {
         bottom: -270px
     }
-
-    to {
-        bottom: 60px;
-    }
 }
 
 #initBt {
     display: block;
     position: fixed;
+    z-index: 1;
     bottom: 10px;
     left: 20px;
     background-color: var(--App-navBgColor);
     border: solid 1px var(--App-panelBorderColor);
+}
+
+#initIcon {
+    position: relative;
+    top: 2px
+}
+
+#BookName {
+    font-family: GilroyLight
 }
 
 .fa-microphone {
@@ -175,25 +180,26 @@ header {
 #main {
     display: block;
     position: relative;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
 }
 
 #mainSide {
     display: block;
     position: relative;
-    bottom: 0px;
-    right: 0px;
+    bottom: 0;
+    right: 0;
 }
 
 #Side {
     display: block;
+    flex-direction: column;
     height: 100%;
     width: 220px;
     position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 220px;
+    top: 0;
+    left: 0;
+    z-index: 1;
     background-color: var(--App-navBgColor);
     border-right: solid 1px var(--App-panelBorderColor);
 }
@@ -201,13 +207,13 @@ header {
 #conversation {
     display: block;
     position: relative;
-    top: 0px;
-    left: 0px;
-    font-family: TheYearofTheCamelLight;
+    top: 0;
+    left: 0;
+    font-family: TheYearofTheCamelLight, serif;
 }
 
 #conversationChat {
-    position: relative;
+    position: absolute;
     top: 22%;
     right: 22%;
     display: block;
@@ -253,9 +259,9 @@ header {
     display: inline-block;
     height: 20px;
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     right: 12px;
-    font-family: TheYearofTheCamelBold;
+    font-family: TheYearofTheCamelBold, serif;
     font-size: 14px;
     color: var(--App-panelBorderColor);
 }
@@ -264,11 +270,12 @@ header {
     display: block;
     height: 60px;
     position: relative;
-    bottom: 0px;
-    left: 0px;
+    z-index: 2;
+    bottom: 0;
+    left: 0;
     background-color: var(--App-panelBgColor);
     border-top: solid 1px var(--App-panelBorderColor);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: GilroyLight, serif;
     font-size: 22px;
     /* TODO: Set Font for Inputs */
 }
@@ -296,6 +303,18 @@ header {
     position: relative;
     top: 5px;
     right: 7px;
+}
+
+#messageMicModal {
+    display: block;
+    height: 50px;
+    width: 300px;
+    position: relative;
+    top: -110px;
+    right: -10px;
+    background-color: var(--App-panelBgColor);
+    border: solid 1px var(--App-panelBorderColor);
+    box-shadow: 0 2px 4px var(--App-panelBorderColor);
 }
 
 #messageInputText_in {
@@ -339,19 +358,20 @@ header {
 
 #myScreen {
     display: block;
-    height: 200px;
+    height: 180px;
     width: 100%;
     position: relative;
-    top: 0px;
-    left: 0px;
-    background-color: red;
+    top: 0;
+    left: 0;
+    background-color: var(--App-panelBgColor);
 }
 
-#myScreen img,
-#otherScreen img {
+#myScreenVideo,
+#otherScreen video {
     display: block;
-    height: 200px;
+    height: 100%;
     width: 100%;
+    position: relative;
 }
 
 #otherScreen {
@@ -359,7 +379,17 @@ header {
     height: 100px;
     width: 100%;
     position: relative;
-    top: 0px;
+    top: 0;
+}
+
+.sideScreenProfile {
+    position: relative;
+    height: 180px;
+    width: 210px;
+    right: 5px;
+    filter: grayscale(77%);
+    border: solid 1px var(--App-panelBorderColor);
+    box-shadow: 0 2px 4px var(--App-panelBorderColor);
 }
 
 #SessionNotes {
@@ -367,7 +397,7 @@ header {
     height: auto;
     width: 100%;
     position: relative;
-    top: 0px;
+    top: 0;
     overflow-x: hidden;
     overflow-y: scroll;
 }

@@ -89,8 +89,33 @@ function checkOnline() {
     });
 }
 
+/**
+ * Retrieves the IPv4 address of the current machine.
+ * @returns {string} The IPv4 address.
+ */
+function getIPAddress() {
+    const os = require('os');
+    const interfaces = os.networkInterfaces();
+
+    // Iterate over network interfaces
+    for (const key of Object.keys(interfaces)) {
+        const iface = interfaces[key];
+
+        // Iterate over addresses of the interface
+        for (const address of iface) {
+            // Check for IPv4 and non-internal address
+            if (address.family === 'IPv4' && !address.internal) {
+                return address.address;
+            }
+        }
+    }
+
+    // If no valid address found
+    return 'Unable to retrieve IP address';
+}
 module.exports = {
     portListening,
     setAirplaneMode,
-    checkOnline
+    checkOnline,
+    getIPAddress
 }

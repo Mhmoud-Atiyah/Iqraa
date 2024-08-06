@@ -8,89 +8,8 @@
     <link rel="icon" href="assets/book-open-reader-solid.svg">
     <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
-    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/sign.css">
     <link rel="stylesheet" href="style/fonts.css">
-    <style>
-        #signWindow {
-            display: block;
-            position: absolute;
-            top: 10%;
-            right: 10%;
-            border-radius: 1rem;
-            border: solid 1px var(--App-panelBorderColor);
-            background-color: var(--App-footerBgColor);
-            color: var(--App-textColor);
-        }
-
-        #login_wall {
-            width: 40%;
-        }
-
-        #signForm {
-            position: relative;
-            display: block;
-            width: 55%;
-            border-top-right-radius: 1rem;
-            border-bottom-right-radius: 1rem;
-        }
-
-        .form-control,
-        .form-select,
-        .form-check-input,
-        option {
-            color: var(--App-textColor);
-            user-select: none;
-            font-size: 20px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            word-spacing: 2px;
-            cursor: text;
-        }
-
-        #signProfile {
-            display: block;
-            text-align: center;
-        }
-
-        #passwordIcon {
-            display: block;
-            /* Note: height zero for remeber me Button span */
-            height: 0px;
-            cursor: pointer;
-            font-size: 18px;
-            position: relative;
-            float: left;
-            top: -28px;
-            left: 14px;
-            color: var(--App-textColor);
-        }
-
-        .divider:after,
-        .divider:before {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: var(--App-textColor);
-        }
-
-        .alert {
-            position: fixed;
-            height: 50px;
-            line-height: 1em;
-            left: 50%;
-            bottom: -5px;
-            transform: translateX(-50%);
-            font-size: 24px;
-            word-spacing: 2px;
-            letter-spacing: 1px;
-            z-index: 1;
-        }
-
-        .alert span {
-            position: relative;
-            top: -5px;
-        }
-    </style>
 </head>
 
 <body>
@@ -100,8 +19,7 @@
         <div class="container">
             <div class="row">
                 <div>
-                    <img height="100%" src="assets/login_wall.jpg" id="login_wall"
-                        style="border-radius: 1rem 0 0 1rem;position: absolute;left: 0px;" />
+                    <img height="100%" src="assets/login_wall.jpg" id="login_wall" />
                 </div>
                 <div id="signForm" class="pt-3 me-3">
                     <!-- Placeholder for Sign Form -->
@@ -140,18 +58,19 @@
                         <div class="row mb-3 m-0">
                             <button type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="loginBt"
                                 class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
-                                style="word-spacing: 2px;text-align: center;font-size: 22px;background-color: var(--App-panelBorderColor);"
+                                style="word-spacing: 2px;text-align: center;font-size: 22px;background-color: var(--App-panelBorderColor); color: var(--App-textColor);"
                                 aria-pressed="true">تسجيل الدخول</button>
 
                         </div>
                         <!-- Or Divider -->
                         <div class="divider d-flex align-items-center mb-3">
-                            <p class="text-center fw-bold mx-3 mb-0 text-muted"
-                                style="font-size: 22px;letter-spacing: 2px;">أو</p>
+                            <p class="text-center fw-bold mx-3 mb-0" style="font-size: 22px;letter-spacing: 2px;">أو</p>
                         </div>
                         <!-- Manual sign up -->
                         <div class="row mb-2">
                             <div class="col">
+                                <!-- TODO: make it <a> tag -->
+                                <a href="signup.html" style="position: absolute;width: 100%;height: 45px"></a>
                                 <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpBt"
                                     class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
                                     style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
@@ -163,7 +82,7 @@
                             </div>
                         </div>
                         <!-- Sign up Use 3rd=party -->
-                        <div class="row mb-2">
+                        <div class="row mb-2" id="signUpBt3rd">
                             <div class="col">
                                 <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpGoogleBt"
                                     class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
@@ -189,7 +108,6 @@
         </div>
     </div>
     <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../preload.js"></script>
     <script src="JS/components.js"></script>
     <script src="JS/misc.js"></script>
     <script src="JS/theme.js"></script>

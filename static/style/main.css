@@ -18,8 +18,8 @@ input[type=number]::-webkit-inner-spin-button {
 
 ul {
     list-style-type: none;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 .cursorBt {
@@ -27,41 +27,73 @@ ul {
 }
 
 body {
-    font-family: arbicNormal;
+    font-family: arbicNormal, serif;
     display: block;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     height: 100%;
     width: 100%;
 }
 
-header {
+#header {
+    display: block;
     position: fixed;
-    margin-bottom: 100px;
+    top: 0;
+    right: 0;
+    height: 50px;
     width: 100%;
-    z-index: 1;
-    font-size: 18px;
-    border-bottom: solid 1px var(--App-panelBorderColor);
+    padding: 5px 10px 5px 5px;
+    background-color: var(--App-panelBgColor);
+    color: var(--App-textColor);
+    border: solid 1px var(--App-panelBorderColor);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
-
+#headerRight {
+    float: right;
+}
 #theme-icon {
-    font-size: 20px;
+    font-size: 16px;
     padding-top: 10px;
 }
 
 #status-icon {
-    font-size: 20px;
+    font-size: 16px;
     padding-top: 10px;
     transform: scaleX(-1);
 }
-
+#profile-pic {
+    display: inline;
+    position: relative;
+    top: -3px;
+    height: 32px;
+    width: 32px;
+}
+#addBookBt {
+    font-size: 18px;
+    display: block;
+    font-family: Moharram, serif;
+    height: 36px;
+    width: 80px;
+    margin-top: 2px;
+}
+#searchBt i{
+    font-size: 18px;
+    color: var(--App-panelBgColor);
+    position: relative;
+    top: 5px;
+    z-index: 1;
+}
 #search-input {
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-    width: 300px;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    height: 36px;
+    margin-top: 2px;
     direction: rtl;
     text-indent: 15px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: GilroyLight, serif;
 }
 
 #search-inputList {
@@ -112,7 +144,6 @@ header {
 .search-inputListItem a {
     display: inline-block;
     font-size: 18px;
-    display: block;
     margin-bottom: 8px;
     margin-right: 10px;
     color: var(--App-textColor);
@@ -123,7 +154,7 @@ header {
     text-decoration: underline;
 }
 
-#secondry-nav {
+#secondary-nav {
     direction: rtl;
     width: 600px;
     overflow-x: scroll;
@@ -131,8 +162,8 @@ header {
     line-height: 2em;
 }
 
-.secondry-nav-item {
-    font-family: TheYearofTheCamelBold;
+.secondary-nav-item {
+    font-family: TheYearofTheCamelBold, serif;
     font-size: 16px;
     margin-left: 5px;
     padding-right: 4px;
@@ -142,7 +173,7 @@ header {
 #main {
     display: block;
     position: relative;
-    right: 0px;
+    right: 0;
     top: 60px;
     width: 100%;
     overflow-x: hidden;
@@ -159,39 +190,56 @@ header {
 #nav {
     display: block;
     position: fixed;
+    right: 35%;
     bottom: 4px;
-    margin-right: 25%;
     border-radius: 10px;
     height: 60px;
-    width: 750px;
-    padding-right: 25px;
+    width: 30%;
+    padding-right: 20px;
     border: solid 1px var(--App-panelBorderColor);
 }
 
 #current {
-    position: relative;
-    top: -105px;
-    left: 5px;
+    position: absolute;
+    top: -70px;
+    right: 36%;
     border-radius: 6px;
-    height: 150px;
-    width: 150px;
-}
-
-.nav-bt {
-    display: block;
-    font-size: 28px;
-    text-align: center;
-    letter-spacing: 2px;
+    height: 120px;
+    width: 22%;
+    z-index: 1;
 }
 
 .navBt {
+    font-size: 28px;
+    text-align: center;
+    letter-spacing: 2px;
     height: 45px;
-    width: auto;
+    width: 20%;
     border-radius: 2px;
 }
 
-.navBt:nth-child(5) {
-    margin-right: 105px;
+.navBt:nth-child(1) {
+    width: 15%;
+}
+
+.navBt:nth-child(2) {
+    width: 18%;
+    margin-left: 19%;
+}
+
+.navBt:nth-child(3) {
+    position: relative;
+    right: 5%;
+    margin-left: 3%;
+}
+
+.navBt:nth-child(4) {
+    position: relative;
+    right: 1.5%;
+}
+
+.navBt:hover {
+    border-radius: 5px;
 }
 
 #settings {
@@ -206,12 +254,10 @@ header {
     position: absolute;
     z-index: 1;
     top: 15%;
-    /* right: 30%; */
     color: var(--App-textColor);
     background-color: var(--App-panelBgColor);
     border: solid 1px var(--App-secondaryTextColor);
-    height: auto;   
-    width: auto;
+    height: auto;
     max-width: 70%;
     animation-name: fadeInOpacity;
     animation-iteration-count: 1;
@@ -242,7 +288,7 @@ header {
 #SecondaryWindowHeader span {
     position: relative;
     top: -10px;
-    font-family: Moharram;
+    font-family: Moharram, serif;
     font-size: 28px;
     word-spacing: 2px;
 }
@@ -259,7 +305,7 @@ header {
 #SecondaryWindowBt span {
     background-color: var(--App-panelBorderColor);
     position: relative;
-    font-family: TheYearofTheCamelBold;
+    font-family: TheYearofTheCamelBold, serif;
     font-size: 18px;
     padding: 8px 15px 5px 15px;
     user-select: none;
@@ -275,7 +321,7 @@ header {
     padding: 10px;
     margin-bottom: 55px;
     color: var(--App-textColor);
-    font-family: TheYearofTheCamelBold;
+    font-family: TheYearofTheCamelBold, serif;
     word-spacing: 2px;
     font-size: 16px;
 }
@@ -297,7 +343,7 @@ header {
     padding: 0 0.1rem;
 }
 
-.rating input:checked~label,
-.rating label:hover~label {
+.rating input:checked ~ label,
+.rating label:hover ~ label {
     color: #f5b301;
 }

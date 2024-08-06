@@ -3,7 +3,7 @@
 //---------------------------------------------------------
 const mainView = document.getElementById("main");
 const userSection = document.getElementsByClassName("mySection");
-const showOptions = document.getElementById("secondry-nav");// Tags
+const showOptions = document.getElementById("secondary-nav");// Tags
 const read_Bt = document.getElementById("read");
 const statusBt = document.getElementById("status-icon");
 const Dock = document.getElementById("nav");
@@ -40,6 +40,7 @@ const book_view = {
     cover: document.getElementById("book_view_cover"),
     title: document.getElementById("book_view_title"),
     pagesCount: document.getElementById("book_view_pagesCount"),
+    readCount: document.getElementById("book_view_readCount"),
     pubDate: document.getElementById("book_view_pubDate"),
     ratingStars: document.getElementsByClassName("ratingBt"),
     rating: document.getElementById("book_view_rating"),
@@ -57,7 +58,14 @@ const book_view = {
 const riwaq = {
     initBt: document.getElementById("initBt"),
     initModal: document.getElementById("initSession"),
+    initSessionBt: document.getElementById("initSessionBt"),
+    joinSessionBt: document.getElementById("joinSessionBt"),
+    SessionExitBt: document.getElementById("SessionExitBt"),
     initIcon: document.getElementById("initIcon"),
+    BookNameInput: document.getElementById("BookName"),
+    BookNameField: document.getElementById("BookNameField"),
+    sessionIdInput: document.getElementById("sessionId"),
+    sessionIdField: document.getElementById("sessionIdField"),
     markersBt: document.getElementById("markersBt"),
     markersModal: document.getElementById("markersList"),
     markersIcon: document.getElementById("markersIcon"),
@@ -65,13 +73,18 @@ const riwaq = {
     speakerIcon: document.getElementById("speaker-icon"),
     cameraIcon: document.getElementById("camera-icon"),
     UsersBt: document.getElementById("users-icon"),
+    SessionSideBt: document.getElementById("SessionSideBt"),
+    SessionInfoBt: document.getElementById("SessionInfoBt"),
+    AcademyModeBt: document.getElementById("AcademyModeBt"),
     UsersWindow: document.getElementById("conversationUsers"),
+    myScreen: document.getElementById("myScreenVideo"),
     messageInput: document.getElementById("messageInputText_in"),
     emojiBt: document.getElementById("messageInputEmoji"),
     emojiPicker: document.getElementById("emoji-picker"),
     addFileBt: document.getElementById("messageInputAdd"),
     addFileIn: document.getElementById("messageInputAddFile"),
     addFileScreen: document.getElementById("messageInputAddScreen"),
+    Side: document.getElementById("Side")
 
 }
 const library = {

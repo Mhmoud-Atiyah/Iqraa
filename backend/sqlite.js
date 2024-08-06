@@ -27,7 +27,8 @@ const db0Tables = [
         pubDate DATE,
         tags TEXT,
         about TEXT,
-        coverSrc TEXT
+        coverSrc TEXT,
+        readCount INTEGER
     );`,
     `CREATE TABLE IF NOT EXISTS authors (
         id INTEGER PRIMARY KEY NOT NULL UNIQUE,
@@ -100,6 +101,31 @@ function checkDatabaseExists(dbPath) {
                 db.close();
             });
         });
+    });
+}
+/**
+ * @brief Checks if a row with a specific id and book_id exists in a specified SQLite table.
+ *
+ * This function checks if a row with the specified id and book_id exists in the given table
+ * within the SQLite database located at the specified path.
+ *
+ * @param {string} tableName - The name of the table to check.
+ * @param {string} key - The key value to check for.
+ * @param {function} callback - The callback function to be called with the result.
+ * The callback takes two arguments: an error (or null if no error) and a boolean indicating
+ * whether the row exists.
+ */
+function checkExist(tableName, key, value, callback) {
+    let query = `SELECT 1 FROM ${tableName} WHERE ${key} = ? LIMIT 1;`;
+    DB.get(query, [value], (err, res) => {
+        if (err) {
+            return callback(err);
+        }
+        if (res) {
+            callback(null, true); // Row exists
+        } else {
+            callback(null, false); // Row does not exist
+        }
     });
 }
 
@@ -286,5 +312,6 @@ module.exports = {
     InsertToMyTable,
     InsertToBooksTable,
     getRecord,
-    setRecord
+    setRecord,
+    checkExist
 };

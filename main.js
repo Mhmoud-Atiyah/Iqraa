@@ -1,27 +1,23 @@
-const fs = require('fs');
 const { app, ipcMain } = require('electron');
 const server = require('./backend/server');
 const sqlite = require('./backend/sqlite');
-const { MAINPATH, DBPath, init, DATAPATH, PORT } = require('./backend/config');
-const { copyFile } = require('./backend/files');
-const { isItfirstTime } = require('./backend/misc');
+const { DBPath, init, DATAPATH, PORT } = require('./backend/config');
+const { isItFirstTime } = require('./backend/misc');
 const { portListening } = require('./backend/connection');
 const {
     createLoginWindow,
     createMainWindow,
     createBookWindow,
-    createAddbookWindow,
     createRiwaqWindow,
     createNotesWindow,
-    createLibraryWindow,
-    createSettingsWindow } = require('./backend/front');
+    createLibraryWindow } = require('./backend/front');
 //-------------------------//
 //---- Pre-Start Check ----//
 //-------------------------//
 /** Check If it's First App Look ? */
-if (isItfirstTime(DATAPATH)) {
+if (isItFirstTime(DATAPATH)) {
     init();
-};
+}
 //-----------------------//
 //---- Start Backend ----//
 //-----------------------//
@@ -31,8 +27,6 @@ portListening('localhost', PORT).then((isOpen) => {
         server.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
         });
-    } else { // Already Opened
-        return;
     }
 });
 /* 00. Start Database Server */
@@ -47,17 +41,16 @@ sqlite.checkDatabaseExists(DBPath).then((exists) => {
 }).catch((error) => {
     console.error(error);
 })
-
-/* 
-    Start Front End
-*/
+//-------------------------//
+//---- Start Front End ----//
+//------------------------//
 app.whenReady().then(() => {
     createLoginWindow();
     ipcMain.on('open-main-window', (event, data) => {
         createMainWindow(data);
     });
-    ipcMain.on('open-book-window', (event, bookId) => {
-        createBookWindow(bookId);
+    ipcMain.on('open-book-window', (event, bookId, userId) => {
+        createBookWindow(bookId, userId);
     });
     ipcMain.on('open-Notes-window', () => {
         createNotesWindow();
@@ -69,9 +62,7 @@ app.whenReady().then(() => {
         createRiwaqWindow(ID);
     });
 })
-/* 
-    On Close
-*/
+/*  On Close */
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();

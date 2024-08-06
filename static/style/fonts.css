@@ -15,6 +15,15 @@
 }
 
 @font-face {
+    font-family: Monadi;
+    src: url("./fonts/Monadi.ttf");
+}
+
+@font-face {
+    font-family: Omar;
+    src: url("./fonts/Omar.ttf");
+}
+@font-face {
     font-family: DecorationFont1;
     src: url(./fonts/DiwaniBent.ttf);
 }
@@ -32,4 +41,15 @@
 @font-face {
     font-family: NumberFont;
     src: url(./fonts/ArabicNumbers.ttf);
+}
+
+/* English Fonts */
+@font-face {
+    font-family: GilroyBold;
+    src: url(./fonts/Gilroy-ExtraBold.otf);
+}
+
+@font-face {
+    font-family: GilroyLight;
+    src: url(./fonts/Gilroy-Light.otf);
 }

@@ -81,7 +81,7 @@ function convertToArabicNumeral(number) {
 // https://www.goodreads.com/review/import
 /* Excel Parsing */
 module.exports = {
-    isItfirstTime,
+    isItFirstTime: isItfirstTime,
     favouriteSave,
     generateUniqueRandomNumber,
     isArabic,

@@ -58,7 +58,8 @@ input {
     font-family: inherit;
 }
 
-.fa-solid {
+.fa-solid,
+.fa-regular {
     color: var(--App-iconColor);
 }
 
@@ -80,7 +81,7 @@ header {
     background-color: var(--App-footerBgColor);
 }
 
-.secondry-nav-item:hover {
+.secondary-nav-item:hover {
     background-color: var(--App-footerBgColor);
 }
 

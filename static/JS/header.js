@@ -20,6 +20,13 @@ getData(`loadConfig/${ID}`).then((config) => { // Global Config not User Config
     accountBt.innerText = config.fname + " " + config.lname;
     profileBt.src = config.profile;
     profileBt.alt = config.account;
+    searchListWindow.style.width = searchInput.offsetWidth - 1 + 'px';
+    /* for Media Css */
+    if (window.innerWidth <= 480) { // Mobile Phone
+        /* Search List */
+        searchListWindow.style.width = searchInput.offsetWidth - 10 + 'px';
+        searchListWindow.style.left = searchInput.offsetLeft + 5 + 'px';
+    }
 })
 //---------------------------------------------------------
 // Header's Event Listeners

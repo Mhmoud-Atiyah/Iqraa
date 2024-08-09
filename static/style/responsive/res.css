@@ -1,0 +1,122 @@
+/* Media Query for Mobile Devices */
+@media (max-width: 480px) {
+    /* Dock */
+    #nav {
+        padding-right: 5%;
+        right: 1%;
+        width: 98%;
+    }
+
+    #current,
+    #status-icon,
+    #profile-name,
+    #theme-icon,
+    .search-inputList_ {
+        display: none;
+    }
+
+    .navBt:nth-child(1) {
+        width: 20%;
+    }
+
+    .navBt:nth-child(2) {
+        width: 20%;
+        margin-left: 0;
+    }
+
+    .navBt:nth-child(3) {
+        position: relative;
+        right: 0;
+        margin-left: 0;
+        width: 23%;
+    }
+
+    .navBt:nth-child(4) {
+        position: relative;
+        right: 1.5%;
+    }
+
+    #settings {
+        bottom: 15px;
+        left: 15px;
+        font-size: 22px;
+    }
+
+    #header {
+        height: 40px;
+        padding: 0;
+    }
+
+    #profile-pic {
+        height: 34px;
+        width: 34px;
+        top: 3px;
+        right: 2px;
+        float: right;
+    }
+
+    #searchBt i {
+        z-index: 1;
+        left: 7px;
+    }
+
+    #search-input {
+        height: 36px;
+        font-size: 16px;
+        text-indent: 5px;
+        left: 7px;
+        border-radius: 24px;
+    }
+
+    #search-inputList {
+        top: 41px;
+        border-radius: 6px;
+        background-color: var(--App-inputBgColor);
+    }
+
+    .search-inputListItem {
+        margin-left: 3px;
+    }
+
+    .newSection {
+        padding: 1.5em;
+    }
+
+    #book_view_cover {
+        margin-top: 20px;
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+    .Btn {
+        font-size: 1px;
+    }
+}
+
+/* Media Query for low resolution  Tablets, Ipads */
+@media (min-width: 481px) and (max-width: 767px) {
+    body {
+        background-color: yellow;
+    }
+}
+
+/* Media Query for Tablets Ipads portrait mode */
+@media (min-width: 768px) and (max-width: 1024px) {
+    body {
+        background-color: blue;
+    }
+}
+
+/* Media Query for Laptops and Desktops */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    body {
+        background-color: green;
+    }
+}
+
+/* Media Query for Large screens */
+@media (min-width: 1281px) {
+    body {
+        background-color: white;
+    }
+}

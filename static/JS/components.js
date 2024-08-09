@@ -17,9 +17,10 @@ const profileBt = document.getElementById("profile-pic");
 const current = document.getElementById("current");
 const settingBt = document.getElementById("settings");
 const openBookBt = document.getElementsByClassName("openBookBt");
+const openAuthorBt = document.getElementsByClassName("openAuthorBt");
 const searchBt = document.getElementById("searchBt");
 const searchInput = document.getElementById("search-input");
-const searchinputList = document.getElementById("search-inputList");
+const searchListWindow = document.getElementById("search-inputList");
 const searchList = document.getElementById("search-inputListItems");
 const sign = {
     alertPlaceholder: document.getElementById('alertPlaceholder'),
@@ -88,19 +89,17 @@ const riwaq = {
 
 }
 const library = {
-    mainModal: document.getElementById("mainModal"),
-    MM_HeaderTitle: document.getElementById("mainModalHeader_"),
-    MM_Body: document.getElementById("mainModalBody"),
-    MM_Bt: document.getElementById("mainModalBt_"),
     initBt: document.getElementById("initBt"),
     initModal: document.getElementById("initLibrary"),
-    IM_LibraryName: document.getElementById("LibraryName"),
-    IM_LibraryID: document.getElementById("LibraryID"),
-    IM_initLibraryBt: document.getElementById("initLibraryBt"),
-    IM_joinLibraryBt: document.getElementById("joinLibraryBt"),
+    initLibraryBt: document.getElementById("initLibraryBt"),
+    joinLibraryBt: document.getElementById("joinLibraryBt"),
     initIcon: document.getElementById("initIcon"),
+    libraryNameField: document.getElementById("LibraryNameField"),
+    libraryNameInput: document.getElementById("LibraryName"),
+    libraryIDField: document.getElementById("libraryIdField"),
+    libraryIDInput: document.getElementById("LibraryID"),
     OCRBt: document.getElementById("OCRBt"),
+    OCRScreen: document.getElementById("OCRScreen"),
     LibraryInfoBt: document.getElementById("LibraryInfoBt"),
-    ExtensionsBt: document.getElementById("ExtensionsBt"),
-
+    ExtensionsBt: document.getElementById("ExtensionsBt")
 }

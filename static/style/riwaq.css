@@ -169,7 +169,7 @@ header {
 }
 
 #BookName {
-    font-family: GilroyLight
+    font-family: GilroyLight, serif;
 }
 
 .fa-microphone {

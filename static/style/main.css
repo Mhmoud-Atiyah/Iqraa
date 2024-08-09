@@ -9,6 +9,10 @@ input[type="search"]::-webkit-search-results-decoration {
     display: none;
 }
 
+input[type="search"]::-webkit-input-placeholder {
+    color: var(--App-placeholderColor);
+}
+
 /* Hide the scrollbar for number input fields */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
@@ -38,6 +42,7 @@ body {
 #header {
     display: block;
     position: fixed;
+    z-index: 1;
     top: 0;
     right: 0;
     height: 50px;
@@ -49,9 +54,13 @@ body {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+
 #headerRight {
     float: right;
+    position: relative;
+    top: 3px;
 }
+
 #theme-icon {
     font-size: 16px;
     padding-top: 10px;
@@ -62,6 +71,7 @@ body {
     padding-top: 10px;
     transform: scaleX(-1);
 }
+
 #profile-pic {
     display: inline;
     position: relative;
@@ -69,6 +79,7 @@ body {
     height: 32px;
     width: 32px;
 }
+
 #addBookBt {
     font-size: 18px;
     display: block;
@@ -77,13 +88,15 @@ body {
     width: 80px;
     margin-top: 2px;
 }
-#searchBt i{
+
+#searchBt i {
     font-size: 18px;
-    color: var(--App-panelBgColor);
     position: relative;
     top: 5px;
     z-index: 1;
+    color: var(--App-placeholderColor);
 }
+
 #search-input {
     position: relative;
     top: 0;
@@ -94,64 +107,72 @@ body {
     direction: rtl;
     text-indent: 15px;
     font-family: GilroyLight, serif;
+    color: var(--App-textColor);
+    background-color: var(--App-inputBgColor);
+    border-color: var(--App-inputBorderColor);
 }
 
 #search-inputList {
     display: none;
-    position: absolute;
-    z-index: -1;
-    top: 43px;
-    left: 93px;
-    height: auto;
+    position: relative;
+    z-index: 1;
+    top: -4px;
+    left: 9px;
+    /*TODO: remove height attribute */
     overflow-y: scroll;
-    width: 300px;
-    border: solid 1px var(--App-panelBorderColor);
-    border-bottom-left-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-    background-color: var(--App-panelBgColor);
+    border: solid 1px var(--App-inputBorderColor);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: var(--App-inputBgColor);
     color: var(--App-textColor);
     user-select: none;
 }
 
 #search-inputListItems {
     display: block;
-    background-color: var(--App-panelBgColor);
 }
 
 .search-inputListItem {
     display: block;
     text-align: right;
-    border-bottom: solid 1px var(--App-panelBorderColor);
+    border-bottom: solid 1px var(--App-inputBorderColor);
 }
 
 .search-inputListItem:last-child {
     border-bottom: none;
 }
 
-.search-inputListItem img {
-    position: absolute;
-    left: 5px;
-    cursor: pointer;
+.search-inputListItemText {
+    display: flex;
+    flex-direction: column;
 }
 
+/* Book title */
 .search-inputListItem p {
-    font-size: 22px;
-    height: 20px;
+    font-size: 24px;
+    line-height: .7em;
+    height: 24px;
     display: inline-block;
-    cursor: pointer;
+    margin-bottom: 2px;
 }
 
+/* Author title */
+/*TODO: Different for English names */
 .search-inputListItem a {
     display: inline-block;
+    line-height: .7em;
+    height: 20px;
     font-size: 18px;
-    margin-bottom: 8px;
-    margin-right: 10px;
     color: var(--App-textColor);
 }
 
 .search-inputListItem a:hover {
     color: var(--App-linkHoverColor);
     text-decoration: underline;
+}
+
+.search-inputListItem:hover {
+    background-color: var(--App-panelBgColor);
 }
 
 #secondary-nav {
@@ -173,6 +194,7 @@ body {
 #main {
     display: block;
     position: relative;
+    z-index: 0;
     right: 0;
     top: 60px;
     width: 100%;

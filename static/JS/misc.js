@@ -1,9 +1,11 @@
 const ID = getQueryParams().userId; // get ID of User Open The Window
 //TODO: Set Ip of your Server
-const DOMAIN = "192.168.238.128";
+const DOMAIN = "192.168.1.13";
 /* Some Default Values */
 // Number of Reviews to loaded on book view load
 const maximumReviewsPage = 8;
+// Number Of Characters for Searching
+const MinimumSearchInput = 3;
 
 /**
  * @description Main Client Routine To Read Data saved local from server
@@ -134,6 +136,11 @@ function isElectron() {
     return false;
 }
 
+/* Set IPC var Undefined in Browsers Env */
+if (!isElectron()) {
+    window.IPC = undefined;
+}
+
 /* Set User Media Permissions */
 /**
  * Enable the microphone of the user.
@@ -192,13 +199,19 @@ async function getMicrophoneStream() {
  * @function enableCamera
  * @returns {Promise<MediaStream>} A promise that resolves to the MediaStream object representing the camera feed.
  */
-async function  enableCamera() {
+async function enableCamera() {
     // Check if getUserMedia is supported by the browser
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({video: true})
             .then(stream => {
-                riwaq.myScreen.srcObject = stream;
-                riwaq.myScreen.play();
+                /* Check ? Riwaq : Library OCR */
+                if (riwaq.myScreen !== null) {
+                    riwaq.myScreen.srcObject = stream;
+                    riwaq.myScreen.play();
+                } else {
+                    library.OCRScreen.srcObject = stream;
+                    library.OCRScreen.play();
+                }
             }).catch(error => {
             console.error('Error accessing the camera:', error);
             throw error;

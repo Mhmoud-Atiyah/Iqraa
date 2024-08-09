@@ -1,0 +1,110 @@
+#signWindow {
+    display: block;
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    border-radius: 1rem;
+    border: solid 1px var(--App-panelBorderColor);
+    background-color: var(--App-footerBgColor);
+    color: var(--App-textColor);
+}
+
+#login_wall {
+    width: 40%;
+    border-radius: 1rem 0 0 1rem;
+    position: absolute;
+    left: 0px;
+}
+
+#signForm {
+    position: relative;
+    display: block;
+    width: 55%;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+
+.form-control,
+.form-select,
+.form-check-input,
+option {
+    color: var(--App-textColor);
+    user-select: none;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    word-spacing: 2px;
+    cursor: text;
+}
+
+#signProfile {
+    display: block;
+    text-align: center;
+}
+
+#passwordIcon {
+    display: block;
+    /* Note: height zero for remeber me Button span */
+    height: 0px;
+    cursor: pointer;
+    font-size: 18px;
+    position: relative;
+    float: left;
+    top: -28px;
+    left: 14px;
+    color: var(--App-textColor);
+}
+
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--App-textColor);
+}
+
+.alert {
+    position: fixed;
+    height: 50px;
+    line-height: 1em;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%);
+    font-size: 24px;
+    word-spacing: 2px;
+    letter-spacing: 1px;
+    z-index: 1;
+}
+
+.alert span {
+    position: relative;
+    top: -5px;
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 480px) {
+    body {
+        background-color: var(--App-bgColor);
+    }
+
+    .form-control,
+    .form-select,
+    .form-check-input,
+    option {
+        font-size: 16px;
+    }
+
+    #signWindow {
+        right: 7.5%;
+        width: 100%;
+        padding-left: 10%;
+    }
+
+    #signForm {
+        width: 100%;
+    }
+
+    #login_wall {
+        display: none;
+    }
+}

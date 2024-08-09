@@ -1,0 +1,104 @@
+body {
+    padding-top: 70px;
+    padding-bottom: 30px;
+}
+
+.Btn {
+    color: var(--App-textColor);
+    padding: 8px 8px 5px 8px;
+    margin-left: 5px;
+    border-radius: 7px;
+    border: solid 2px var(--App-panelBorderColor);
+    cursor: pointer;
+    font-family: Monadi, serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.Btn:hover {
+    background-color: var(--App-panelBorderColor);
+}
+
+.cursorBt {
+    cursor: pointer;
+}
+
+#header {
+    z-index: 1;
+}
+
+.bookData,
+.authorData {
+    background-color: var(--App-panelBgColor);
+    color: var(--App-textColor);
+    z-index: 0;
+}
+
+#book_viewAbout {
+    color: var(--App-textColor);
+    font-family: TheYearofTheCamelLight, serif;
+    font-size: 18px;
+    word-spacing: 2px;
+}
+
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+
+.rating input {
+    display: none;
+}
+
+.rating label {
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0 0.1rem;
+}
+
+.rating input:checked ~ label {
+    color: #f5b301;
+}
+
+#book_view_title_rating {
+    position: relative;
+    top: 0;
+    z-index: 0;
+    display: block flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+#book_view_cover {
+    height: 170px;
+    width: 150px;
+    border-radius: 8px;
+}
+
+#book_view_title {
+    font-family: Moharram, serif;
+    word-spacing: 3px;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+#book_view_pubDate,
+#book_view_pagesCount,
+#book_view_readCount,
+.authorTitle {
+    font-family: Moharram, serif;
+    word-spacing: 3px;
+}
+
+#authorProfile {
+    filter: grayscale(100%);
+    height: 200px;
+    width: 180px;
+}
+
+@media (max-width: 480px) {
+    .Btn {
+        font-size: 12px;
+    }
+}

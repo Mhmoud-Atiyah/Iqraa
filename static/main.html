@@ -14,82 +14,82 @@
 </head>
 
 <body style="font-family: Moharram;">
-    <!-- Header -->
-    <div id="header" dir="ltr">
-        <div id="headerRight">
-            <!-- User Profile -->
-            <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
+<!-- Header -->
+<div id="header" dir="ltr">
+    <div id="headerRight">
+        <!-- User Profile -->
+        <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
                     <strong id="profile-name" class="me-1" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
                     <img id="profile-pic" class="rounded-circle">
                 </span>
-            <!-- App Dark Mode -->
-            <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="theme-icon"
-                                                                                   class="#"></i></span>
-            <!-- App Connection Status -->
-            <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="status-icon"
-                                                                                   class="#"></i></span>
-        </div>
-        <div id="headerLeft">
-            <!-- Search Input -->
-            <form class="d-flex" role="search">
-                <!-- Add Book button -->
-                <button id="addBookBt" class="btn btn-outline-warning d-inline-flex align-items-center fw-bold"
-                        type="button">اضف كتاب</button>
-                <!-- Search Book -->
-                <div>
-                    <button id="searchBt" style="position: absolute;left: 90px;color: var(--App-textColor)"
-                            class="btn d-inline-flex align-items-center fs-4" type="button">
-                        <i class="fa-solid fa-magnifying-glass" style=""></i>
-                    </button>
-                    <input class="form-control ms-2 me-4" id="search-input" type="search" placeholder="بحث">
-                    <div id="search-inputList">
-                        <ul id="search-inputListItems">
-                            <!-- placeholder for Search Reponses -->
-                        </ul>
-                    </div>
+        <!-- App Dark Mode -->
+        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="theme-icon"
+                                                                               class="#"></i></span>
+        <!-- App Connection Status -->
+        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="status-icon"
+                                                                               class="#"></i></span>
+    </div>
+    <div id="headerLeft">
+        <!-- Search Input -->
+        <form class="d-flex" role="search" style="display: inline-block;width: 30%">
+            <!-- Add Book button -->
+            <button id="addBookBt" class="btn btn-outline-warning d-inline-flex align-items-center fw-bold"
+                    type="button">اضف كتاب
+            </button>
+            <!-- Search Book -->
+            <div>
+                <button id="searchBt" style="position: absolute; left: 90px"
+                        class="btn d-inline-flex align-items-center fs-4" type="button">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <input class="form-control ms-2 me-4" id="search-input" type="search" placeholder="بحث">
+                <div id="search-inputList">
+                    <ul id="search-inputListItems"><!-- placeholder for Search Responses --></ul>
                 </div>
-            </form>
-            <!-- Secondary Show Options -->
-            <div class="navbar-collapse" id="navbarCollapse">
-                <ul id="secondary-nav" class="navbar-nav mb-2 mb-md-0">
-                    <!-- PLACEHOLDER For Books Tags -->
-                </ul>
             </div>
+        </form>
+        <!-- Secondary Show Options -->
+        <div class="navbar-collapse" id="navbarCollapse">
+            <ul id="secondary-nav" class="navbar-nav mb-2 mb-md-0">
+                <!-- PLACEHOLDER For Books Tags -->
+            </ul>
         </div>
     </div>
-    <!--  Main View -->
-    <div id="main"></div>
-    <!-- Bottom Dock -->
-    <div id="nav" class="navbar navbar-expand-md">
-        <div class="col-md-1"><img class="cursorBt" id="current" src="#"></div>
-        <div class="row">
-            <div id="myBooks" class="navBt mySection col-md-1 nav-bt cursorBt">كتبي</div>
-            <div id="want" class="navBt mySection col-md-1 nav-bt cursorBt">أعجبني</div>
-            <div id="library_bt" class="navBt col-md-1 nav-bt cursorBt">المكتبة</div>
-            <div id="session" class="navBt col-md-1 nav-bt cursorBt">الرواق</div>
-        </div>
+</div>
+<!--  Main View -->
+<div id="main"></div>
+<!-- Bottom Dock -->
+<div id="nav" class="navbar navbar-expand-md">
+    <div class="col-md-1"><img class="cursorBt" id="current" src="#"></div>
+    <div class="row">
+        <div id="myBooks" class="navBt mySection col-md-1 nav-bt cursorBt">كتبي</div>
+        <div id="want" class="navBt mySection col-md-1 nav-bt cursorBt">أعجبني</div>
+        <div id="library_bt" class="navBt col-md-1 nav-bt cursorBt">المكتبة</div>
+        <div id="session" class="navBt col-md-1 nav-bt cursorBt">الرواق</div>
     </div>
-    <!-- Setting Icon -->
-    <div id="settings" class="cursorBt">
-        <i class="fa-solid fa-bars" style="padding: 5px;"></i>
-    </div>
-    <!-- Secondary Window -->
-    <div id="SecondaryWindow" class="rounded">
-        <span id="SecondaryWindowHeader"><span id="SecondaryWindowHeader_"></span></span>
-        <span id="SecondaryWindowBody"></span>
-        <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
-    </div>
+</div>
+<!-- Setting Icon -->
+<div id="settings" class="cursorBt">
+    <i class="fa-solid fa-bars" style="padding: 5px;"></i>
+</div>
+<!-- Secondary Window -->
+<div id="SecondaryWindow" class="rounded">
+    <span id="SecondaryWindowHeader"><span id="SecondaryWindowHeader_"></span></span>
+    <span id="SecondaryWindowBody"></span>
+    <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
+</div>
 
-    <!-- External Scripts -->
-    <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="JS/components.js"></script><!-- App Components like header and buttons -->
-    <script src="JS/misc.js"></script><!-- Helpful Routines -->
-    <script src="JS/theme.js"></script><!-- Dark Mode and Themes -->
-    <script src="JS/SecondaryWindow.js"></script><!-- SecondaryWindow -->
-    <script src="JS/header.js"></script><!-- Top Header -->
-    <script src="JS/userSection.js"></script><!-- Load and remove User Sections -->
-    <script src="JS/mainView.js"></script><!-- Main Routines -->
-    <script src="JS/addBook.js"></script><!-- Add Book -->
+<!-- External Scripts -->
+<script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+<script src="JS/components.js"></script><!-- App Components like header and buttons -->
+<script src="JS/misc.js"></script><!-- Helpful Routines -->
+<script src="JS/theme.js"></script><!-- Dark Mode and Themes -->
+<script src="JS/SecondaryWindow.js"></script><!-- SecondaryWindow -->
+<script src="JS/header.js"></script><!-- Top Header -->
+<script src="JS/userSection.js"></script><!-- Load and remove User Sections -->
+<script src="JS/mainView.js"></script><!-- Main Routines -->
+<script src="JS/search.js" type="module"></script><!-- Search Routines -->
+<script src="JS/addBook.js"></script><!-- Add Book -->
 </body>
 
 </html>

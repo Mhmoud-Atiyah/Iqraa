@@ -3,91 +3,8 @@ ul {
 }
 
 body {
-    font-family: Moharram;
-}
-
-#main {
-    padding-top: 30px;
-    background-color: var(--App-bgColor);
+    font-family: Moharram, serif;
     color: var(--App-textColor);
-}
-
-#mainModal {
-    display: block;
-    position: absolute;
-    z-index: 1;
-    bottom: 35%;
-    right: 35%;
-    color: var(--App-textColor);
-    background-color: var(--App-panelBgColor);
-    border: solid 1px var(--App-secondaryTextColor);
-    height: auto;
-    width: 30%;
-    animation-name: fadeInOpacity;
-    animation-iteration-count: 1;
-    animation-duration: 1s;
-}
-
-@keyframes fadeInOpacity {
-    from {
-        bottom: 5%;
-    }
-
-    to {
-        bottom: 35%;
-    }
-}
-
-#mainModalHeader {
-    display: block;
-    width: 100%;
-    height: 30px;
-    background-color: var(--App-panelBorderColor);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    text-align: center;
-    user-select: none;
-}
-
-#mainModalHeader span {
-    position: relative;
-    top: -10px;
-    font-family: Moharram;
-    font-size: 28px;
-    word-spacing: 2px;
-}
-
-#mainModalBt {
-    display: block;
-    position: absolute;
-    bottom: 7%;
-    padding-right: 7%;
-    height: 30px;
-    width: 100%;
-}
-
-#mainModalBt span {
-    background-color: var(--App-panelBorderColor);
-    position: relative;
-    font-family: TheYearofTheCamelBold;
-    font-size: 18px;
-    padding: 8px 15px 5px 15px;
-    user-select: none;
-}
-
-#mainModalBt span:hover {
-    background-color: var(--App-panelBgColor);
-    cursor: pointer;
-}
-
-#mainModalBody {
-    display: block;
-    padding: 10px;
-    margin-bottom: 55px;
-    color: var(--App-textColor);
-    font-family: TheYearofTheCamelBold;
-    word-spacing: 2px;
-    font-size: 16px;
 }
 
 .containerBook {
@@ -106,8 +23,8 @@ body {
 
 .bookItem {
     display: block;
-    background-color: var(--App-bgColor);
-    border: solid 1px var(--App-panelBorderColor);
+    background-color: var(--App-inputBgColor);
+    border: solid 1px var(--App-inputBorderColor);
     width: 140px;
     margin-left: 15px;
 }
@@ -148,7 +65,7 @@ body {
     right: 3px;
     padding-bottom: 10px;
     width: 100%;
-    font-family: NumberFont;
+    font-family: NumberFont, serif;
 }
 
 .bookItemPriceBt {
@@ -158,17 +75,17 @@ body {
     left: -7px;
     bottom: 2px;
     float: left;
-    background-color: var(--App-panelBgColor);
+    background-color: var(--App-buttonBgColor);
 }
 
 .bookItemPriceBt::after {
     content: "";
     position: absolute;
-    right: 0%;
+    right: 0;
     top: 12px;
     border-width: 8px;
     border-style: solid;
-    border-color: transparent var(--App-bgColor) transparent transparent;
+    border-color: transparent var(--App-inputBgColor) transparent transparent;
 }
 
 .bookItemPriceText {
@@ -177,7 +94,7 @@ body {
 }
 
 .bookItemPriceTextCurrency {
-    font-family: TheYearofTheCamelBold;
+    font-family: TheYearofTheCamelBold, serif;
     letter-spacing: 2px;
     position: relative;
     top: -2px;
@@ -185,7 +102,7 @@ body {
 }
 
 .bookItemPriceBt:hover {
-    background-color: var(--App-secondaryTextColor);
+    background-color: var(--App-buttonHoverBgColor);
 }
 
 .cursorBt:hover {
@@ -206,8 +123,10 @@ body {
 
 .OCRScreen {
     display: block;
-    position: relative;
-    height: auto;
-    width: 200px;
-
+    position: absolute;
+    top: 0;
+    left: 100px;
+    z-index: 2;
+    height: 200px;
+    width: 300px;
 }

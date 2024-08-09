@@ -248,6 +248,28 @@ async function loadMainView(userID, section) {
     }
 }
 
+/**
+ * @brief Search for a book by name in the database and retrieve its details.
+ *
+ * @param {string} bookName - The name of the book to search for.
+ * @returns {Promise<object|null>} A Promise that resolves with an object containing id, cover, and author_id if the book exists, or null if not found.
+ * @throws {Error} Throws an error if there's an issue with the database query.
+ */
+async function searchBooks(bookName) {
+    try {
+
+        // Query to search for the book by name and retrieve id, title, coversrc and authorid
+        const query = 'SELECT id, title, coversrc, authorid FROM books WHERE title ILIKE $1';
+        // Execute the query
+        const result = await pool.query(query, ['%' + bookName + '%']);
+        // Return the first result row if found, or null if no book found
+        return result.rows.length > 0 ? result.rows : null;
+    } catch (err) {
+        // Handle errors
+        throw new Error(`Error searching for book '${bookName}': ${err.message}`);
+    }
+}
+
 // Export the client
 module.exports = {
     pool,
@@ -257,5 +279,6 @@ module.exports = {
     checkUserCredentials,
     checkIfIdExists,
     updateRecord,
-    loadMainView
+    loadMainView,
+    searchBooks
 };

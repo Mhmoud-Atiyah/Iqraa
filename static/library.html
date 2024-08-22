@@ -1,36 +1,30 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المكتبة</title>
-    <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
+    <title>إقراء</title>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon">
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/fontawesome/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="style/fonts.css">
     <link rel="stylesheet" href="style/riwaq.css">
     <link rel="stylesheet" href="style/main.css">
     <link rel="stylesheet" href="style/library.css">
 </head>
 <body>
-<!--TODO: AUTHENTICAION of users is must for library -->
-<!--TODO: in future: any user can search for book on different libraries for purchase (add data to range of searched data) -->
-<!-- include Auth method for access internet Library which need it -->
-<!-- only administrator of library can manage it and access users to it and so on (add Admin Mode Icon activate if user is admin)-->
-<!-- on ask for join to library the admin accept or deny then add user entry to library users -->
-<!-- As Institute you can manage your library and can scan data using camera using header bt -->
-<!-- add header button about Library Info like location, name, website, ID for share and so on -->
-<!-- Purshase Section -->
-<!-- TODO: The Library Creator Will have permission to accept users and so on
-    and all data about Library like adderss will be on info screen up beside the join data-->
 <!-- Header -->
 <div id="header" dir="ltr">
     <div id="headerRight">
         <!-- User Profile -->
         <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
                     <strong id="profile-name" class="me-1" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
-                    <img id="profile-pic" class="rounded-circle">
+                    <img id="profile-pic" class="profilePic rounded-circle">
                 </span>
+        <!-- Admin Mode Bt -->
+        <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false" title="تحديد مصادر بيانات المكتبة">
+                    <i class="fa-solid fa-database" id="AdminModeBt"></i>
+        </span>
         <!-- OCR Bt -->
         <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false" title="(OCR) البحث عن الغلاف">
                     <i class="fa-solid fa-barcode" id="OCRBt"></i>
@@ -38,6 +32,10 @@
         <!-- Extensions Bt -->
         <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
                     <i class="fa-solid fa-puzzle-piece" id="ExtensionsBt" style="transform: scaleX(-1);"></i>
+                </span>
+        <!-- Parties Bt -->
+        <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
+                    <i class="fa-solid fa-users" id="partiesBt"></i>
                 </span>
         <!-- Library's Info -->
         <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
@@ -49,6 +47,11 @@
         <!-- App Connection Status -->
         <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="status-icon"
                                                                                class="#"></i></span>
+    </div>
+    <div id="headerCenter">
+        <div class="#" id="headerCenterBTs" role="group">
+            <!-- Placeholder for Libraries Buttons -->
+        </div>
     </div>
     <div id="headerLeft">
         <!-- Search Input -->
@@ -121,18 +124,11 @@
     <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
 </div>
 <!-- External Scripts -->
-<script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="JS/components.js"></script><!-- Dark Mode and Themes -->
-<script src="JS/misc.js"></script><!-- Helpful Routines -->
-<script src="JS/theme.js"></script><!-- Dark Mode and Themes -->
-<script src="JS/SecondaryWindow.js"></script><!-- SecondaryWindow -->
-<script src="JS/header.js"></script><!-- Top Header -->
+<script src="JS/header.js" type="module"></script><!-- Top Header -->
 <script src="JS/search.js" type="module"></script><!-- Search Routines -->
-<script src="JS/addBook.js"></script><!-- Add Book -->
+<script src="JS/addBook.js" type="module"></script><!-- Add Book -->
 <script src="JS/library.js" type="module"></script><!-- Specific Library Staff -->
 </body>
 </html>
-
-<!--
-    Design Database for Library
--->

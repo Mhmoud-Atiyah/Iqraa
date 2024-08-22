@@ -168,6 +168,33 @@ header {
     top: 2px
 }
 
+#initBt span {
+    font-size: 64px;
+    color: var(--App-iconColor);
+    position: absolute;
+    top: -42px;
+    left: 4px;
+    animation: vibrate 0.5s linear infinite;
+}
+
+@keyframes vibrate {
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-2px);
+    }
+    50% {
+        transform: translateY(2px);
+    }
+    75% {
+        transform: translateY(-2px);
+    }
+    100% {
+        transform: translateY(2px);
+    }
+}
+
 #BookName {
     font-family: GilroyLight, serif;
 }
@@ -400,4 +427,36 @@ header {
     top: 0;
     overflow-x: hidden;
     overflow-y: scroll;
+}
+
+.pulsed-border {
+    animation: pulse 2s infinite;
+}
+
+.pulsed-border::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 10px;
+    border: 2px solid var(--App-buttonHoverBgColor);
+    opacity: 0;
+    animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+    0% {
+        opacity: 0;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1);
+    }
 }

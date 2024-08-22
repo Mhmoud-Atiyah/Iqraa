@@ -1,5 +1,5 @@
-const { exec } = require('child_process');
-const { platform } = require('os');
+const {exec} = require('child_process');
+const {platform} = require('os');
 const net = require('net');
 const http = require('http');
 
@@ -42,7 +42,8 @@ function setAirplaneMode(state) {
         command = state ? 'osascript -e "do shell script \\"networksetup -setairportpower airport off\\""' : 'osascript -e "do shell script \\"networksetup -setairportpower airport on\\""';
     } else {
         console.log("Platform Not Supported!");
-    };
+    }
+    ;
     exec(command, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);
@@ -57,7 +58,7 @@ function setAirplaneMode(state) {
 }
 
 // Turn on airplane mode
-setAirplaneMode(false);
+// setAirplaneMode(false);
 
 function checkOnline() {
     return new Promise((resolve) => {
@@ -104,7 +105,8 @@ function getIPAddress() {
         // Iterate over addresses of the interface
         for (const address of iface) {
             // Check for IPv4 and non-internal address
-            if (address.family === 'IPv4' && !address.internal) {
+            /* TODO: Set Internet Interface Name */
+            if (address.family === 'IPv4' && !address.internal && key === "enp0s8") {
                 return address.address;
             }
         }
@@ -113,6 +115,7 @@ function getIPAddress() {
     // If no valid address found
     return 'Unable to retrieve IP address';
 }
+
 module.exports = {
     portListening,
     setAirplaneMode,

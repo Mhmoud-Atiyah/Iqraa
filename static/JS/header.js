@@ -1,13 +1,18 @@
-getData(`loadConfig/${ID}`).then((config) => { // Global Config not User Config
+import misc from "./misc.js"
+
+/**************
+ * TODO: Remove this request and set the configuration on localstorage
+ * ****************/
+misc.getData(`loadConfig/${misc.ID}`).then((config) => { // Global Config not User Config
     /* Dark mode setting */
     if (config.thememode === "dark") { // Now is Dark
         themeBt.className = "fa-solid fa-sun";
         statusBt.setAttribute("data-mode", "dark");
-        loadTheme("darkTheme");
+        misc.loadTheme("darkTheme");
     } else {    // Now is Light
         themeBt.className = "fa-solid fa-moon";
         statusBt.setAttribute("data-mode", "light");
-        loadTheme("lightTheme");
+        misc.loadTheme("lightTheme");
     }
     /* Connection Setting */
     if (config.connected) { // Now is online
@@ -21,6 +26,7 @@ getData(`loadConfig/${ID}`).then((config) => { // Global Config not User Config
     profileBt.src = config.profile;
     profileBt.alt = config.account;
     searchListWindow.style.width = searchInput.offsetWidth - 1 + 'px';
+    document.getElementById("main").style.height = window.innerHeight - 60 + 'px';
     /* for Media Css */
     if (window.innerWidth <= 480) { // Mobile Phone
         /* Search List */
@@ -35,7 +41,7 @@ getData(`loadConfig/${ID}`).then((config) => { // Global Config not User Config
 //TODO: اقفل او افتح اللي مفروض يتعمل بعد قفل او فتح الاتصال
 statusBt.onclick = () => {
     if (statusBt.getAttribute("data-mode") === "on") {
-        postData(`editConfig/${ID}/`, {
+        misc.postData(`editConfig/${misc.ID}/`, {
             connected: false
         }).then(res => {
             if (res) {
@@ -46,7 +52,7 @@ statusBt.onclick = () => {
             }
         })
     } else {
-        postData(`editConfig/${ID}/`, {
+        misc.postData(`editConfig/${misc.ID}/`, {
             connected: true
         }).then(res => {
             if (res) {
@@ -61,25 +67,25 @@ statusBt.onclick = () => {
 // Theme Button
 themeBt.onclick = () => {
     if (themeBt.getAttribute("data-mode") === "light") {
-        postData(`editConfig/${ID}/`, {
+        misc.postData(`editConfig/${misc.ID}/`, {
             thememode: "dark"
         }).then((res) => {
             if (res) {
                 document.querySelector("style").remove();
                 themeBt.setAttribute("data-mode", "dark");
                 themeBt.className = "fa-solid fa-sun";
-                loadTheme("darkTheme");
+                misc.loadTheme("darkTheme");
             }
         });
     } else {
-        postData(`editConfig/${ID}/`, {
+        misc.postData(`editConfig/${misc.ID}/`, {
             thememode: "light"
         }).then((res) => {
             if (res) {
                 document.querySelector("style").remove();
                 themeBt.setAttribute("data-mode", "light");
                 themeBt.className = "fa-solid fa-moon";
-                loadTheme("lightTheme");
+                misc.loadTheme("lightTheme");
             }
         });
     }

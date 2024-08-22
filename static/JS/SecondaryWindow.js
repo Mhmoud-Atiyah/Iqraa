@@ -14,7 +14,7 @@ function SecondaryWindowLoad(title, body, bt) {
     SecondaryWindowBt.innerText = bt;
 }
 
-function showHideSecondaryWindow(title, body, bt) {
+export default function showHideSecondaryWindow(title, body, bt) {
     if (SecondaryWindow.getAttribute("data-show") === "show") {
         SecondaryWindow.setAttribute("data-show", "hide");
         SecondaryWindow.style.display = "none";

@@ -1,16 +1,17 @@
-const { app, ipcMain } = require('electron');
+const {app, ipcMain} = require('electron');
 const server = require('./backend/server');
 const sqlite = require('./backend/sqlite');
-const { DBPath, init, DATAPATH, PORT } = require('./backend/config');
-const { isItFirstTime } = require('./backend/misc');
-const { portListening } = require('./backend/connection');
+const {DBPath, init, DATAPATH, DOMAIN, PORT} = require('./backend/config');
+const {isItFirstTime} = require('./backend/misc');
+const {portListening} = require('./backend/connection');
 const {
     createLoginWindow,
     createMainWindow,
     createBookWindow,
     createRiwaqWindow,
     createNotesWindow,
-    createLibraryWindow } = require('./backend/front');
+    createLibraryWindow
+} = require('./backend/front');
 //-------------------------//
 //---- Pre-Start Check ----//
 //-------------------------//
@@ -22,10 +23,10 @@ if (isItFirstTime(DATAPATH)) {
 //---- Start Backend ----//
 //-----------------------//
 /* 0. Start Iqraa Server */
-portListening('localhost', PORT).then((isOpen) => {
+portListening(DOMAIN, PORT).then((isOpen) => {
     if (!isOpen) {  // First Client
         server.listen(PORT, () => {
-            console.log(`Server is running on http://localhost:${PORT}`);
+            console.log(`Server is running on http://${DOMAIN}:${PORT}`);
         });
     }
 });

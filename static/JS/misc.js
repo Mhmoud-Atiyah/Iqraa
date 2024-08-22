@@ -1,11 +1,25 @@
 const ID = getQueryParams().userId; // get ID of User Open The Window
 //TODO: Set Ip of your Server
-const DOMAIN = "192.168.1.13";
+const DOMAIN = "192.168.56.5";
 /* Some Default Values */
 // Number of Reviews to loaded on book view load
 const maximumReviewsPage = 8;
 // Number Of Characters for Searching
 const MinimumSearchInput = 3;
+// List Off Currencies
+const currency = {
+    "EGP": "ج.م",
+    "AED": "د.إ",
+    "SAR": "ر.س",
+    "KWD": "د.ك",
+    "BHD": "د.ب",
+    "OMR": "ر.ع",
+    "JOD": "د.أ",
+    "LBP": "ل.ل",
+    "SYP": "ل.س",
+    "IQD": "د.ع",
+    "MRU": "أ.م"
+};
 
 /**
  * @description Main Client Routine To Read Data saved local from server
@@ -25,7 +39,7 @@ async function getData(path) {
 
 async function loadTheme(themeName) {
     try {
-        const response = await fetch(`https://localhost/loadStyle/${themeName}`, {
+        const response = await fetch(`https://${DOMAIN}/loadStyle/${themeName}`, {
             method: 'GET',
             headers: {
                 "Accept": "text/css"
@@ -107,6 +121,8 @@ function convertToArabicNumeral(number) {
         const char = numberString[i];
         if (char === '.') {
             arabicNumber += ',';
+        } else if (char === '-') {
+            arabicNumber += '/';
         } else {
             const digit = parseInt(char);
             arabicNumber += arabicNumerals[digit];
@@ -239,4 +255,67 @@ function disableCamera() {
     } else {
         return false;
     }
+}
+
+/**
+ * Asynchronously retrieves the user's current geographical location.
+ *
+ * This function uses the Geolocation API to obtain the latitude and longitude
+ * of the user's device. It returns a Promise that resolves with an object containing
+ * latitude and longitude properties if successful, or rejects with an error message.
+ *
+ * @async
+ * @function getUserLocation
+ * @returns {Promise<{latitude: number, longitude: number}>} A promise that resolves with the user's location.
+ * @throws {Error} Throws an error if the location cannot be obtained.
+ */
+async function getUserLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const {latitude, longitude} = position.coords;
+                    resolve({latitude, longitude});
+                },
+                (error) => {
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            reject(new Error("User denied the request for Geolocation."));
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            reject(new Error("Location information is unavailable."));
+                            break;
+                        case error.TIMEOUT:
+                            reject(new Error("The request to get user location timed out."));
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            reject(new Error("An unknown error occurred."));
+                            break;
+                    }
+                }
+            );
+        } else {
+            reject(new Error("Geolocation is not supported by this browser."));
+        }
+    });
+}
+
+export default {
+    getData,
+    postData,
+    loadTheme,
+    getQueryParams,
+    convertToArabicNumeral,
+    isElectron,
+    enableMicrophone,
+    disableMicrophone,
+    getMicrophoneStream,
+    enableCamera,
+    disableCamera,
+    getUserLocation,
+    maximumReviewsPage,
+    MinimumSearchInput,
+    DOMAIN,
+    ID,
+    currency
 }

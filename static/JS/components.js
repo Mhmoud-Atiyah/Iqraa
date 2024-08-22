@@ -89,6 +89,7 @@ const riwaq = {
 
 }
 const library = {
+    librariesButtons: document.getElementById("headerCenterBTs"),
     initBt: document.getElementById("initBt"),
     initModal: document.getElementById("initLibrary"),
     initLibraryBt: document.getElementById("initLibraryBt"),
@@ -98,8 +99,10 @@ const library = {
     libraryNameInput: document.getElementById("LibraryName"),
     libraryIDField: document.getElementById("libraryIdField"),
     libraryIDInput: document.getElementById("LibraryID"),
-    OCRBt: document.getElementById("OCRBt"),
-    OCRScreen: document.getElementById("OCRScreen"),
     LibraryInfoBt: document.getElementById("LibraryInfoBt"),
-    ExtensionsBt: document.getElementById("ExtensionsBt")
+    PartiesBt: document.getElementById("partiesBt"),
+    ExtensionsBt: document.getElementById("ExtensionsBt"),
+    AdminModeBt: document.getElementById("AdminModeBt"),
+    OCRBt: document.getElementById("OCRBt"),
+    OCRScreen: document.getElementById("OCRScreen")
 }

@@ -23,6 +23,7 @@
     --App-inputBorderColor: #555555;
     --App-placeholderColor: #999999;
     --App-highlightColor: #ffd700;
+    --App-redColor: #DB4437;
 }
 
 ::-webkit-scrollbar-track {

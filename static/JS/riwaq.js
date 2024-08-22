@@ -85,7 +85,7 @@ window.onload = () => {
         }
         // Current User Data
         if (config.newriwaq) { // First look riwaq
-            let element =
+            let arr = "<span>&#8595;</span>", element =
                 `
                 <div class="newSection overflow-hidden m-md-2 text-center rounded" style="border: solid 1px var(--App-panelBorderColor);">
                     <div class="col-md-5 p-lg-5 mx-auto" style="letter-spacing: 1px;font-family: Moharram, serif">
@@ -93,14 +93,17 @@ window.onload = () => {
                         <h1 class="display-4 fw-normal">ما زال الرواق <span class="text-danger">فارغ</span></h1>
                         <p class="lead fw-normal fs-3">يمكنك إستخدام الرواق حسب رغبتك<br></p>
                         <p class="lead fw-normal fs-3">فقط اضغط على الزر بالأسفل لبدأ رواق جديد<br>
-                     كما يمكنك  الإنضام الى رواق موجود</p>
+                     كما يمكنك  الإنضام إلى رواق موجود</p>
                     </div>
                 </div>
             `;
             let Div = document.createElement('div');
+            let Arr = document.createElement('span');
             Div.id = "mainChild";
             Div.innerHTML = element;
+            Arr.innerHTML = arr;
             document.getElementById("conversation").append(Div);
+            library.initBt.append(Arr);
         }
     })
     /* If Session Exist (New - Join) */
@@ -342,7 +345,7 @@ riwaq.initSessionBt.onclick = () => {
         }
         postData("initSession", {
             userId: ID,
-            hashedPass: localStorage.getItem("userPass").slice(3),
+            hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null,
             //TODO: sessionTitle: Number(BookID), (if exist)
             sessionTitle: session_title
         }).then((sessionId) => {
@@ -357,7 +360,7 @@ riwaq.joinSessionBt.onclick = () => {
     if (riwaq.sessionIdInput.value !== "" && riwaq.sessionIdInput.value.split("-").length === 5) {
         postData("joinSession", {
             userId: ID,
-            hashedPass: localStorage.getItem("userPass").slice(3),
+            hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null,
             sessionId: riwaq.sessionIdInput.value
         }).then((sessionId) => {
             /* Just Reload Riwaq With SessionId */

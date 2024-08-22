@@ -1,6 +1,5 @@
-const {DBPath} = require("./config");
-//TODO: Set Ip of your Server
-const DOMAIN = "localhost";
+const {DBPath,DOMAIN} = require("./config");
+
 const {Pool} = require('pg');
 
 const pool = new Pool({
@@ -176,6 +175,70 @@ async function updateRecord(tableName, recordID, column, newValue) {
 }
 
 /**
+ * @brief Adds an item to an array column in a database record.
+ *
+ * This function updates a specific record in a table by appending a new item
+ * to an array column. The function uses SQL's `array_append` function to add
+ * the item to the existing array.
+ *
+ * @param tableName The name of the table to update.
+ * @param recordID The ID of the record to update.
+ * @param column The name of the column that is an array.
+ * @param newItem The item to add to the array column.
+ *
+ * @throws Will throw an error if the database query fails.
+ */
+async function updateRecord_Push(tableName, recordID, column, newItem) {
+    // Define the SQL query with parameters
+    const query = `
+        UPDATE ${tableName}
+        SET ${column} = array_append(${column}, $1)
+        WHERE id = $2
+          AND NOT ($1 = ANY (${column}));
+    `;
+    try {
+        const result = await pool.query(query, [newItem, recordID]);
+        result.rowCount !== 0 ?
+            console.log(`Item [${newItem}] added to column [${column}] for record [ID: ${recordID}] successfully:`, result.rowCount) :
+            console.log(`Item [${newItem}] Already Included in column [${column}] for record [ID: ${recordID}] !`);
+
+    } catch (err) {
+        console.error('Error updating record:', err.stack);
+        throw err;  // Re-throw the error to be handled by the caller
+    }
+}
+
+/**
+ * @brief Removes an item from an array column in a database record.
+ *
+ * This function updates a specific record in a table by removing an item
+ * from an array column. The function uses SQL's `array_remove` function to
+ * remove the item from the existing array.
+ *
+ * @param tableName The name of the table to update.
+ * @param recordID The ID of the record to update.
+ * @param column The name of the column that is an array.
+ * @param itemToRemove The item to remove from the array column.
+ *
+ * @throws Will throw an error if the database query fails.
+ */
+async function updateRecord_Pop(tableName, recordID, column, itemToRemove) {
+    // Define the SQL query with parameters
+    const query = `
+        UPDATE ${tableName}
+        SET ${column} = array_remove(${column}, $1)
+        WHERE id = $2
+    `;
+    try {
+        const result = await pool.query(query, [itemToRemove, recordID]);
+        console.log(`Item [${itemToRemove}] removed from column [${column}] for record [ID: ${recordID}] successfully:`, result.rowCount);
+    } catch (err) {
+        console.error('Error updating record:', err.stack);
+        throw err;  // Re-throw the error to be handled by the caller
+    }
+}
+
+/**
  * @brief Retrieves a record by id from the 'Table' table.
  *
  * @param {string} table - The Table to retrieve.
@@ -197,6 +260,52 @@ async function getRecord(table, recordID) {
     } catch (error) {
         console.error('Error executing query:', error);
         throw new Error('Error retrieving user record');
+    }
+}
+
+
+/**
+ * Get library section books along with their details.
+ *
+ * This function performs the following operations:
+ * 1. Fetches all entries from the `SectionId` table.
+ * 3. For each book, retrieves details from the `books` table.
+ * 4. Combines book data with its details and logs the combined results.
+ *
+ * The combined results are an array of book objects, where each book object includes
+ * the book details.
+ *
+ * @async
+ * @function
+ * @name getLibrarySectionBooks
+ * @returns {Promise<void>} Resolves when the function has finished executing and logging the results.
+ *
+ * @throws {Error} Throws an error if there is an issue executing the queries or connecting to the database.
+ */
+async function getLibrarySectionBooks(SectionId) {
+    try {
+        // Fetch all books
+        const booksQuery = `SELECT *
+                            FROM \"${SectionId}\"`;
+        const booksResult = await pool.query(booksQuery);
+        const books = booksResult.rows;
+        // Initialize an empty array to store combined results
+        const combinedResults = [];
+        // Loop over each book to get details
+        for (const book of books) {
+            const detailsQuery = 'SELECT * FROM books WHERE id = $1';
+            const detailsResult = await pool.query(detailsQuery, [book.bookid]);
+            const details = detailsResult.rows[0]; // Assuming one-to-one relationship
+            delete book.hash;
+            // Combine book data with its details
+            combinedResults.push({
+                ...book,
+                details: details || {}, // Add details or an empty object if no details found
+            });
+        }
+        return combinedResults;
+    } catch (err) {
+        console.error('Error executing query', err.stack);
     }
 }
 
@@ -276,9 +385,12 @@ module.exports = {
     insertData,
     createTable,
     getRecord,
+    getLibrarySectionBooks,
     checkUserCredentials,
     checkIfIdExists,
     updateRecord,
+    updateRecord_Push,
+    updateRecord_Pop,
     loadMainView,
     searchBooks
 };

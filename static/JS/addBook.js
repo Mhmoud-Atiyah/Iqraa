@@ -1,3 +1,4 @@
+import showHideSecondaryWindow from './SecondaryWindow.js'
 /* Global Vars */
 var Rating = 0;
 

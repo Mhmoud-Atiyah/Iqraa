@@ -6,11 +6,12 @@ const path = require('path');
 const multer = require('multer');
 const {generateHash} = require("./backend/encryption");
 const stylePath = path.join(__dirname, "static/style")
-const {ASSETSPATH} = require('./backend/config');
+const {ASSETSPATH, DOMAIN} = require('./backend/config');
 const pg = require('./backend/pg');
 const {getCover, getAbout} = require("./backend/bookData");
 const {checkUserCredentials} = require("./backend/pg");
 const app = express();
+const {v4: uuidv4} = require('uuid');
 const port = 443; // Default HTTPS port
 const maximumRetrievedQueries = 4;
 
@@ -33,36 +34,22 @@ const options = {
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'static')));
-
+/*******************************
+ *   Main Page Requests
+ ********************************/
 app.get('/', (req, res) => {
     //TODO: on load https://iqraa.com redirect to page where to check user cred from localstorage
     res.send('Hello World!');
 });
-
+app.get('/iqraa', (req, res) => {
+    res.sendFile(path.join(__dirname, "static", "main.html"));
+})
+/*******************************
+ *   User Related Requests
+ ********************************/
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "login.html"));
 });
-
-app.get('/countryList', (req, res) => {
-    /* Just one time load data for sign up */
-    fs.readFile(`${ASSETSPATH}/countryList.json`, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading JSON file:', err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-        try {
-            // Parse JSON data
-            const jsonData = JSON.parse(data);
-            // Send JSON data as response
-            res.json(jsonData);
-        } catch (parseErr) {
-            console.error('Error parsing JSON data:', parseErr);
-            res.status(500).send('Internal Server Error');
-        }
-    });
-});
-
 app.post('/login', (req, res) => {
     try {
         /* Get credentials */
@@ -92,19 +79,311 @@ app.post('/login', (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-app.get('/iqraa', (req, res) => {
-    res.sendFile(path.join(__dirname, "static", "main.html"));
+app.get('/loadConfig/:userId', (req, res) => {
+    const id = req.params.userId;
+    /* Get Needed Data From Record */
+    pg.getRecord("users", Number(id)).then(data => {
+        res.send(data);
+    });
+});
+app.post('/editConfig/:userId', (req, res) => {
+    const id = req.params.userId;
+    const data = req.body;
+    /* Write Data to Database */
+    pg.updateRecord("users", id, Object.keys(data)[0], Object.values(data)[0]).then(() => {
+        res.json({
+            res: `Data Edited for userID ${id}`
+        });
+    }).catch(err => console.error('Update failed', err));
 })
-
+app.get('/loadUserSection/:userId/:Section', (req, res) => {
+    const id = req.params.userId;
+    const section = req.params.Section;//TODO: get data based on section also
+    /* Get Data From User Database */
+    pg.loadMainView(id, section).then(books => {
+        // Send it To user
+        res.json(books);
+    });
+})
+app.post('/addToMyBooks', (req, res) => {
+    try {
+        /* Get credentials */
+        const {bookId, userId, hashedPass, data} = req.body;
+        pg.getRecord("users", userId).then(credentials => {
+            if (credentials != null) {
+                /* Check Credentials*/
+                if (hashedPass != null && hashedPass === credentials.pass) {
+                    (async () => {
+                        try {
+                            /* Check Existence in user table */
+                            const exists = await pg.checkIfIdExists(`user_${userId}`, bookId);
+                            if (!exists) {// never Added to table before
+                                pg.insertData(`user_${userId}`, {
+                                    id: bookId,
+                                    reviewId: userId,//TODO: create database relation for this
+                                    dateRead: data[0],
+                                    dateAdd: data[1],
+                                    bookshelf: data[2],
+                                    bookShelves: data[3],
+                                    myRate: data[4]
+                                }).then(() => {
+                                        console.log(`Book of id [${bookId}] added to user [${userId}] table`);
+                                        res.send(`Book of id [${bookId}] added to user [${userId}] table`)
+                                    }
+                                );
+                            } else {
+                                /* Check if bookshelves contain same bookshelf in request */
+                                pg.getRecord(`user_${userId}`, bookId).then(record => {
+                                    /* change bookshelf if needed */
+                                    let recordBookshelf;
+                                    record.bookshelf === "read" ? recordBookshelf = "to-read" : recordBookshelf = "read";
+                                    /* Change BookShelves */
+                                    const bookshelves = new Set(record.bookshelves);
+                                    let recordBookshelves = record.bookshelves;
+                                    /* Check Routine */
+                                    data[3].forEach(bookshelf => {
+                                        if (!bookshelves.has(bookshelf)) {
+                                            recordBookshelves.push(bookshelf);
+                                        }
+                                    })
+                                    /* Write Back */
+                                    pg.updateRecord(`user_${userId}`, bookId, "bookshelves", recordBookshelves).then(() => {
+                                        pg.updateRecord(`user_${userId}`, bookId, "bookshelf", recordBookshelf).then(() => {
+                                            console.log(`Book of id [${bookId}] already exist in user [${userId}] table`);
+                                            res.send(`Book of id [${bookId}] already exist in user [${userId}] table`);
+                                        });
+                                    });
+                                });
+                            }
+                        } catch (error) {
+                            res.status(500).send('Internal Server Error');
+                        }
+                    })();
+                } else {// User Not Authorized
+                    //    res.send(`You're not Authorized to make this as user [${userId}]`);
+                    console.log(`You're not Authorized to make this as user [${userId}]`);
+                }
+            }
+        });
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+});
+/*******************************
+ *   Library's Requests
+ ********************************/
 app.get('/library', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "library.html"));
 })
+app.post('/loadLibrary', (req, res) => {
+    const {userId, libraryId, hashedPass} = req.body;
+    /* Get Data From User Database */
+    (async () => {
+        try {
+            const exists = await pg.getRecord("users", userId);
+            if (exists != null) { // Exist as User Not Library User !
+                /* Check Password */
+                if (hashedPass != null && hashedPass === exists.pass) {
+                    if (libraryId != null) {
+                        pg.getRecord("library", libraryId).then(libraryData => {
+                            // check if UserId is Library Admin
+                            if (libraryData != null) {
+                                if (libraryData.adminid === Number(userId)) {
+                                    res.send(libraryData);
+                                    console.log(`${libraryData.title} Library Retrieved Successfully by Admin [userId: ${userId}]`);
+                                } else { // check if UserId in Library Parties or Library is Public
+                                    if (libraryData.parties.includes(Number(userId)) || libraryData.access === "public") {
+                                        // Drop Sensitive Data
+                                        delete libraryData.adminid;
+                                        delete libraryData.hash;
+                                        delete libraryData.access;
+                                        delete libraryData.requests;
+                                        // if Library Viewed Public
+                                        if (libraryData.access === "public") delete libraryData.parties;
+                                        res.send(libraryData);
+                                        console.log(`${libraryData.title} Library Retrieved Successfully by Party [userId: ${userId}]`);
+                                    } else {// Not Admin nor Parties
+                                        res.send(`[userId: ${userId}] Not Belong To Library [${libraryId}]`);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    console.log(`User [${userId}] Not Authorized`);
+                }
+            } else {
+                console.log(`User [${userId}] Not Found`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    })();
+})
+app.post('/loadLibraries', (req, res) => {
+    const {userId, libraryId, hashedPass} = req.body;
+    /* Get Data From User Database */
+    (async () => {
+        try {
+            const exists = await pg.getRecord("users", userId);
+            if (exists != null) { // Exist as User Not Library User !
+                /* Check Password */
+                if (hashedPass != null && hashedPass === exists.pass) {
+                    pg.getRecord("library", libraryId).then(libraryData => {
+                        if (libraryData != null) {
+                            res.json({
+                                id: libraryData.id,
+                                title: `${libraryData.title}`
+                            });
+                        }
+                    });
+                } else {
+                    console.log(`User [${userId}] Not Authorized`);
+                }
+            } else {
+                console.log(`User [${userId}] Not Found`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    })();
+})
+app.get('/loadLibrarySection/:section', (req, res) => {
+    const sectionId = req.params.section || null;
+    if (sectionId != null) {
+        pg.getLibrarySectionBooks(String(sectionId)).then(data => {
+            // Drop Sensitive Data
 
+            res.send(data);
+        })
+    }
+})
+app.post('/createLibrary/:userId', upload.single('CL_Cover'), (req, res) => {
+    const id = req.params.userId;
+    const {
+        CL_Name,
+        CL_Location,
+        CL_Type,
+        CL_Currency,
+        CL_About,
+        CL_SM_website,
+        CL_SM_twitter,
+        CL_SM_facebook,
+        CL_SM_instagram
+    } = req.body;
+    const libraryCover = req.file ? req.file.path : 'No file uploaded';
+    const GIS = req.body.CL_GIS.split(",") || null;
+    const libraryId = uuidv4();
+    const libraryMain = uuidv4();
+    /* Write Data To Database */
+    pg.insertData('library', {
+        id: libraryId,
+        adminid: id,
+        title: CL_Name,
+        type: CL_Type,
+        cover: libraryCover,
+        hash: generateHash(libraryId),/*TODO: make more robust one */
+        parties: [id],
+        main: libraryMain,
+        currency: CL_Currency,
+        about: CL_About,
+        location: CL_Location,
+        latitude: GIS !== null ? GIS[0] : 0.0,
+        longitude: GIS !== null ? GIS[1] : 0.0,
+        socialmedia: [
+            CL_SM_website,
+            CL_SM_twitter,
+            CL_SM_facebook,
+            CL_SM_instagram
+        ],
+        access: "private" //TODO: get it from form
+    }).then(() => {
+        /* Create main Library table */
+        pg.createTable(`"${libraryMain}"`, `
+        bookid    int NOT NULL REFERENCES books (id) ON DELETE SET NULL,
+        hash      text,
+        price     int,
+        state     text,
+        section     text,
+        available text`).then(() => {
+            pg.updateRecord("users", id, "mylibrary", libraryId).then(() => {
+                console.log(`library [${libraryId}] created successfully`);
+            }).catch(err => console.error('Update failed', err));
+        });
+    });
+    /* Go back to Main Again */
+    res.redirect(`/library?libraryId=${libraryId}&userId=${id}`);
+});
+app.post('/joinLibrary', (req, res) => {
+    const {userId, libraryId, hashedPass} = req.body;
+    /* Get Data From User Database */
+    (async () => {
+        try {
+            const exists = await pg.getRecord("users", userId);
+            if (exists != null) { // Exist as User Not Library User !
+                /* Check Password */
+                if (hashedPass != null && hashedPass === exists.pass) {
+                    if (libraryId != null) {
+                        pg.getRecord("library", libraryId).then(libraryData => {
+                            if (libraryData != null) {
+                                /* check library access mode */
+                                if (libraryData.access === "public") { // Anyone can join
+                                    /* Write Data to Library Table */
+                                    pg.updateRecord_Push("library", libraryData.id, "parties", userId).then(() => {
+                                        console.log(`User [ID: ${userId}] added to Library [ID: ${libraryId}] successfully`);
+                                        /* Add Library to User Entry */
+                                        pg.updateRecord_Push("users", userId, "libraries", libraryData.id).then(() => {
+                                            console.log(`User [ID: ${userId}] Accessed Library [ID: ${libraryId}] successfully`);
+                                        });
+                                        /* Respond To Client */
+                                        res.json({
+                                            status: 0, // status => 0: success
+                                            msg: `User [ID: ${userId}] added to Library [ID: ${libraryId}] successfully`
+                                        });
+                                    })
+                                } else {
+                                    /* Send To Library Admin */
+                                    console.log(`User [ID: ${userId}] Try to Join to Private Library [ID: ${libraryId}]`);
+                                    pg.updateRecord_Push('library', libraryData.id, "requests", userId).then(() => {
+                                        console.log(`User [ID: ${userId}] Added to Library [ID: ${libraryId}] Requests List`);
+                                        /* Respond To Client */
+                                        res.json({
+                                            status: 1, // status => 1: waitList
+                                            msg: `User [ID: ${userId}] Wait For Library [ID: ${libraryId}] Admin To Approve`
+                                        });
+                                    });
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    console.log(`User [${userId}] Not Authorized`);
+                }
+            } else {
+                console.log(`User [${userId}] Not Found`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    })();
+})
+app.post('/libraryExcel/:userId', upload.single('file'), (req, res) => {
+    const id = req.params.userId;
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+    const dataPath = req.file.path;
+    /* Write Data To Database */
+
+    /* Go back to Main Again */
+    res.redirect(`/library?userId=${id}`);
+});
+/*******************************
+ *   Riwaq's Requests
+ ********************************/
 app.get('/riwaq', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "riwaq.html"));
 })
-
 app.post('/initSession', (req, res) => {
     try {
         /* Get credentials */
@@ -116,7 +395,7 @@ app.post('/initSession', (req, res) => {
                 const exists = await pg.getRecord("users", userId);
                 if (exists != null) {
                     /* Check Password */
-                    if (hashedPass === exists.pass) {
+                    if (hashedPass != null && hashedPass === exists.pass) {
                         /* TODO: Init Session */
                         const sessionID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
                         pg.insertData("riwaq", {
@@ -140,7 +419,6 @@ app.post('/initSession', (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
 app.post('/joinSession', (req, res) => {
     try {
         /* Get credentials */
@@ -151,7 +429,7 @@ app.post('/joinSession', (req, res) => {
                 const exists = await pg.getRecord("users", userId);
                 if (exists != null) {
                     /* Check Password */
-                    if (hashedPass === exists.pass) {
+                    if (hashedPass != null && hashedPass === exists.pass) {
                         /* TODO: Join Session */
                         /* Ask Session Admin For Permission */
 
@@ -169,7 +447,9 @@ app.post('/joinSession', (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
+/*******************************
+ *   miscellaneous Requests
+ ********************************/
 app.get('/loadStyle/:themeName', (req, res) => {
     const theme = req.params.themeName;
     try {
@@ -184,15 +464,25 @@ app.get('/loadStyle/:themeName', (req, res) => {
         console.error(`Error Load Theme File ${__dirname}/${theme}.css):`, parseErr);
     }
 });
-
-app.get('/loadConfig/:userId', (req, res) => {
-    const id = req.params.userId;
-    /* Get Needed Data From Record */
-    pg.getRecord("users", Number(id)).then(data => {
-        res.send(data);
+app.get('/countryList', (req, res) => {
+    /* Just one time load data for sign up */
+    fs.readFile(`${ASSETSPATH}/countryList.json`, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading JSON file:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        try {
+            // Parse JSON data
+            const jsonData = JSON.parse(data);
+            // Send JSON data as response
+            res.json(jsonData);
+        } catch (parseErr) {
+            console.error('Error parsing JSON data:', parseErr);
+            res.status(500).send('Internal Server Error');
+        }
     });
 });
-
 app.get('/loadBookData/:userId/:bookId', (req, res) => {
     const userID = req.params.userId;
     const bookID = req.params.bookId;
@@ -206,17 +496,6 @@ app.get('/loadBookData/:userId/:bookId', (req, res) => {
         });
     });
 });
-
-app.get('/loadUserSection/:userId/:Section', (req, res) => {
-    const id = req.params.userId;
-    const section = req.params.Section;//TODO: get data based on section also
-    /* Get Data From User Database */
-    pg.loadMainView(id, section).then(books => {
-        // Send it To user
-        res.json(books);
-    });
-})
-
 app.post('/goodreads/:userId', upload.single('file'), (req, res) => {
     const id = req.params.userId;
     if (!req.file) {
@@ -303,76 +582,16 @@ app.post('/goodreads/:userId', upload.single('file'), (req, res) => {
     /* Go back to Main Again */
     res.redirect(`/iqraa?userId=${id}`);
 });
-
+/*******************************
+ *   Books Related Requests
+ ********************************/
+//TODO: There is book view default and one for library
 app.get('/bookview', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "bookView.html"));
 })
-
-app.post('/addToMyBooks', (req, res) => {
-    try {
-        /* Get credentials */
-        const {bookId, userId, hashedPass, data} = req.body;
-        pg.getRecord("users", userId).then(credentials => {
-            if (credentials != null) {
-                /* Check Credentials*/
-                if (hashedPass === credentials.pass) {
-                    (async () => {
-                        try {
-                            /* Check Existence in user table */
-                            const exists = await pg.checkIfIdExists(`user_${userId}`, bookId);
-                            if (!exists) {// never Added to table before
-                                pg.insertData(`user_${userId}`, {
-                                    id: bookId,
-                                    reviewId: userId,//TODO: create database relation for this
-                                    dateRead: data[0],
-                                    dateAdd: data[1],
-                                    bookshelf: data[2],
-                                    bookShelves: data[3],
-                                    myRate: data[4]
-                                }).then(() => {
-                                        console.log(`Book of id [${bookId}] added to user [${userId}] table`);
-                                        res.send(`Book of id [${bookId}] added to user [${userId}] table`)
-                                    }
-                                );
-                            } else {
-                                /* Check if bookshelves contain same bookshelf in request */
-                                pg.getRecord(`user_${userId}`, bookId).then(record => {
-                                    /* change bookshelf if needed */
-                                    let recordBookshelf;
-                                    record.bookshelf === "read" ? recordBookshelf = "to-read" : recordBookshelf = "read";
-                                    /* Change BookShelves */
-                                    const bookshelves = new Set(record.bookshelves);
-                                    let recordBookshelves = record.bookshelves;
-                                    /* Check Routine */
-                                    data[3].forEach(bookshelf => {
-                                        if (!bookshelves.has(bookshelf)) {
-                                            recordBookshelves.push(bookshelf);
-                                        }
-                                    })
-                                    /* Write Back */
-                                    pg.updateRecord(`user_${userId}`, bookId, "bookshelves", recordBookshelves).then(() => {
-                                        pg.updateRecord(`user_${userId}`, bookId, "bookshelf", recordBookshelf).then(() => {
-                                            console.log(`Book of id [${bookId}] already exist in user [${userId}] table`);
-                                            res.send(`Book of id [${bookId}] already exist in user [${userId}] table`);
-                                        });
-                                    });
-                                });
-                            }
-                        } catch (error) {
-                            res.status(500).send('Internal Server Error');
-                        }
-                    })();
-                } else {// User Not Authorized
-                    //    res.send(`You're not Authorized to make this as user [${userId}]`);
-                    console.log(`You're not Authorized to make this as user [${userId}]`);
-                }
-            }
-        });
-    } catch (error) {
-        res.status(500).send('Internal Server Error');
-    }
-});
-
+/*******************************
+ *   Searching Requests
+ ********************************/
 app.post('/search', (req, res) => {
     try {
         /* Get Query */
@@ -408,22 +627,12 @@ app.post('/search', (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-app.post('/editConfig/:userId', (req, res) => {
-    const id = req.params.userId;
-    const data = req.body;
-    /* Write Data to Database */
-    pg.updateRecord("users", id, Object.keys(data)[0], Object.values(data)[0]).then(() => {
-        res.json({
-            res: `Data Edited for userID ${id}`
-        });
-    }).catch(err => console.error('Update failed', err));
-})
-// Create HTTPS server
+/*******************************
+ *   Main Routine
+ ********************************/
 https.createServer(options, app).listen(port, () => {
-    console.log(`Server running at https://localhost:${port}`);
+    console.log(`Server running at https://${DOMAIN}:${port}`);
 });
-
 process.on('SIGINT', async () => {
     console.log('Closing database pool...');
     await pool.end();

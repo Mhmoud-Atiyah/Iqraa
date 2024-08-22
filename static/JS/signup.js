@@ -1,3 +1,6 @@
+/**************
+ *TODO: On Create New User Create Directory for him in disk with Quota based on Price plan
+ * ************/
 // Global Class For All Inputs
 const FormInput = document.getElementsByClassName("form-control");
 const FormSelect = document.getElementsByClassName("form-select");

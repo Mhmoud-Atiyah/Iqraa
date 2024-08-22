@@ -1,3 +1,4 @@
+import showHideSecondaryWindow from './SecondaryWindow.js';
 // Main Routine On start
 window.onload = () => {
     getData(`loadConfig/${ID}`).then((config) => { // Global Config not User Config
@@ -23,7 +24,7 @@ window.onload = () => {
             current.className = "cursorBt";
         }
         // First look User ( run one time !)
-        if (config.newuser) {
+        if (!config.newuser) {
             let element = `
                 <div class="newSection position-relative overflow-hidden m-md-2 text-center rounded">
                     <div class="col-md-5 p-lg-5 mx-auto" style="letter-spacing: 1px;">

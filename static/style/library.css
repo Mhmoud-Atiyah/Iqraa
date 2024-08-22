@@ -7,18 +7,74 @@ body {
     color: var(--App-textColor);
 }
 
+#headerCenter {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    height: 100%;
+    direction: rtl;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    background-color: transparent;
+    font-family: Moharram, serif;
+    font-size: 28px;
+    word-spacing: 1px;
+}
+
+#headerCenterBTs {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.headerCenterBt {
+    text-align: center;
+    background-color: var(--App-inputBgColor);
+    display: inline-flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    height: 30px;
+    line-height: .8em;
+    padding-right: 8px;
+    padding-left: 8px;
+    color: var(--App-placeholderColor);
+}
+
+.headerCenterBt:hover {
+    color: var(--App-buttonTextColor);
+    background-color: var(--App-buttonHoverBgColor);
+}
+
+.aboutIcon {
+    color: var(--App-buttonTextColor);
+    background-color: var(--App-buttonBgColor);
+}
+
 .containerBook {
-    padding: 15px 40px 20px 30px;
+    padding: 0 40px 10px 20px;
     background-color: var(--App-panelBgColor);
-    border-top: solid 1px var(--App-panelBorderColor);
+    border: solid 1px var(--App-panelBorderColor);
 }
 
 .rowTitle {
     display: inline-block;
-    margin-bottom: 15px;
+    margin-bottom: 3px;
     user-select: none;
     position: relative;
-    right: -5px;
+    top: 0;
+}
+
+.cursorBt:hover,
+.rowTitle:hover {
+    color: var(--App-linkHoverColor);
+}
+
+.rowTitle span {
+    font-family: Moharram, serif;
+    font-size: 32px;
 }
 
 .bookItem {
@@ -75,7 +131,7 @@ body {
     left: -7px;
     bottom: 2px;
     float: left;
-    background-color: var(--App-buttonBgColor);
+    background-color: var(--App-panelBgColor);
 }
 
 .bookItemPriceBt::after {
@@ -105,20 +161,19 @@ body {
     background-color: var(--App-buttonHoverBgColor);
 }
 
-.cursorBt:hover {
-    color: var(--App-secondaryTextColor);
+#browse_excelFileBt,
+#CoverOCR,
+#sourceAddbook {
+    position: absolute;
+    left: 18px;
+    margin-top: 6px;
+    font-size: 18px;
+    color: var(--App-textColor);
+    padding: 0 5px 0 5px;
 }
 
 #browse_excelFileBt {
-    color: var(--App-textColor);
-    padding: 7px 5px 3px 5px;
     background-color: #1D6F42;
-}
-
-#CoverOCR {
-    color: var(--App-textColor);
-    padding: 7px 5px 3px 5px;
-    background-color: var(--App-panelBorderColor);
 }
 
 .OCRScreen {
@@ -129,4 +184,8 @@ body {
     z-index: 2;
     height: 200px;
     width: 300px;
+}
+
+.partyBox:hover {
+    background-color: var(--App-inputBgColor);
 }

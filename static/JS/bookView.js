@@ -152,7 +152,7 @@ window.onload = () => {
               postData("addToMyBooks", {
                   bookId: BookID,
                   userId: ID,
-                  hashedPass: localStorage.getItem("userPass").slice(3),
+                hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null
                   data: [dateRead, dateAdd, bookshelf, bookShelves, myRate]
               }).then((response) => {
                   console.log(response);
@@ -176,7 +176,7 @@ window.onload = () => {
         postData("addToMyBooks", {
             bookId: BookID,
             userId: ID,
-            hashedPass: localStorage.getItem("userPass").slice(3),
+            hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null,
             data: [dateRead, dateAdd, bookshelf, bookShelves, myRate]
         }).then((response) => {
             console.log(response);

@@ -1,13 +1,165 @@
-const ID = getQueryParams().userId;
-/* import createLibrarySection and createLibraryBook */
-import createLibrarySection from '../components/librarySection.js'
-// Main Routine On start
+const libraryId = misc.getQueryParams().libraryId || null;
+// Global Variable hold Data
+let LibraryData = {} || null;
+// Components
+import showHideSecondaryWindow from './SecondaryWindow.js';
+import initLibrary from '../components/initLibrary.js';
+import createLibrarySection from '../components/librarySection.js';
+import addLibraryButton from "../components/libraryButton.js";
+import libraryAbout from "../components/libraryAbout.js";
+import libraryResource from "../components/libraryResource.js";
+import libraryExtensions from "../components/libraryExtensions.js";
+import libraryParties from "../components/libraryParties.js";
+import misc from './misc.js';
+
+/***********************
+ * Main Routine On start
+ * ********************/
 window.onload = () => {
-    getData(`loadConfig/${ID}`).then((config) => { // Global Config not User Config
-        /* Dark mode setting */
-        config.thememode === "dark" ? loadTheme("darkTheme") : loadTheme("lightTheme");
-        // First Time Library
-        if (config.newlibrary) { // First look Library
+    library.initModal.style.display = "none";
+    library.initBt.setAttribute("data-show", "hide");
+    /******************
+     * Get Window Ready
+     ******************/
+    misc.getData(`loadConfig/${misc.ID}`).then((config) => {
+        /*************
+         * Load Library
+         * ***********/
+        if (!config.newlibrary) {
+            library.libraryNameField.remove();
+            library.initLibraryBt.remove();
+            /********************
+             * load Other's Library
+             * ******************/
+            if (libraryId != null && config.mylibrary !== libraryId) {
+                misc.postData('loadLibrary', { // Get Authorized
+                    userId: misc.ID,
+                    libraryId: libraryId,
+                    hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null
+                }).then(otherLibraryData => {
+                    if (typeof otherLibraryData != "object") {
+                        showHideSecondaryWindow("خطأ", `
+                            غير مسموح لك بالتواجد في هذه المكتبة أو مشاهدة محتوياتها<br>
+                            <p style="color: var(--App-highlightColor);text-align: center;margin-top: 10px;">(يمكنك طلب الانضمام)</p>
+                        `, "إعادة توجيه");
+                        console.error(`Error: ${otherLibraryData}`);
+                        document.getElementById("SecondaryWindowBt_").onclick = () => {
+                            window.location.href = window.location.href.split("library")[0] + "library?userId=" + misc.ID;
+                        }
+                    } else {
+                        // set Global LibraryData
+                        LibraryData = otherLibraryData;
+                        // Enable User Mode
+                        profileBt.style.border = "solid 2px var(--App-linkHoverColor)";
+                        misc.getData(`loadLibrarySection/${otherLibraryData.main}`).then(sectionDataBooks => {
+                            createLibrarySection(`${otherLibraryData.title}`, sectionDataBooks);
+                            /*****************
+                             * 1. Set Currency
+                             * ***************/
+                            const Currency = misc.currency[otherLibraryData.currency];
+                            for (let i = 0; i < document.getElementsByClassName("bookItemPriceTextCurrency").length; i++) {
+                                document.getElementsByClassName("bookItemPriceTextCurrency")[i].innerText = Currency;
+                            }
+                            /***********
+                             * Open Book
+                             * **********/
+                            for (let index = 0; index < openBookBt.length; index++) {
+                                openBookBt[index].onclick = () => {
+                                    if (!misc.isElectron()) {
+                                        window.location.href = `https://${misc.DOMAIN}/bookview?userId=${misc.ID}&bookId=${openBookBt[index].getAttribute("data-id")}`;
+                                    } else {
+                                        window.IPC.openBookWindow(openBookBt[index].getAttribute("data-id"), misc.ID);
+                                    }
+                                }
+                            }
+                        }).catch(err => {
+                            console.error(`error occurred ${err}`)
+                        })
+                    }
+                }).then(() => {
+                    /*************************
+                     * Activate library button
+                     * ***********************/
+                    for (let i = 0; i < document.getElementsByClassName("headerCenterBt").length; i++) {
+                        const id = document.getElementsByClassName("headerCenterBt")[i].getAttribute("data-libraryId");
+                        if (libraryId === id) {
+                            document.getElementsByClassName("headerCenterBt")[i].style.color = "var(--App-buttonTextColor)";
+                            document.getElementsByClassName("headerCenterBt")[i].style.backgroundColor = "var(--App-buttonBgColor)";
+                        }
+                    }
+                });
+            }
+            /****************
+             * Load my Library
+             * **************/
+            else {
+                if (config.mylibrary != null) {
+                    misc.postData('loadLibrary', { // Get Authorized
+                        userId: misc.ID,
+                        libraryId: config.mylibrary,
+                        hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null
+                    }).then(myLibraryData => {
+                        if (typeof myLibraryData != "object") {
+                            console.error(`Error: ${myLibraryData}`);
+                        } else {
+                            // set Global LibraryData
+                            LibraryData = myLibraryData;
+                            // Enable Admin Mode
+                            profileBt.style.border = "solid 2px var(--App-redColor)";
+                            /*******************
+                             * Load Library View
+                             * *****************/
+                            misc.getData(`loadLibrarySection/${myLibraryData.main}`).then(DataBooks => {
+                                createLibrarySection(`مكتبتي`, DataBooks);
+                                // 1. Set Currency
+                                const Currency = misc.currency[myLibraryData.currency];
+                                for (let i = 0; i < document.getElementsByClassName("bookItemPriceTextCurrency").length; i++) {
+                                    document.getElementsByClassName("bookItemPriceTextCurrency")[i].innerText = Currency;
+                                }
+                                // 2. Open Book Bt
+                                for (let index = 0; index < openBookBt.length; index++) {
+                                    openBookBt[index].onclick = () => {
+                                        if (!misc.isElectron()) {
+                                            window.location.href = `https://${misc.DOMAIN}/bookview?userId=${misc.ID}&bookId=${openBookBt[index].getAttribute("data-id")}`;
+                                        } else {
+                                            window.IPC.openBookWindow(openBookBt[index].getAttribute("data-id"), misc.ID);
+                                        }
+                                    }
+                                }
+                            }).catch(err => {
+                                console.error(`error occurred ${err}`)
+                            })
+                        }
+                    });
+                }
+            }
+            /*****************************
+             * Libraries Top Buttons
+             * ***************************/
+            if (config.libraries != null && config.libraries.length > 0) {
+                // TODO: remove this since here is a lot of requests
+                for (let i = 0; i < config.libraries.length; i++) {
+                    const libraryId = config.libraries[i];
+                    misc.postData('loadLibraries', { // Get Authorized
+                        userId: misc.ID,
+                        libraryId: libraryId,
+                        hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null
+                    }).then(libraryData => {
+                        addLibraryButton(libraryData, window.location.href, misc.ID);
+                    });
+                }
+            }
+            /****************
+             * Responsive View
+             * **************/
+            const headerCenterSpace = document.body.offsetWidth - document.getElementById("headerRight").offsetWidth - searchInput.offsetWidth - addBookBt.offsetWidth - 80;
+            document.getElementById("headerCenter").style.right = document.getElementById("headerRight").offsetWidth + 40 + 'px';
+            document.getElementById("headerCenter").style.width = headerCenterSpace + 'px';
+        }
+        /****************
+         * Welcome Message
+         * **************/
+        else {
             let element = `<div class="newSection position-relative overflow-hidden m-md-2 text-center rounded p-4" style="border: solid 1px var(--App-panelBorderColor);font-family: Moharram, serif">
                     <div class="col-md-5 p-lg-5 mx-auto" style="letter-spacing: 1px;">
                         <h1 class="text-warning" style="font-family: DecorationFont2,serif;"> وأرضك من حلي التاريخ رَق<br> سماؤك من حلى الماضي كتاب</h1>
@@ -21,38 +173,58 @@ window.onload = () => {
             Div.id = "mainChild";
             Div.innerHTML = element;
             mainView.append(Div);
+            library.initBt.classList.add("pulsed-border");
         }
-        accountBt.innerText = config.fname + " " + config.lname;
-        profileBt.src = config.profile;
-        profileBt.alt = config.account;
     })
-    document.getElementById("main").style.height = window.innerHeight - 60 + 'px';
-    library.initModal.style.display = "none";
-    library.initBt.setAttribute("data-show", "hide");
-    library.LibraryInfoBt.setAttribute("data-show", "hide");
-
-    createLibrarySection("الكتب العربية الأكثر مبيعًا", [
-        {
-            id: 8507947,
-            src: "https://www.shoroukbookstores.com/images/Books/thumb/9789770937570.jpg",
-            title: "علاقات خطيرة",
-            author: "محمد طه",
-            price: "134",
-            currency: "د.ق"
-        }
-    ]);
-    /* Open Book */
-    for (let index = 0; index < openBookBt.length; index++) {
-        openBookBt[index].onclick = () => {
-            if (!isElectron()) {
-                window.location.href = `https://${DOMAIN}/bookview?userId=${ID}&bookId=${openBookBt[index].getAttribute("data-id")}`;
-            } else {
-                window.IPC.openBookWindow(openBookBt[index].getAttribute("data-id"), ID);
-            }
-        }
+};
+/****************
+ * Library Info Bt
+ * ***************/
+library.LibraryInfoBt.onclick = () => {
+    showHideSecondaryWindow("بطاقة التعريف", libraryAbout(LibraryData), "تمام");
+}
+/****************
+ * Parties Button
+ * **************/
+library.PartiesBt.onclick = () => {
+    // TODO: you have two choices 1. for each id get data or from pg create routine to get data
+    libraryParties({
+        id: 1,
+        libraryId: "8ca33e51-4a1d-4831-952d-beac82779e00",
+        name: "Emma Watson Filipe",
+        visits: 23,
+        cover: "https://ntvb.tmsimg.com/assets/assets/247026_v9_bc.jpg"
+    });
+}
+/********************
+ * LibraryExtensionsBt
+ * *********************/
+library.ExtensionsBt.onclick = () => {
+    // TODO: add extension for library which print book on demand !
+    libraryExtensions();
+}
+/*********************
+ * Book OCR Scan Bt
+ * ********************/
+library.OCRBt.onclick = () => {
+    let div = `<video id="OCRScreen" autoplay></video>`;
+    showHideSecondaryWindow("البحث عن الكتاب بالغلاف", div, "تم");
+    /* TODO: misc.enableCamera().then(() => {});*/
+}
+/***************
+ * Admin Mode Bt
+ **************/
+library.AdminModeBt.onclick = () => {
+    if (LibraryData.adminid != null && LibraryData.hash != null) {
+        // User is Admin
+        libraryResource();
+    } else {
+        showHideSecondaryWindow("حدد مصادر بيانات المكتبة", `لا يمكنك تحديد مصادر هذه المكتبة أنت عضو بها فقط !<br>`, "تمام");
     }
 }
-/* Misc Theme */
+/**********
+ * Misc Theme
+ * *******/
 library.libraryNameInput.onclick = () => {
     library.libraryNameField.classList.add("mb-2");
     library.libraryIDField.style.display = "none";
@@ -62,7 +234,9 @@ library.libraryIDInput.onclick = () => {
     library.libraryNameField.style.display = "none";
     library.initLibraryBt.classList.add("disabled");
 }
-/* Init Library Button */
+/*********************
+ * Init Library Button
+ * ********************/
 library.initBt.onclick = () => {
     if (library.initBt.getAttribute("data-show") === "show") {
         library.initBt.setAttribute("data-show", "hide");
@@ -76,98 +250,74 @@ library.initBt.onclick = () => {
     } else {
         library.initBt.setAttribute("data-show", "show");
         library.initModal.style.display = "block";
+        library.initBt.classList.remove("pulsed-border");
         setTimeout(() => {
             library.initIcon.className = "fa-solid fa-xmark";
         }, 1800);
     }
 }
-/* Create New Library Routine */
+/***************************
+ * Create New Library Routine
+ ***************************/
 library.initLibraryBt.onclick = () => {
     if (library.libraryNameInput.value !== "") {
-        const Name = library.libraryNameInput.value;
-        //TODO: create Library DB
-        //TODO: Check if Name Exits
-        showHideSecondaryWindow("حدد مصادر بيانات المكتبة", `
-            <!-- Excel -->
-            <div class="form-check form-switch mt-1 border rounded" style="padding: 15px 10px 10px 10px ;">
-                <input class="form-control-file" type="file" style="display:none" id="browse_excelFile" accept=".xls">
-                <label class="form-check-label" for="flexSwitchCheckChecked">تحميل ملف بيانات مكتبتك (Excel)</label>
-                <a class="fw-bold border rounded cursorBt me-4" href="#" id="browse_excelFileBt">
-                    اختر ملف<i class="fa-solid fa-file-excel me-2"></i></a>
-            </div>
-            <!-- OCR -->
-            <div class="form-check form-switch mt-1 border rounded" style="padding: 15px 10px 10px 10px ;">
-                <label class="form-check-label" for="flexSwitchCheckChecked">أضف الكناب بالبحث عن الغلاف (OCR)</label>
-                <a class="fw-bold border rounded cursorBt me-1" href="#" id="CoverOCR">
-                    الكاميرا <i class="fa-solid fa-barcode me-2"></i></a>
-            </div>
-            <div class="form-check form-switch mt-1 border rounded" style="padding: 15px 10px 10px 10px ;text-align:center">
-                <label class="form-check-label" for="flexSwitchCheckChecked">أضف الكناب يدوياً بالضغط على أضف كتاب بالأعلى</label>
-            </div>
-            `, "تم")
+        const libraryName = library.libraryNameInput.value;
+        if (libraryId === null) { // Library Not Exist
+            initLibrary(libraryName);
+        }
         library.initBt.click();
+        library.initBt.classList.add("disabled")
     } else {
-        library.libraryNameInput.style.border = "solid red 1px";
-        showHideSecondaryWindow("خطأ", "املاء هذا الحقل <u>(اسم المكتبة)</u> أولاٌ", "تم");
+        library.libraryNameInput.style.border = "solid #b3261eff 1px";
+        showHideSecondaryWindow("خطأ", "املأ هذا الحقل <u>(اسم المكتبة)</u> أولاٌ", "تم");
         setTimeout(() => {
+            showHideSecondaryWindow();
             library.libraryNameInput.style.border = "";
         }, 3000);
     }
 }
-/* Join to Already Exist Library Routine */
+/***********************
+ * Join to Library Routine
+ ***********************/
 library.joinLibraryBt.onclick = () => {
-    if (library.libraryIDInput.value !== "") {
-        //TODO: join to library
+    const regex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+    // check id first
+    if (library.libraryIDInput.value !== "" && regex.test(library.libraryIDInput.value) /*&& library.libraryIDInput.value !== libraryId*/) {
+        misc.postData('joinLibrary', { // Get Authorized
+            userId: misc.ID,
+            libraryId: library.libraryIDInput.value || null,
+            hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null
+        }).then(res => {
+            if (typeof res === "object") {
+                if (!res.status) {// User Added to Library
+                    showHideSecondaryWindow("إتمام الانضمام", `
+                            تمت عملية الانضمام بنجاح !<br>
+                            <p style="color: var(--App-highlightColor);text-align: center;margin-top: 10px;">(اضغط اعادة التوجيه)</p>
+                        `, "إعادة توجيه");
+                    console.log(res.msg);
+                    document.getElementById("SecondaryWindowBt_").onclick = () => {
+                        window.location.href = window.location.href.split("library")[0] + "library?libraryId=" + library.libraryIDInput.value + "&userId=" + misc.ID;
+                    }
+                } else {
+                    showHideSecondaryWindow("خطأ", `
+                            تم إرسال طلب انضمام إلى مدير المكتبة وسيتم الرد عليك قريباً<br>
+                            <p style="color: var(--App-highlightColor);text-align: center;margin-top: 10px;">(يمكنك طلب الانضمام)</p>
+                        `, "تم");
+                    console.log(res.msg);
+                    document.getElementById("SecondaryWindowBt_").onclick = () => {
+                        showHideSecondaryWindow();
+                        library.initBt.click();
+                        library.libraryIDInput.value = "";
+                    }
+                }
+            }
+        })
     } else {
-        library.libraryIDInput.style.border = "solid red 1px";
+        library.libraryIDInput.style.border = "solid #b3261eff 1px";
         showHideSecondaryWindow("خطأ", "إملاء هذا الحقل <u>(الرَّقْم التعريفي)</u> أولاٌ", "تم");
+        setTimeout(() => {
+            showHideSecondaryWindow();
+            library.libraryIDInput.style.border = "";
+        }, 3000);
     }
-}
-/* Library Info Bt */
-library.LibraryInfoBt.onclick = () => {
-    let div = `
-        
-    `;
-    showHideSecondaryWindow("حول", div, "تم");
-}
-/* Book OCR Scan Bt */
-library.OCRBt.onclick = () => {
-    let div = `<video id="OCRScreen" autoplay></video>`;
-    showHideSecondaryWindow("البحث عن الكتاب بالغلاف", div, "تم");
-    enableCamera().then(() => {
-    });
-}
-// LibraryExtensionsBt
-library.ExtensionsBt.onclick = () => {
-    //TODO: on load get already enabled buttons
-    let div = `
-         <!-- Hindawi -->
-            <div class="form-check form-switch pt-2 me-2">
-                <input class="form-check-input" type="checkbox">
-                <label class="form-check-label" for="flexSwitchCheckChecked">مؤسسة هنداوي</label>
-            </div>
-            <!-- Shamela -->
-            <div class="form-check form-switch mb-1 mt-1 me-2">
-                <input class="form-check-input" type="checkbox">
-                <label class="form-check-label" for="flexSwitchCheckChecked">المكتبة الشاملة </label>
-            </div>
-            <!-- Gutenberg -->
-            <div class="form-check form-switch mb-1 mt-1 me-2">
-                <input class="form-check-input" type="checkbox">
-                <label class="form-check-label" for="flexSwitchCheckChecked">مكتبة جوتنبرج</label>
-            </div>
-            <!-- TelegramBot -->
-            <div class="form-check form-switch mb-1 mt-1 me-2">
-                <input class="form-check-input" type="checkbox">
-                <label class="form-check-label" for="flexSwitchCheckChecked">قناة تليجرام (<u>يمكنك اضافة قنوات
-                        مختلفة</u>)</label>
-            </div>
-            <!-- Amazon -->
-            <div class="form-check form-switch mb-1 mt-1 me-2">
-                <input class="form-check-input" type="checkbox">
-                <label class="form-check-label" for="flexSwitchCheckChecked">كتب امازون <u>(في حالة تفعيل خيار
-                        الشراء)</u></label>
-            </div>
-    `;
-    showHideSecondaryWindow("تفعيل بعض الاضافات", div, "تم");
 }

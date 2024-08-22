@@ -56,6 +56,7 @@ module.exports = {
     USERSPATH,
     CACHEPATH,
     DBPath,
+    DOMAIN,
     PORT,
     max,
     min

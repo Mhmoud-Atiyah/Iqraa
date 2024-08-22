@@ -9,7 +9,22 @@ input[type="search"]::-webkit-search-results-decoration {
     display: none;
 }
 
-input[type="search"]::-webkit-input-placeholder {
+input[type="search"],
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea[class="form-control"],
+select[class="form-select"] {
+    font-family: GilroyLight, serif;
+    color: var(--App-textColor);
+    background-color: var(--App-inputBgColor);
+    border-color: var(--App-inputBorderColor);
+}
+
+input[type="search"]::-webkit-input-placeholder,
+textarea[class="form-control"]::-webkit-input-placeholder,
+input[type="text"]::-webkit-input-placeholder,
+select[class="form-select"]::-webkit-color-swatch {
     color: var(--App-placeholderColor);
 }
 
@@ -28,6 +43,54 @@ ul {
 
 .cursorBt {
     cursor: pointer;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    border: 3px solid;
+    border-color: var(--App-inputBgColor) var(--App-inputBgColor) transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+.loader::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    border: 3px solid;
+    border-color: transparent var(--App-inputBorderColor) var(--App-inputBorderColor);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    animation: rotationBack 0.5s linear infinite;
+    transform-origin: center center;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotationBack {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
 }
 
 body {
@@ -56,9 +119,9 @@ body {
 }
 
 #headerRight {
-    float: right;
-    position: relative;
-    top: 3px;
+    position: fixed;
+    right: 10px;
+    top: 8px;
 }
 
 #theme-icon {
@@ -72,7 +135,7 @@ body {
     transform: scaleX(-1);
 }
 
-#profile-pic {
+.profilePic {
     display: inline;
     position: relative;
     top: -3px;
@@ -275,6 +338,7 @@ body {
     display: block;
     position: absolute;
     z-index: 1;
+    /*TODO: make it dynamic */
     top: 15%;
     color: var(--App-textColor);
     background-color: var(--App-panelBgColor);

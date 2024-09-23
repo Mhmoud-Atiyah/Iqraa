@@ -1,3 +1,4 @@
+// TODO: add close Button
 // Components
 const SecondaryWindow = document.getElementById("SecondaryWindow");
 const SecondaryWindowHeader = document.getElementById("SecondaryWindowHeader_");

@@ -1,4 +1,5 @@
-const {DBPath,DOMAIN} = require("./config");
+const {DBPath, DOMAIN} = require("./config");
+const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
 
 const {Pool} = require('pg');
 
@@ -24,12 +25,20 @@ const pool = new Pool({
  *   .catch(err => console.error('Error creating table:', err));
  */
 async function createTable(tableName, columns) {
-    // Construct the SQL query to create the table
-    const query = `CREATE TABLE IF NOT EXISTS ${tableName}
-                   (
-                       ${columns}
-                   );`;
-
+    let query = '';
+    // Check for table of User
+    if (uuidRegex.test(tableName.split("_")[1])) {
+        query = `CREATE TABLE IF NOT EXISTS \"${tableName}\"
+                 (
+                     ${columns}
+                 );`;
+    } else {
+        query = `CREATE TABLE IF NOT EXISTS ${tableName}
+                 (
+                     ${columns}
+                 );`;
+    }
+    // Create Table
     try {
         const result = await pool.query(query);
         // Construct the SQL query to create the table
@@ -65,7 +74,7 @@ async function insertData(tableName, data) {
         const values = Object.values(data);
 
         const query = `
-            INSERT INTO ${tableName} (${keys.join(', ')})
+            INSERT INTO \"${tableName}\" (${keys.join(', ')})
             VALUES (${keys.map((_, i) => `$${i + 1}`).join(', ')})
         `;
         const result = await pool.query(query, values);
@@ -104,6 +113,42 @@ async function checkUserCredentials(userAccount, userPassword) {
 }
 
 /**
+ * Function to authenticate a user based on credentials
+ * @param {UUID} userId -  containing user ID
+ * @param {string} hashedPass - containing user Password
+ *
+ * @returns {boolean} - Returns true if the credentials are valid, or false if the credentials are invalid.
+ */
+async function authenticateUser(userId, hashedPass) {
+    try {
+        // Ensure userId and hashedPass are provided
+        if (!userId || !hashedPass) {
+            console.error(`Error Authentication: user [UserId: ${userId}]`);
+            return false;
+        }
+        // Get user record from the database
+        const credentials = await getRecord("users", userId);
+
+        // Check if user exists
+        if (credentials) {
+            // Check if provided password matches the stored hashed password
+            if (hashedPass === credentials.pass) {
+                return true;
+            } else {
+                console.error(`User [userId: ${userId}] provided an incorrect password.`);
+                return false;
+            }
+        } else {
+            console.error(`User [userId: ${userId}] not found.`);
+            return false;
+        }
+    } catch (error) {
+        console.error('An error occurred during authentication:', error);
+        return false;
+    }
+}
+
+/**
  * @function checkIfIdExists
  * @description Checks if a given ID exists in the specified PostgreSQL table.
  * @param {string} tableName - The name of the table to check.
@@ -116,7 +161,7 @@ async function checkIfIdExists(tableName, id) {
         // Ensure tableName is a valid identifier (you might want to validate or sanitize it)
         const query = `
             SELECT EXISTS (SELECT 1
-                           FROM ${tableName}
+                           FROM \"${tableName}\"
                            WHERE id = $1);
         `;
 
@@ -128,7 +173,6 @@ async function checkIfIdExists(tableName, id) {
     } catch (error) {
         // Handle errors (e.g., log or rethrow)
         console.error('Error checking ID existence:', error);
-        throw error;
     }
 }
 
@@ -143,7 +187,7 @@ async function checkIfIdExists(tableName, id) {
  * @param {string} tableName - Table to edit
  * @param {number} recordID - The ID of the user whose record needs to be updated.
  * @param {string} column - The name of the column to be updated.
- * @param {string|number|array} newValue - The new value to set for the specified column. This can be of type string or number,
+ * @param {string|number|array|boolean} newValue - The new value to set for the specified column. This can be of type string or number,
  *                                    depending on the data type of the column.
  *
  * @async
@@ -161,7 +205,7 @@ async function checkIfIdExists(tableName, id) {
 async function updateRecord(tableName, recordID, column, newValue) {
     // Define the SQL query with parameters
     const query = `
-        UPDATE ${tableName}
+        UPDATE \"${tableName}\"
         SET ${column} = $1
         WHERE id = $2
     `;
@@ -192,9 +236,8 @@ async function updateRecord_Push(tableName, recordID, column, newItem) {
     // Define the SQL query with parameters
     const query = `
         UPDATE ${tableName}
-        SET ${column} = array_append(${column}, $1)
-        WHERE id = $2
-          AND NOT ($1 = ANY (${column}));
+        SET ${column} = array_append(${column}, $1::uuid)
+        WHERE id = $2::uuid;
     `;
     try {
         const result = await pool.query(query, [newItem, recordID]);
@@ -242,27 +285,89 @@ async function updateRecord_Pop(tableName, recordID, column, itemToRemove) {
  * @brief Retrieves a record by id from the 'Table' table.
  *
  * @param {string} table - The Table to retrieve.
- * @param {number} recordID - The username of the user to retrieve.
+ * @param {uuid | number} recordID - The username of the user to retrieve.
  * @returns {Promise<object|null>} - Returns a promise that resolves to the user record if found, or null if not found.
  *
  * @throws {Error} - Throws an error if there is a problem with the database query.
  */
 async function getRecord(table, recordID) {
-    const query = `
-        SELECT *
-        FROM ${table}
-        WHERE id = $1;
-    `;
     try {
-        const result = await pool.query(query, [recordID]);
-        // Check if any row was returned and return the first row if found
-        return result.rows.length > 0 ? result.rows[0] : null;
+        if (uuidRegex.test(recordID)) {
+            const query = `
+                SELECT *
+                FROM \"${table}\"
+                WHERE id = \'${recordID}\';
+            `;
+            const result = await pool.query(query);
+            // Check if any row was returned and return the first row if found
+            return result.rows.length > 0 ? result.rows[0] : null;
+        } else if (typeof recordID === 'number') {
+            const query = `
+                SELECT *
+                FROM \"${table}\"
+                WHERE id = $1;
+            `;
+            const result = await pool.query(query, [recordID]);
+            // Check if any row was returned and return the first row if found
+            return result.rows.length > 0 ? result.rows[0] : null;
+        }
     } catch (error) {
-        console.error('Error executing query:', error);
-        throw new Error('Error retrieving user record');
+        console.error(`user try to Retrieve [${recordID}] but Not found in ${table} table: `, error);
     }
 }
 
+/**
+ * @brief Retrieves a User Main Data by id.
+ *
+ * @param {uuid} userID - The ID of the user to retrieve.
+ * @returns {Promise<object|null>} - Returns a promise that resolves to the user record if found, or null if not found.
+ *
+ * @throws {Error} - Throws an error if there is a problem with the database query.
+ */
+
+/**
+ * @brief Retrieves users records for a list of UUIDs from the database.
+ *
+ * This function accepts an array of UUIDs and retrieves corresponding user records
+ * from the database. It performs a single SQL query using an `IN` clause to fetch
+ * all records at once, which is generally more efficient than making multiple
+ * queries.
+ *
+ * @param userIDs A list of UUIDs for which to retrieve user records. Each UUID must
+ *        be a valid UUID string.
+ *
+ * @return A Promise that resolves to an array of user records. Each record is an
+ *         object containing the following fields: `fullname`, `account`,
+ *         `profile`, `info`, and `socket`. If no records are found, an empty array
+ *         is returned.
+ *
+ * @throws {Error} Throws an error if the database query fails. The error is logged
+ *         to the console.
+ *
+ */
+async function getUsersRecords(userIDs) {
+    try {
+        if (userIDs.length === 0) return [];
+
+        const placeholders = userIDs.map((_, i) => `$${i + 1}`).join(', ');
+        const query = `
+            SELECT id,
+                   CONCAT(fname, ' ', lname) AS fullname,
+                   account,
+                   profile,
+                   info,
+                   socket
+            FROM users
+            WHERE id IN (${placeholders});
+        `;
+        const result = await pool.query(query, userIDs);
+
+        return result.rows;
+    } catch (error) {
+        console.error('Error retrieving user records: ', error);
+        return [];
+    }
+}
 
 /**
  * Get library section books along with their details.
@@ -320,40 +425,47 @@ async function getLibrarySectionBooks(SectionId) {
 async function loadMainView(userID, section) {
     try {
         // Construct the dynamic table name
-        const tableName = `user_${userID}`;
+        const tableName = `books_${userID}`;
 
         // Step 1: Query the dynamic table to get book IDs for the specified user ID
         const myBooksIDs = await pool.query(`SELECT id
-                                             FROM ${tableName}
+                                             FROM \"${tableName}\"
                                              where bookshelf = '${section}'`);
+        /**************
+         * Books Exist ?
+         * *************/
         if (myBooksIDs.rows.length === 0) {
-            throw new Error('ID not found in user_${userID} table');
+            console.error(`user [userId: ${userID}] try to Retrieve [${section}] but No Books found in books_${userID} table`);
         }
+        /***************
+         * Organise Books
+         * ***************/
+        else {
+            // Extract book IDs from the query result
+            const bookIds = myBooksIDs.rows.map(row => row.id);
 
-        // Extract book IDs from the query result
-        const bookIds = myBooksIDs.rows.map(row => row.id);
+            // Step 2: Query `books` table for details of each book ID
+            const bookDetailsPromises = bookIds.map(bookId =>
+                pool.query('SELECT title, coversrc FROM books WHERE id = $1', [bookId])
+            );
 
-        // Step 2: Query `books` table for details of each book ID
-        const bookDetailsPromises = bookIds.map(bookId =>
-            pool.query('SELECT title, coversrc FROM books WHERE id = $1', [bookId])
-        );
+            // Await all the queries
+            const bookResults = await Promise.all(bookDetailsPromises);
 
-        // Await all the queries
-        const bookResults = await Promise.all(bookDetailsPromises);
-
-        // Combine results into a single array
-        const bookData = bookResults.map((result, index) => {
-            if (result.rows.length === 0) {
-                throw new Error(`ID ${bookIds[index]} not found in books table`);
-            }
-            const {title, coversrc: bookCover} = result.rows[0];
-            return {bookId: bookIds[index], title, bookCover};
-        });
-
-        return bookData;
+            // Combine results into a single array
+            const bookData = bookResults.map((result, index) => {
+                if (result.rows.length === 0) {
+                    console.error(`ID ${bookIds[index]} not found in books table`);
+                }
+                const {title, coversrc: bookCover} = result.rows[0];
+                return {bookId: bookIds[index], title, bookCover};
+            });
+            // Return Data
+            console.log(`user [userId: ${userID}] Retrieve [${section}] in books_${userID} table Successfully`);
+            return bookData;
+        }
     } catch (error) {
-        console.error('Error:', error.message);
-        throw error;
+        console.error(`Error: user [userId: ${userID}]:: `, error.message);
     }
 }
 
@@ -385,8 +497,10 @@ module.exports = {
     insertData,
     createTable,
     getRecord,
+    getUsersRecords,
     getLibrarySectionBooks,
     checkUserCredentials,
+    authenticateUser,
     checkIfIdExists,
     updateRecord,
     updateRecord_Push,

@@ -4,15 +4,15 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { createLoginWindow } = require('./front');
-const { generateUniqueRandomNumber } = require('./misc');
-const { generateHash } = require("./encryption")
-const { InsertToMyTable, InsertToBooksTable, getRecord, setRecord, createToDatabases, checkExist } = require('./sqlite');
-const { getCover, getAbout, getBookData } = require('./bookData');
-const { readJson, editJsonFile, readCSS } = require('./files');
-const { ASSETSPATH, DATAPATH, USERSPATH, CACHEPATH } = require('./config');
-const { checkOnline } = require("./connection");
-const { Search } = require("./searchEngine");
+const {createLoginWindow} = require('./front');
+const {generateUniqueRandomNumber} = require('./misc');
+const {generateHash} = require("./encryption")
+const {InsertToMyTable, InsertToBooksTable, getRecord, setRecord, createToDatabases, checkExist} = require('./sqlite');
+const {getCover, getAbout, getBookData} = require('./bookData');
+const {readJson, editJsonFile, readCSS} = require('./files');
+const {ASSETSPATH, DATAPATH, USERSPATH, CACHEPATH} = require('./config');
+const {checkOnline} = require("./connection");
+const {Search} = require("./searchEngine");
 // SOME SPEICAL DEFINE
 const max = 1000000; // maximum number of users
 const min = 1;// minimum number of users
@@ -41,13 +41,19 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             try {
                 /* Get credentials */
-                const { username, password } = JSON.parse(body);
+                const {username, password} = JSON.parse(body);
                 var record;
                 if (password.includes("|||")) { // hashed from local storage
                     // TODO: Need Solution to Avoid SQL Injection
-                    record = `SELECT * FROM users WHERE account = "${username}" AND pass = "${password.split("|||")[1]}";`;
+                    record = `SELECT *
+                              FROM users
+                              WHERE account = "${username}"
+                                AND pass = "${password.split("|||")[1]}";`;
                 } else {
-                    record = `SELECT * FROM users WHERE account = "${username}" AND pass = "${generateHash(password)}";`;
+                    record = `SELECT *
+                              FROM users
+                              WHERE account = "${username}"
+                                AND pass = "${generateHash(password)}";`;
                 }
                 /* If User Exist ? */
                 getRecord(record).then(userData => {
@@ -55,7 +61,7 @@ const server = http.createServer((req, res) => {
                         const Id = JSON.parse(userData)[0].id;
                         const Profile = JSON.parse(userData)[0].profile;
                         const EncryptedPass = JSON.parse(userData)[0].pass;
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.writeHead(200, {'Content-Type': 'application/json'});
                         res.write(JSON.stringify({
                             id: Id,
                             profile: Profile,
@@ -63,8 +69,8 @@ const server = http.createServer((req, res) => {
                         }));
                         res.end();
                     } else {
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.write(JSON.stringify({ id: false }));
+                        res.writeHead(200, {'Content-Type': 'application/json'});
+                        res.write(JSON.stringify({id: false}));
                         res.end();
                     }
                 }).catch(err => {
@@ -72,8 +78,8 @@ const server = http.createServer((req, res) => {
                 })
             } catch (error) {
                 console.error('Error parsing JSON:', error);
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Error parsing JSON' }));
+                res.writeHead(400, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({error: 'Error parsing JSON'}));
             }
         });
     } else if (req.url.includes('loadConfig')) { // Load config file
@@ -108,7 +114,7 @@ const server = http.createServer((req, res) => {
             (async () => {
                 try {
                     const querys = await Search(query);
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.writeHead(200, {'Content-Type': 'application/json'});
                     res.write(JSON.stringify(querys));
                     res.end();
                 } catch (error) {
@@ -120,36 +126,29 @@ const server = http.createServer((req, res) => {
         const query_ = req.url.split('/loadUserSection/')[1];
         const [id, section] = decodeURIComponent(query_).split('|');
         // TODO: SELECT * FROM ${section} --> SELECT * FROM ${section_ID}
-        var sqlQuery = `SELECT * FROM ${section}_${id};`;
-        var sqlTagQuery = `WITH RECURSIVE split_tags(id, tag, rest) AS (
-                            SELECT
-                                id,
-                                substr(tags || ',', 1, instr(tags || ',', ',') - 1) AS tag,
-                                substr(tags || ',', instr(tags || ',', ',') + 1) AS rest
-                            FROM
-                                ${section}_${id}
-                            WHERE
-                                tags <> ''
-                            UNION ALL
-                            SELECT
-                                id,
-                                substr(rest, 1, instr(rest, ',') - 1),
-                                substr(rest, instr(rest, ',') + 1)
-                            FROM
-                                split_tags
-                            WHERE
-                                rest <> ''
-                        )
-                        SELECT DISTINCT tag
-                        FROM split_tags
-                            ORDER BY tag;`;
+        var sqlQuery = `SELECT *
+                        FROM ${section}_${id};`;
+        var sqlTagQuery = `WITH RECURSIVE split_tags(id, tag, rest) AS (SELECT id,
+                                                                               substr(tags || ',', 1, instr(tags || ',', ',') - 1) AS tag,
+                                                                               substr(tags || ',', instr(tags || ',', ',') + 1)    AS rest
+                                                                        FROM ${section}_${id}
+                                                                        WHERE tags <> ''
+                                                                        UNION ALL
+                                                                        SELECT id,
+                                                                               substr(rest, 1, instr(rest, ',') - 1),
+                                                                               substr(rest, instr(rest, ',') + 1)
+                                                                        FROM split_tags
+                                                                        WHERE rest <> '')
+                           SELECT DISTINCT tag
+                           FROM split_tags
+                           ORDER BY tag;`;
         getRecord(sqlQuery).then(records => {
             getRecord(sqlTagQuery).then(recordsTags => {
                 let dataToSend = {
                     books: records,
                     tags: recordsTags
                 };
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.writeHead(200, {'Content-Type': 'application/json'});
                 res.write(JSON.stringify(dataToSend));
                 res.end();
             })
@@ -175,7 +174,8 @@ const server = http.createServer((req, res) => {
                 if (err) throw err;
                 let Data = JSON.parse(data);
                 setRecord(`
-                    INSERT INTO books (bookID, title, author, myRating,	avgRating, publisher, pagesCount, pubDate, tags, about, coverSrc, readCount) 
+                    INSERT INTO books (bookID, title, author, myRating, avgRating, publisher, pagesCount, pubDate, tags,
+                                       about, coverSrc, readCount)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
                     `${Data.id}`,
                     `${Data.title}`,
@@ -203,8 +203,10 @@ const server = http.createServer((req, res) => {
                 });
             })
         } else { // Get Data from Database
-            getRecord(`SELECT * FROM books WHERE bookID = ${ID};`).then(bookData => {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+            getRecord(`SELECT *
+                       FROM books
+                       WHERE bookID = ${ID};`).then(bookData => {
+                res.writeHead(200, {'Content-Type': 'application/json'});
                 res.write(bookData);
                 res.end();
             }).catch(err => {
@@ -217,7 +219,7 @@ const server = http.createServer((req, res) => {
         /* Use IQraa To Download Data Using ID of Book */
         getBookData(ID).then((obj) => {
             console.log(`Book With Id [${ID}] Retrieved From Goodreads`);
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, {'Content-Type': 'application/json'});
             res.write(JSON.stringify({}));
             res.end();
         }).catch((err) => {
@@ -229,7 +231,7 @@ const server = http.createServer((req, res) => {
         const config = decodeURIComponent(query_).slice(query_.indexOf("/") + 1).split('|');
         try {
             editJsonFile(`${USERSPATH}/${id}/config.json`, 1, config);
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, {'Content-Type': 'application/json'});
             res.write(JSON.stringify(true));
             res.end();
         } catch (parseErr) {
@@ -245,7 +247,7 @@ const server = http.createServer((req, res) => {
                 return;
             }
             const signUpData = JSON.parse(content);
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, {'Content-Type': 'application/json'});
             res.write(JSON.stringify(signUpData));
             res.end();
         });
@@ -266,7 +268,8 @@ const server = http.createServer((req, res) => {
                     gender,
                     account,
                     profile,
-                    password } = JSON.parse(body);
+                    password
+                } = JSON.parse(body);
                 /* 
                     Add User To Users's Table and Directory 
                 */
@@ -283,7 +286,7 @@ const server = http.createServer((req, res) => {
                 // TODO: Check if userName Exist
                 //  Add User To Users's Table
                 setRecord(`
-                    INSERT INTO users (id, fName, lName, birth, country, gender, account, profile, pass) 
+                    INSERT INTO users (id, fName, lName, birth, country, gender, account, profile, pass)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
                     `${id}`,
                     `${firstName}`,
@@ -335,12 +338,12 @@ const server = http.createServer((req, res) => {
                             }
                         });
                 });
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.writeHead(200, {'Content-Type': 'application/json'});
                 res.end(JSON.stringify({}));
             } catch (error) {
                 console.error('Error parsing JSON:', error);
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Error parsing JSON' }));
+                res.writeHead(400, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({error: 'Error parsing JSON'}));
             }
         });
         /* Re-open Login Window again */
@@ -353,37 +356,94 @@ const server = http.createServer((req, res) => {
         });
         req.on('end', () => {
             try {
-                const { id, filepath } = JSON.parse(body);
+                const {id, filepath} = JSON.parse(body);
                 // Create Read, Want and Suggest Tables for User
                 createToDatabases([
-                    `CREATE TABLE IF NOT EXISTS read_${id} (
-                        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
-                        cover TEXT,
-                        title TEXT,
-                        review TEXT,
-                        tags TEXT,
-                        FOREIGN KEY (id) REFERENCES books(bookID)
-                    );`,
-                    `CREATE TABLE IF NOT EXISTS want_${id} (
-                        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
-                        cover TEXT,
-                        title TEXT,
-                        review TEXT,
-                        tags TEXT,
-                        FOREIGN KEY (id) REFERENCES books(bookID)
-                    );`,
-                    `CREATE TABLE IF NOT EXISTS suggest_${id} (
-                        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
-                        cover TEXT,
-                        title TEXT,
-                        review TEXT,
-                        tags TEXT,
-                        FOREIGN KEY (id) REFERENCES books(bookID)
-                    );`,
-                    `CREATE TABLE IF NOT EXISTS notes_${id} (
-                        notes TEXT,
-                        tags TEXT
-                    );`
+                    `CREATE TABLE IF NOT EXISTS read_${id}
+                    (
+                        id
+                        INTEGER
+                        PRIMARY
+                        KEY
+                        NOT
+                        NULL
+                        UNIQUE,
+                        cover
+                        TEXT,
+                        title
+                        TEXT,
+                        review
+                        TEXT,
+                        tags
+                        TEXT,
+                        FOREIGN
+                        KEY
+                     (
+                        id
+                     ) REFERENCES books
+                     (
+                         bookID
+                     )
+                        );`,
+                    `CREATE TABLE IF NOT EXISTS want_${id}
+                    (
+                        id
+                        INTEGER
+                        PRIMARY
+                        KEY
+                        NOT
+                        NULL
+                        UNIQUE,
+                        cover
+                        TEXT,
+                        title
+                        TEXT,
+                        review
+                        TEXT,
+                        tags
+                        TEXT,
+                        FOREIGN
+                        KEY
+                     (
+                        id
+                     ) REFERENCES books
+                     (
+                         bookID
+                     )
+                        );`,
+                    `CREATE TABLE IF NOT EXISTS suggest_${id}
+                    (
+                        id
+                        INTEGER
+                        PRIMARY
+                        KEY
+                        NOT
+                        NULL
+                        UNIQUE,
+                        cover
+                        TEXT,
+                        title
+                        TEXT,
+                        review
+                        TEXT,
+                        tags
+                        TEXT,
+                        FOREIGN
+                        KEY
+                     (
+                        id
+                     ) REFERENCES books
+                     (
+                         bookID
+                     )
+                        );`,
+                    `CREATE TABLE IF NOT EXISTS notes_${id}
+                     (
+                         notes
+                         TEXT,
+                         tags
+                         TEXT
+                     );`
                 ]).then(() => {
                     // read file (filepath) and write it's data to database
                     fs.readFile(filepath, 'utf8', function (err, data) {
@@ -438,13 +498,13 @@ const server = http.createServer((req, res) => {
                             }
                         });
                     });
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.writeHead(200, {'Content-Type': 'application/json'});
                     res.end(JSON.stringify({}));
                 })
             } catch (error) {
                 console.error('Error parsing JSON:', error);
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Error parsing JSON' }));
+                res.writeHead(400, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({error: 'Error parsing JSON'}));
             }
         });
     } else if (req.url.includes('addbook')) { // Add New Book From outside The Database
@@ -455,7 +515,16 @@ const server = http.createServer((req, res) => {
         });
         req.on('end', () => {
             try {
-                const { bookCover, bookName, bookAuthor, bookPC, bookPubDate, bookPublisher, bookRating, bookAbout } = JSON.parse(body);
+                const {
+                    bookCover,
+                    bookName,
+                    bookAuthor,
+                    bookPC,
+                    bookPubDate,
+                    bookPublisher,
+                    bookRating,
+                    bookAbout
+                } = JSON.parse(body);
                 //TODO: on input if Name exist in DB then Just Redirect to Book Page
                 InsertToBooksTable([
                     generateUniqueRandomNumber(), // bookID
@@ -469,12 +538,12 @@ const server = http.createServer((req, res) => {
                     bookAbout,
                     bookCover
                 ])
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.writeHead(200, {'Content-Type': 'application/json'});
                 res.end(JSON.stringify({}));
             } catch (error) {
                 console.error('Error parsing JSON:', error);
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Error parsing JSON' }));
+                res.writeHead(400, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({error: 'Error parsing JSON'}));
             }
         });
     } else {

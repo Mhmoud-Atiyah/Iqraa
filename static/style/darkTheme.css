@@ -1,7 +1,3 @@
-/* 
-    عدل الاتنين اللي في داتا معاهم وكدا كدا الملف دا هيتطبع في الداتا بعدين
-*/
-
 :root {
     --App-bgColor: #232323;
     --App-foregroundColor: #ffffff;
@@ -23,7 +19,11 @@
     --App-inputBorderColor: #555555;
     --App-placeholderColor: #999999;
     --App-highlightColor: #ffd700;
+    --App-starsColor: #e87400;
     --App-redColor: #DB4437;
+    --LOADER_1: #98FB98;
+    --LOADER_2: #CCCCCC;
+    --LOADER_3: #87CEEB;
 }
 
 ::-webkit-scrollbar-track {

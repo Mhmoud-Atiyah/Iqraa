@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الرواق</title>
-    <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/fontawesome/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="style/fonts.css">
     <link rel="stylesheet" href="style/riwaq.css">
     <link rel="stylesheet" href="style/responsive/riwaqRes.css">
@@ -22,6 +22,8 @@
                     <!-- TODO: -->
                     <!-- هنا معلومات عن الكتاب او احصائبات عن الموضوع وشوية زراير زي الوصول للكتاب وزرار ايقونة للمولف -->
                     <!-- أو لو مش كتاب نحط هنا نقط او نوتس للحوار -->
+                    <!-- حط زرار اللي هو share screen or start presentation-->
+                    <!-- عاوزين نوفر في الرواق خيار لو الكتاب متاح زي الناس اللي بتتعلم لغة او بيحل مسالة يبقى كلهم نفس الصفحة من الكتاب اللي عندي في السيرفر-->
                 </ul>
             </div>
             <!-- User Profile -->
@@ -46,7 +48,6 @@
                     <i class="fa-solid fa-user-group" id="users-icon"></i>
                 <!-- Session's Users Window -->
                     <div id="conversationUsers" class="rounded col-md-12">
-                        <!-- TODO: Put id of user as attribute on div of user to open as sparate for viewing-->
                         <!-- PlaceHolder for Users -->
                     </div>
                 </span>
@@ -56,20 +57,12 @@
             <!-- User's Camera -->
             <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
                     <i class="fa-solid fa-video-slash" id="camera-icon"></i> </span>
-            <!-- User's Speaker -->
-            <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
-                    <i class="" id="speaker-icon"></i></span>
             <!-- App Dark Mode -->
             <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
                 <i id="theme-icon" class="#"></i></span>
             <!-- App Connection Status -->
             <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
                 <i id="status-icon" style="transform: scaleX(-1);" class="#"></i></span>
-            <!-- Exit Session Button -->
-            <span class="align-items-right ms-3 me-1 cursorBt headerBt" id="SessionExitBt" aria-expanded="false"
-                  style="display: none">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-            </span>
         </div>
     </nav>
 </header>
@@ -80,7 +73,7 @@
         <div id="myScreen">
             <!--TODO: put CControls of which part to share on top of screen and MAX button to maximize screen to conversation part-->
             <!--TODO: put CControls like speaker and signal of whom speak on left bottom-->
-            <img src="assets/riwaq_profile.png" class="rounded p-4 mt-2 sideScreenProfile" alt="">
+            <img id="myScreenProfile" src="assets/riwaq_profile.png" class="rounded p-4 mt-2 sideScreenProfile" alt="">
             <video id="myScreenVideo" autoplay></video>
         </div>
         <div id="otherScreen">
@@ -99,27 +92,27 @@
         <!-- List of Conversation Items -->
         <div id="conversation" class="col-md-8">
             <!-- TODO: Create graph like tree or ring attach all cards -->
-            <div id="conversationChat">
-                <div class="chatUser rounded">
-                        <span>
-                            <img class="chatImg" src="https://bootdey.com/img/Content/user_3.jpg" alt="user Name">
-                        </span>
-                    <!-- TODO: add buttons for edit and move this card -->
-                    <!-- TODO: add buttons for voice message controls [play button] -->
-                    <!-- TODO: add Source label for Group or Public -->
-                    <!-- TODO: add live label that he talks or typing -->
-                    <div class="chatBody rounded">
-                        <strong class="chatUserName">سامي سعدالدين</strong>
-                        <!--TODO: Increase space of comment area for picture sent -->
-                        <p class="commentArea border rounded"> شوية كلام فاضي شوية كلام فاضي شوية كلام فاضي شوية
-                            كلام فاضي شوية كلام فاضي شوية كلام فاضي شوية كلام فاضي </p>
-                        <span class="chatUserTime">
-                                <i class="fa fa-clock-o"></i>
-                                منذ 12 دقيقة
-                            </span>
-                    </div>
-                </div>
-            </div>
+            <!--            <div id="conversationChat">-->
+            <!--                <div class="chatUser rounded">-->
+            <!--                        <span>-->
+            <!--                            <img class="chatImg" src="https://bootdey.com/img/Content/user_3.jpg" alt="user Name">-->
+            <!--                        </span>-->
+            <!--                    &lt;!&ndash; TODO: add buttons for edit and move this card &ndash;&gt;-->
+            <!--                    &lt;!&ndash; TODO: add buttons for voice message controls [play button] &ndash;&gt;-->
+            <!--                    &lt;!&ndash; TODO: add Source label for Group or Public &ndash;&gt;-->
+            <!--                    &lt;!&ndash; TODO: add live label that he talks or typing &ndash;&gt;-->
+            <!--                    <div class="chatBody rounded">-->
+            <!--                        <strong class="chatUserName">سامي سعدالدين</strong>-->
+            <!--                        &lt;!&ndash;TODO: Increase space of comment area for picture sent &ndash;&gt;-->
+            <!--                        <p class="commentArea border rounded"> شوية كلام فاضي شوية كلام فاضي شوية كلام فاضي شوية-->
+            <!--                            كلام فاضي شوية كلام فاضي شوية كلام فاضي شوية كلام فاضي </p>-->
+            <!--                        <span class="chatUserTime">-->
+            <!--                                <i class="fa fa-clock-o"></i>-->
+            <!--                                منذ 12 دقيقة-->
+            <!--                            </span>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
         </div>
         <!-- Messenger Input -->
         <div id="messageInput">
@@ -170,7 +163,7 @@
         <div class="row align-items-start">
             <div class="mb-1 col">
                 <label for="BookName" class="form-label fw-bold me-1 fs-4"
-                       style="color: var(--App-textColor);word-spacing: 3px;">عنوان المناقشة أو الكتاب</label>
+                       style="color: var(--App-textColor);word-spacing: 3px;">عنوان المناقشة</label>
                 <input type="text" class="form-control required" id="BookName" placeholder="عنوان اكثر من ٣ حروف">
             </div>
         </div>
@@ -224,36 +217,17 @@
     <span id="SecondaryWindowBody"></span>
     <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
 </div>
+<!-- Modal Space -->
+<div id="modal"></div>
 <!-- External Scripts -->
-<script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/jitsi-meet/libs/lib-jitsi-meet.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
 <script src="JS/components.js"></script><!-- Dark Mode and Themes -->
-<script src="JS/misc.js"></script><!-- Helpful Routines -->
-<script src="JS/theme.js"></script><!-- Dark Mode and Themes -->
-<script src="JS/SecondaryWindow.js"></script><!-- SecondaryWindow -->
-<script src="JS/header.js"></script><!-- Top Header -->
+<script src="JS/header.js" type="module"></script><!-- Top Header -->
+<!--<script src="JS/search.js" type="module"></script>&lt;!&ndash; Search Routines &ndash;&gt;-->
 <script src="JS/riwaq.js" type="module"></script><!-- Dark Mode and Themes -->
 </body>
-
-
-<!--
-
-design Database for Riwaq
-
-هتعمل الرسالة html and css
-
--->
-<!-- TODO: The Session Creator Will have more permissions like mute all parties and so on and all data about session will be on info screeb up beside the join data-->
-
-<!-- Graphing
-https://visjs.org/
--->
-<!-- RTP Project
-https://github.com/pjsip/pjproject?tab=readme-ov-file
--->
-<!-- WebRTC Server
-https://github.com/Kurento/kurento
-https://github.com/meetecho/janus-gateway?tab=readme-ov-file
-https://mediasoup.org/ [Node js]
--->
-
 </html>

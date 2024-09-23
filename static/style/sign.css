@@ -1,11 +1,32 @@
+input[type="email"]::placeholder,
+input[type="text"]::placeholder,
+select[class="form-select"]::placeholder,
+input[type="password"]::placeholder {
+    color: var(--App-placeholderColor);
+}
+
+input[type="email"],
+input[type="text"],
+select[class="form-select"],
+input[type="password"] {
+    background-color: var(--App-inputBgColor);
+    color: var(--App-textColor);
+    border-color: var(--App-inputBorderColor);
+}
+
+.cursorBt {
+    cursor: pointer;
+}
+
 #signWindow {
     display: block;
     position: absolute;
     top: 10%;
     right: 10%;
     border-radius: 1rem;
+    font-family: Moharram, serif;
     border: solid 1px var(--App-panelBorderColor);
-    background-color: var(--App-footerBgColor);
+    background-color: var(--App-panelBgColor);
     color: var(--App-textColor);
 }
 
@@ -13,7 +34,7 @@
     width: 40%;
     border-radius: 1rem 0 0 1rem;
     position: absolute;
-    left: 0px;
+    left: 0;
 }
 
 #signForm {
@@ -28,7 +49,6 @@
 .form-select,
 .form-check-input,
 option {
-    color: var(--App-textColor);
     user-select: none;
     font-size: 20px;
     font-weight: bold;
@@ -60,7 +80,7 @@ option {
     content: "";
     flex: 1;
     height: 1px;
-    background: var(--App-textColor);
+    background: var(--App-panelBorderColor);
 }
 
 .alert {
@@ -79,6 +99,42 @@ option {
 .alert span {
     position: relative;
     top: -5px;
+}
+
+.loader {
+    position: absolute;
+}
+
+#signUpBt,
+#signBt,
+#signUpGoogleBt,
+#signUpMSBt,
+#loginBt {
+    border: solid 1px var(--App-inputBorderColor);
+}
+
+#signUpBt:hover,
+#signBt:hover,
+#signUpGoogleBt:hover,
+#signUpMSBt:hover,
+#loginBt:hover {
+    background-color: var(--App-inputBorderColor);
+}
+
+#signUpBt,
+#signBt,
+#loginBt,
+#signUpMSBt,
+#signUpGoogleBt {
+    word-spacing: 2px;
+    text-align: center;
+    font-size: 18px;
+    color: var(--App-textColor);
+    background-color: var(--App-inputBgColor);
+}
+
+#loginBt {
+    font-size: 22px;
 }
 
 /* Media Query for Mobile Devices */

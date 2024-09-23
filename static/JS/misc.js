@@ -1,6 +1,6 @@
-const ID = getQueryParams().userId; // get ID of User Open The Window
+const ID = getQueryParams().userId || null; // get ID of User Open The Window
 //TODO: Set Ip of your Server
-const DOMAIN = "192.168.56.5";
+const DOMAIN = "iqraa.ws";
 /* Some Default Values */
 // Number of Reviews to loaded on book view load
 const maximumReviewsPage = 8;
@@ -94,6 +94,65 @@ function postData(path, data) {
     });
 }
 
+/**
+ * @brief Sends a POST request with form data and an optional file to the specified path.
+ *
+ * This function creates a `FormData` object, appends form data and a file to it,
+ * and then sends a POST request to the server. The function automatically handles
+ * setting the correct `Content-Type` for file uploads.
+ *
+ * @param{string} path The endpoint path to which the POST request is sent.
+ * @param{object} data An object containing form data to be sent along with the file.
+ * @param{object} file A `File` object to be uploaded. If no file is provided, only the form data
+ * is sent.
+ *
+ * @return {Promise<object>} A promise that resolves with the response data if the request is successful.
+ *         If the request fails or if the server returns an unexpected content type,
+ *         the promise is rejected with an error.
+ *
+ * @throws {Error} If the response status is not OK or if the content type of the response
+ *         is not JSON or HTML.
+ */
+function postForm(path, data, file) {
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Append form data to the FormData object
+    for (const [key, value] of Object.entries(data)) {
+        formData.append(key, value);
+    }
+
+    // Append file to the FormData object if provided
+    if (file) {
+        formData.append('file', file);
+    }
+
+    // Send a POST request to the specified path
+    return fetch(`https://${DOMAIN}/${path}`, {
+        method: 'POST',
+        body: formData // The FormData object automatically sets the correct Content-Type
+    }).then(response => {
+        // Check if the response is successful (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Check the Content-Type of the response
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            // If the response Content-Type is JSON, parse and return JSON
+            return response.json();
+        } else if (contentType && contentType.includes("text/html")) {
+            // If the response Content-Type is HTML, handle it as needed (for example, return text content)
+            return response.text();
+        } else {
+            // If the response Content-Type is neither JSON nor HTML, handle the scenario accordingly
+            throw new Error("Unexpected response type");
+        }
+    });
+}
+
+
 // Function to get ID Of User
 function getQueryParams() {
     const query = window.location.search.substring(1);
@@ -104,6 +163,24 @@ function getQueryParams() {
         params[pair[0]] = decodeURIComponent(pair[1]);
     });
     return params;
+}
+
+/************
+ * Web hashing
+ * **********/
+async function generateHashWeb(message) {
+    // Encode the string as a Uint8Array
+    const encoder = new TextEncoder();
+    const data = encoder.encode(message);
+
+    // Hash the data using the SHA-256 algorithm
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+    // Convert the hash to a hexadecimal string
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+
+    return hashHex;
 }
 
 /**
@@ -218,17 +295,7 @@ async function getMicrophoneStream() {
 async function enableCamera() {
     // Check if getUserMedia is supported by the browser
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({video: true})
-            .then(stream => {
-                /* Check ? Riwaq : Library OCR */
-                if (riwaq.myScreen !== null) {
-                    riwaq.myScreen.srcObject = stream;
-                    riwaq.myScreen.play();
-                } else {
-                    library.OCRScreen.srcObject = stream;
-                    library.OCRScreen.play();
-                }
-            }).catch(error => {
+        navigator.mediaDevices.getUserMedia({video: true}).catch(error => {
             console.error('Error accessing the camera:', error);
             throw error;
         });
@@ -300,13 +367,39 @@ async function getUserLocation() {
     });
 }
 
+/**
+ * Validates a password based on several security criteria.
+ *
+ * @param {string} password - The password to be validated.
+ * @returns {boolean} - Returns true if the password meets all criteria, otherwise false.
+ *
+ * Criteria:
+ * - Length between 8 and 20 characters.
+ * - Contains at least one uppercase letter.
+ * - Contains at least one lowercase letter.
+ * - Contains at least one digit.
+ */
+function validatePassword(password) {
+    const minLength = 8;
+    const maxLength = 20;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasDigit = /\d/.test(password);
+    const isLengthValid = password.length >= minLength && password.length <= maxLength;
+
+    return isLengthValid && hasUppercase && hasLowercase && hasDigit;
+}
+
 export default {
     getData,
     postData,
+    postForm,
     loadTheme,
     getQueryParams,
+    validatePassword,
     convertToArabicNumeral,
     isElectron,
+    generateHashWeb,
     enableMicrophone,
     disableMicrophone,
     getMicrophoneStream,

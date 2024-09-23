@@ -6,10 +6,6 @@ import showHideSecondaryWindow from './SecondaryWindow.js';
 import initLibrary from '../components/initLibrary.js';
 import createLibrarySection from '../components/librarySection.js';
 import addLibraryButton from "../components/libraryButton.js";
-import libraryAbout from "../components/libraryAbout.js";
-import libraryResource from "../components/libraryResource.js";
-import libraryExtensions from "../components/libraryExtensions.js";
-import libraryParties from "../components/libraryParties.js";
 import misc from './misc.js';
 
 /***********************
@@ -177,51 +173,6 @@ window.onload = () => {
         }
     })
 };
-/****************
- * Library Info Bt
- * ***************/
-library.LibraryInfoBt.onclick = () => {
-    showHideSecondaryWindow("بطاقة التعريف", libraryAbout(LibraryData), "تمام");
-}
-/****************
- * Parties Button
- * **************/
-library.PartiesBt.onclick = () => {
-    // TODO: you have two choices 1. for each id get data or from pg create routine to get data
-    libraryParties({
-        id: 1,
-        libraryId: "8ca33e51-4a1d-4831-952d-beac82779e00",
-        name: "Emma Watson Filipe",
-        visits: 23,
-        cover: "https://ntvb.tmsimg.com/assets/assets/247026_v9_bc.jpg"
-    });
-}
-/********************
- * LibraryExtensionsBt
- * *********************/
-library.ExtensionsBt.onclick = () => {
-    // TODO: add extension for library which print book on demand !
-    libraryExtensions();
-}
-/*********************
- * Book OCR Scan Bt
- * ********************/
-library.OCRBt.onclick = () => {
-    let div = `<video id="OCRScreen" autoplay></video>`;
-    showHideSecondaryWindow("البحث عن الكتاب بالغلاف", div, "تم");
-    /* TODO: misc.enableCamera().then(() => {});*/
-}
-/***************
- * Admin Mode Bt
- **************/
-library.AdminModeBt.onclick = () => {
-    if (LibraryData.adminid != null && LibraryData.hash != null) {
-        // User is Admin
-        libraryResource();
-    } else {
-        showHideSecondaryWindow("حدد مصادر بيانات المكتبة", `لا يمكنك تحديد مصادر هذه المكتبة أنت عضو بها فقط !<br>`, "تمام");
-    }
-}
 /**********
  * Misc Theme
  * *******/
@@ -260,6 +211,9 @@ library.initBt.onclick = () => {
  * Create New Library Routine
  ***************************/
 library.initLibraryBt.onclick = () => {
+    /***************
+     * Creation Window
+     * *************/
     if (library.libraryNameInput.value !== "") {
         const libraryName = library.libraryNameInput.value;
         if (libraryId === null) { // Library Not Exist
@@ -267,7 +221,11 @@ library.initLibraryBt.onclick = () => {
         }
         library.initBt.click();
         library.initBt.classList.add("disabled")
-    } else {
+    }
+    /*******
+     * Error !
+     * *****/
+    else {
         library.libraryNameInput.style.border = "solid #b3261eff 1px";
         showHideSecondaryWindow("خطأ", "املأ هذا الحقل <u>(اسم المكتبة)</u> أولاٌ", "تم");
         setTimeout(() => {

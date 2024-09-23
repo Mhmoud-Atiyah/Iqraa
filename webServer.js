@@ -1,26 +1,31 @@
-const express = require('express');
 const https = require('https');
+const socketIo = require('socket.io');
 const fs = require('fs');
-const pool = require('./backend/pg');
 const path = require('path');
+const express = require('express');
 const multer = require('multer');
-const {generateHash} = require("./backend/encryption");
-const stylePath = path.join(__dirname, "static/style")
-const {ASSETSPATH, DOMAIN} = require('./backend/config');
-const pg = require('./backend/pg');
-const {getCover, getAbout} = require("./backend/bookData");
-const {checkUserCredentials} = require("./backend/pg");
-const app = express();
 const {v4: uuidv4} = require('uuid');
-const port = 443; // Default HTTPS port
-const maximumRetrievedQueries = 4;
+const pool = require('./backend/pg');
+const {generateHash} = require("./backend/encryption");
+const pg = require('./backend/pg');
+const {checkUserCredentials} = require("./backend/pg");
+const {getCover, getAbout} = require("./backend/bookData");
+const {ASSETSPATH, DOMAIN} = require('./backend/config');
 
+const stylePath = path.join(__dirname, "static/style")
+const USERSPATH = path.join(__dirname, "data/users");
+
+const app = express();
+const port = 443; // Default HTTPS port
+
+const maximumRetrievedQueries = 4;
+// Riwaq Clients
+const riwaqConnectedClients = {};
 // Configure multer for file storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'data/cache/'); // Define the directory to save uploaded files
-    },
-    filename: (req, file, cb) => {
+    }, filename: (req, file, cb) => {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
@@ -39,7 +44,7 @@ app.use(express.static(path.join(__dirname, 'static')));
  ********************************/
 app.get('/', (req, res) => {
     //TODO: on load https://iqraa.com redirect to page where to check user cred from localstorage
-    res.send('Hello World!');
+    res.sendFile(path.join(__dirname, "test.html"));
 });
 app.get('/iqraa', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "main.html"));
@@ -52,25 +57,139 @@ app.get('/login', (req, res) => {
 });
 app.post('/login', (req, res) => {
     try {
-        /* Get credentials */
+        /****************
+         * Get credentials
+         * ***************/
         const {username, password} = req.body;
-        let pass = ``;
-        // hashed from local storage
-        password.includes("|||") ? pass = password.split("|||")[1] : pass = generateHash(password);
         /* If User Exist ? */
         (async () => {
             try {
-                const exists = await pg.checkUserCredentials(username, pass);
+                const exists = await pg.checkUserCredentials(username, password);
                 if (exists != null) {
-                    console.log(`Welcome Back ${username}`);
-                    /* Get Needed Data From Record */
-                    pg.getRecord("users", Number(exists)).then(data => {
-                        res.send(data);
+                    console.log(`User [userId: ${exists}] login with username [${username}]`);
+                    /********************
+                     * Get Data From Record
+                     * *******************/
+                    pg.getRecord("users", exists).then(data => {
+                        res.json({
+                            status: 0, // 0 => success | 1 => failure
+                            userID: data.id,
+                            profile: data.profile
+                        })
                     });
                 } else {
                     console.log('Invalid credentials');
+                    res.json({
+                        status: 1 // 0 => success | 1 => failure
+                    })
                 }
-                /* Get Needed Data from Record */
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        })();
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+});
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, "static", "signup.html"));
+});
+app.post('/signup', upload.single('file'), (req, res) => {
+    try {
+        /****************
+         * Get Inputs
+         * ***************/
+        const {
+            firstName,
+            lastName,
+            account,
+            gender,
+            dob,
+            country,
+            password
+        } = req.body;
+        const profilePic = req.file ? req.file.path : 'assets/profile.png';
+        /******************
+         * If User Exist ?
+         * ****************/
+        (async () => {
+            try {
+                const exists = await pg.checkUserCredentials(account, password);
+                // User Exist
+                if (exists != null) {
+                    res.json({
+                        status: 1,// 0 => success | 1 => failure
+                        msg: `User [userId = ${exists.id}] Already has Account`
+                    });
+                }
+                /****************
+                 * Create New User
+                 * ***************/
+                else {
+                    const userId = uuidv4();
+                    pg.insertData('users', {
+                        id: userId,
+                        fname: firstName,
+                        lname: lastName,
+                        birth: dob,
+                        country: country,
+                        gender: gender,
+                        account: account,
+                        pass: password,
+                        profile: req.file ? profilePic.split("-")[1] : 'assets/profile.png'
+                    }).then(() => {
+                        /*********************
+                         * Create User's Tables
+                         * *******************/
+                        pg.createTable(`books_${userId}`,
+                            "id integer references books(id) not null primary key," +
+                            "dateread DATE DEFAULT CURRENT_DATE," +
+                            "dateadd DATE DEFAULT CURRENT_DATE," +
+                            "myrate double precision," +
+                            "reviewid uuid not null," +
+                            "bookshelf text," +
+                            "bookshelves text[]," +
+                            "hash text"
+                        ).then(() => {
+                            console.log(`User [userID: ${userId} ] Books Table Created Successfully`);
+                            // Create Reviews Table
+                            pg.createTable(`review_${userId}`,
+                                `id integer references "books_${userId}"(id) not null primary key,` +
+                                "review text," +
+                                "threadid uuid not null," +
+                                "datereview timestamp," +
+                                "likescount integer"
+                            ).then(() => {
+                                console.log(`User [userID: ${userId} ] Reviews Table Created Successfully`)
+                            });
+                        });
+                        /*******************
+                         * Create User's Dir
+                         * *****************/
+                        fs.mkdir(path.join(USERSPATH, `${userId}`), (err) => {
+                            if (err) {
+                                console.error('Error creating directory:', err);
+                            } else {
+                                // Move Profile Pic to User Dir
+                                (async () => {
+                                    try {
+                                        await fs.rename(path.join(__dirname, profilePic), path.join(USERSPATH, `${userId}`, profilePic.split("-")[1]), (err) => {
+                                            if (err) throw err;
+                                            console.log(`User [userID: ${userId} ] Directory Created Successfully`);
+                                        });
+                                    } catch (error) {
+                                        console.error(`Error moving file: ${error.message}`);
+                                    }
+                                })();
+                            }
+                        });
+                        // respond Client
+                        res.json({
+                            status: 0,
+                            msg: `User [userID: ${userId} ] Created Successfully`
+                        })
+                    })
+                }
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -81,11 +200,28 @@ app.post('/login', (req, res) => {
 });
 app.get('/loadConfig/:userId', (req, res) => {
     const id = req.params.userId;
-    /* Get Needed Data From Record */
-    pg.getRecord("users", Number(id)).then(data => {
-        res.send(data);
-    });
+    /**************
+     * User OR Internet
+     * *************/
+    if (id !== '' || id !== undefined) {
+        /****
+         * Get Needed Data From Record
+         * ***/
+        pg.getRecord("users", id).then(data => {
+            delete data.pass;
+            res.send(data);
+        });
+    }
+    /*************
+     * Internet User
+     * ************/
+    else {
+        res.json({
+            msg: "Internet User View"
+        });
+    }
 });
+// TODO: Convert this method to include hash in req.body
 app.post('/editConfig/:userId', (req, res) => {
     const id = req.params.userId;
     const data = req.body;
@@ -99,7 +235,9 @@ app.post('/editConfig/:userId', (req, res) => {
 app.get('/loadUserSection/:userId/:Section', (req, res) => {
     const id = req.params.userId;
     const section = req.params.Section;//TODO: get data based on section also
-    /* Get Data From User Database */
+    /***************************
+     * Get Data From User Database
+     * **************************/
     pg.loadMainView(id, section).then(books => {
         // Send it To user
         res.json(books);
@@ -109,31 +247,36 @@ app.post('/addToMyBooks', (req, res) => {
     try {
         /* Get credentials */
         const {bookId, userId, hashedPass, data} = req.body;
+        /****************
+         * If User Exist ?
+         * **************/
         pg.getRecord("users", userId).then(credentials => {
             if (credentials != null) {
-                /* Check Credentials*/
+                /********************
+                 * User Authorized
+                 * ******************/
                 if (hashedPass != null && hashedPass === credentials.pass) {
                     (async () => {
                         try {
-                            /* Check Existence in user table */
-                            const exists = await pg.checkIfIdExists(`user_${userId}`, bookId);
-                            if (!exists) {// never Added to table before
-                                pg.insertData(`user_${userId}`, {
+                            const exists = await pg.checkIfIdExists(`books_${userId}`, bookId);
+                            if (!exists) {
+                                /************
+                                 * Add new Book
+                                 * **********/
+                                pg.insertData(`books_${userId}`, {
                                     id: bookId,
                                     reviewId: userId,//TODO: create database relation for this
                                     dateRead: data[0],
-                                    dateAdd: data[1],
-                                    bookshelf: data[2],
-                                    bookShelves: data[3],
-                                    myRate: data[4]
+                                    bookshelf: data[1],
+                                    bookShelves: data[2],
+                                    myRate: data[3]
                                 }).then(() => {
-                                        console.log(`Book of id [${bookId}] added to user [${userId}] table`);
-                                        res.send(`Book of id [${bookId}] added to user [${userId}] table`)
-                                    }
-                                );
+                                    console.log(`Book of id [${bookId}] added to user [${userId}] table`);
+                                    res.send(`Book of id [${bookId}] added to user [${userId}] table`)
+                                });
                             } else {
                                 /* Check if bookshelves contain same bookshelf in request */
-                                pg.getRecord(`user_${userId}`, bookId).then(record => {
+                                pg.getRecord(`books_${userId}`, bookId).then(record => {
                                     /* change bookshelf if needed */
                                     let recordBookshelf;
                                     record.bookshelf === "read" ? recordBookshelf = "to-read" : recordBookshelf = "read";
@@ -159,9 +302,16 @@ app.post('/addToMyBooks', (req, res) => {
                             res.status(500).send('Internal Server Error');
                         }
                     })();
-                } else {// User Not Authorized
-                    //    res.send(`You're not Authorized to make this as user [${userId}]`);
-                    console.log(`You're not Authorized to make this as user [${userId}]`);
+                }
+                /********************
+                 * User Not Authorized
+                 * ******************/
+                else {
+                    res.json({
+                        status: 1,
+                        msg: `You're not Authorized to make this as user [${userId}]`
+                    });
+                    console.error(`User [userId: ${userId}] Not Authorized to add book [bookId: ${bookId}]`);
                 }
             }
         });
@@ -169,6 +319,145 @@ app.post('/addToMyBooks', (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+app.post('/deleteFromMyBooks', (req, res) => {
+    try {
+        /* Get credentials */
+        const {bookId, userId, hashedPass} = req.body;
+        /***************
+         * User Authorized
+         * **************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            (async () => {
+                try {
+                    /*******************
+                     * Check book Existence
+                     * ******************/
+                    const exists = await pg.checkIfIdExists(`books_${userId}`, bookId);
+                    if (exists) {
+                        pg.updateRecord(`books_${userId}`, bookId, 'bookshelf', null).then(() => {
+                            res.json({
+                                status: 0,
+                                msg: `user [userId: ${userId}] remove book [bookId: ${bookId}] form his Data`
+                            })
+                            console.log(`user [userId: ${userId}] remove book [bookId: ${bookId}] form his Data`);
+                        });
+                    }
+                    // User not own this book
+                    else {
+                        res.json({
+                            status: 1,
+                            msg: `user [userId: ${userId}] have no book [bookId: ${bookId}] on his Data`
+                        })
+                    }
+                } catch (error) {
+                    res.status(500).send('Internal Server Error');
+                }
+            })();
+        }
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+});
+/*******************************
+ *   Books Related Requests
+ ********************************/
+app.get('/loadBookData/:userId/:bookId', (req, res) => {
+    const userID = req.params.userId; // UUID
+    const bookID = req.params.bookId || 1; // Number
+    /*****************
+     * User OR Internet
+     * ****************/
+    if (userID !== '' || userID !== undefined) {
+        /****************************
+         * Get Needed Data From Record
+         * ***************************/
+        pg.getRecord(`books_${userID}`, Number(bookID)).then(data1 => {
+            pg.getRecord(`books`, Number(bookID)).then(data2 => {
+                const authorID = data2.authorid;
+                pg.getRecord(`authors`, Number(authorID)).then(data3 => {
+                    res.json({...data1, ...data2, author: data3})
+                })
+            });
+        });
+    }
+    /*************
+     * Internet User
+     * ************/
+    else {
+        pg.getRecord(`books`, Number(bookID)).then(data1 => {
+            const authorID = data1.authorid;
+            pg.getRecord(`authors`, Number(authorID)).then(data2 => {
+                res.json({...data1, author: data2})
+            })
+        });
+    }
+});
+app.post('/goodreads', upload.single('file'), (req, res) => {
+    const {userId, hashedPass} = req.body;
+    const dataFile = req.file ? req.file.path : null;
+    /****************
+     * If User Exist ?
+     * **************/
+    (async () => {
+        try {
+            const exists = await pg.getRecord("users", userId);
+            if (exists != null) {
+                if (hashedPass != null && hashedPass === exists.pass) {
+                    /****************
+                     * Assign User Data
+                     * **************/
+                    if (dataFile != null) {
+                        try {
+                            fs.readFile(dataFile, 'utf8', (err, data) => {
+                                if (err) console.error(err);
+                                const Books = JSON.parse(data);
+                                /************
+                                 * Write Data
+                                 * **********/
+                                // TODO: Wait Until Build Iqraa Database
+                                // Respond to Client
+                                res.json({
+                                    status: 0,
+                                    msg: "Goodreads Data Assigned Successfully"
+                                });
+                            });
+                        } catch (error) {
+                            console.error(`Error reading or parsing file: ${error.message}`);
+                            // Respond with an error status
+                            res.status(500).json({
+                                status: 1,
+                                msg: "Error reading or parsing file",
+                                error: error.message
+                            });
+                        }
+                    } else {
+                        return res.status(400).send('No file uploaded.');
+                    }
+                    /*******************
+                     * Update User Entry
+                     * *****************/
+                    pg.updateRecord("users", userId, "newuser", false).then(() => {
+                        console.log(`Data Edited for userID ${userId}`);
+                    }).catch(err => console.error('Update failed', err));
+                    /****************
+                     * Go back to Main
+                     * **************/
+                    // res.redirect(`/iqraa?userId=${id}`);
+                } else {
+                    console.log(`User [${userId}] Not Authorized`);
+                }
+            } else {
+                console.log(`User [${userId}] Not Found`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    })();
+});
+//TODO: There is book view default and one for library
+app.get('/bookview', (req, res) => {
+    res.sendFile(path.join(__dirname, "static", "bookView.html"));
+})
 /*******************************
  *   Library's Requests
  ********************************/
@@ -232,8 +521,7 @@ app.post('/loadLibraries', (req, res) => {
                     pg.getRecord("library", libraryId).then(libraryData => {
                         if (libraryData != null) {
                             res.json({
-                                id: libraryData.id,
-                                title: `${libraryData.title}`
+                                id: libraryData.id, title: `${libraryData.title}`
                             });
                         }
                     });
@@ -275,6 +563,7 @@ app.post('/createLibrary/:userId', upload.single('CL_Cover'), (req, res) => {
     const GIS = req.body.CL_GIS.split(",") || null;
     const libraryId = uuidv4();
     const libraryMain = uuidv4();
+    console.log("line 1")
     /* Write Data To Database */
     pg.insertData('library', {
         id: libraryId,
@@ -290,14 +579,11 @@ app.post('/createLibrary/:userId', upload.single('CL_Cover'), (req, res) => {
         location: CL_Location,
         latitude: GIS !== null ? GIS[0] : 0.0,
         longitude: GIS !== null ? GIS[1] : 0.0,
-        socialmedia: [
-            CL_SM_website,
-            CL_SM_twitter,
-            CL_SM_facebook,
-            CL_SM_instagram
-        ],
+        socialmedia: [CL_SM_website, CL_SM_twitter, CL_SM_facebook, CL_SM_instagram],
         access: "private" //TODO: get it from form
     }).then(() => {
+
+        console.log("line 2")
         /* Create main Library table */
         pg.createTable(`"${libraryMain}"`, `
         bookid    int NOT NULL REFERENCES books (id) ON DELETE SET NULL,
@@ -306,7 +592,11 @@ app.post('/createLibrary/:userId', upload.single('CL_Cover'), (req, res) => {
         state     text,
         section     text,
         available text`).then(() => {
+
+            console.log("line 3")
             pg.updateRecord("users", id, "mylibrary", libraryId).then(() => {
+
+                console.log("line 4")
                 console.log(`library [${libraryId}] created successfully`);
             }).catch(err => console.error('Update failed', err));
         });
@@ -384,65 +674,202 @@ app.post('/libraryExcel/:userId', upload.single('file'), (req, res) => {
 app.get('/riwaq', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "riwaq.html"));
 })
+app.post('/sessionData', (req, res) => {
+    try {
+        /***
+         * Get credentials
+         *  */
+        const {userId, hashedPass, sessionID} = req.body;
+        /***************
+         * User Authorized
+         * **************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            (async () => {
+                try {
+                    /***
+                     * Get Session Data
+                     * */
+                    pg.getRecord('riwaq', sessionID).then((sessionData) => {
+                        console.log(`userId [userId: ${userId}] Retrieve session [title: ${sessionData.title}] Data`);
+                        /***
+                         * respond to client
+                         * */
+                        res.json({
+                            status: 0,
+                            msg: `userId [userId: ${userId}] Retrieve session [title: ${sessionData.title}] Data`,
+                            data: sessionData
+                        });
+                    });
+                } catch (error) {
+                    res.status(500).send('Internal Server Error');
+                }
+            })();
+        } else {
+            console.error(`user [userId: ${userId}] Not Authorized to retrieve Session Data`);
+            res.json({
+                status: 1,
+                msg: `user [userId: ${userId}] Not Authorized to retrieve Session`
+            })
+        }
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+})
+app.post('/sessionUsers', (req, res) => {
+    try {
+        /***
+         * Get credentials
+         *  */
+        const {userId, hashedPass, userIDs} = req.body;
+        /***************
+         * User Authorized
+         * **************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            (async () => {
+                try {
+                    /***
+                     * Get Session Users Data
+                     * */
+                    pg.getUsersRecords(userIDs).then((sessionUsers) => {
+                        console.log(`userId [userId: ${userId}] Retrieve session Users Data`);
+                        /***
+                         * respond to client
+                         * */
+                        res.json({
+                            status: 0,
+                            msg: `userId [userId: ${userId}] Retrieve session Users Data`,
+                            data: sessionUsers
+                        });
+                    });
+                } catch (error) {
+                    res.status(500).send('Internal Server Error');
+                }
+            })();
+        } else {
+            console.error(`user [userId: ${userId}] Not Authorized to retrieve Session Users Data`);
+            res.json({
+                status: 1,
+                msg: `user [userId: ${userId}] Not Authorized to retrieve Session Users Data`
+            })
+        }
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+})
 app.post('/initSession', (req, res) => {
     try {
-        /* Get credentials */
+        /***
+         * Get credentials
+         *  */
         const {userId, hashedPass, sessionTitle} = req.body;
-        let pass = ``;
-        /* If User Exist ? */
-        (async () => {
-            try {
-                const exists = await pg.getRecord("users", userId);
-                if (exists != null) {
-                    /* Check Password */
-                    if (hashedPass != null && hashedPass === exists.pass) {
-                        /* TODO: Init Session */
-                        const sessionID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
-                        pg.insertData("riwaq", {
-                            sessionid: sessionID,
-                            adminid: userId
-                        }).then();
-                        res.send(`${sessionID}`);
-                        //TODO: res.redirect(`/riwaq?userId=${userId}&sessionId=${sessionID}`);
-                        console.log(`${sessionTitle} created`);
-                    } else {
-                        console.log(`User [${userId}] Not Authorized`);
-                    }
-                } else {
-                    console.log(`User [${userId}] Not Found`);
+        /***************
+         * User Authorized
+         * **************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            (async () => {
+                try {
+                    /***
+                     * Create Session
+                     * */
+                    const sessionId = uuidv4();
+                    pg.insertData('riwaq', {
+                        adminid: userId,
+                        id: sessionId,
+                        title: sessionTitle,
+                        live: true
+                    }).then(() => {
+                        console.log(`userId [userId: ${userId}] create session [title: ${sessionTitle}]`);
+                        /***
+                         * respond to client
+                         * */
+                        res.json({
+                            status: 0,
+                            msg: `userId [userId: ${userId}] create session [title: ${sessionTitle}]`,
+                            Id: sessionId
+                        });
+                    });
+                } catch (error) {
+                    res.status(500).send('Internal Server Error');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        })();
+            })();
+        } else {
+            console.error(`user [userId: ${userId}] Not Authorized to init Session`);
+            res.json({
+                status: 1,
+                msg: `user [userId: ${userId}] Not Authorized to init Session`
+            })
+        }
     } catch (error) {
         res.status(500).send('Internal Server Error');
     }
 });
 app.post('/joinSession', (req, res) => {
     try {
-        /* Get credentials */
-        const {userId, hashedPass, sessionId} = req.body;
-        /* If User Exist ? */
-        (async () => {
-            try {
-                const exists = await pg.getRecord("users", userId);
-                if (exists != null) {
-                    /* Check Password */
-                    if (hashedPass != null && hashedPass === exists.pass) {
-                        /* TODO: Join Session */
-                        /* Ask Session Admin For Permission */
-
-                    } else {
-                        console.log(`User [${userId}] Not Authorized`);
-                    }
-                } else {
-                    console.log(`User [${userId}] Not Found`);
+        /***
+         * Get credentials
+         *  */
+        const {userId, hashedPass, sessionId, socketId} = req.body;
+        /***************
+         * User Authorized
+         * **************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            (async () => {
+                try {
+                    /***
+                     * Join Session
+                     * */
+                    pg.getRecord('riwaq', sessionId).then(session => {
+                        if (session.live) {
+                            /***
+                             * Ask Admin For Join
+                             * */
+                            pg.getRecord('users', session.adminid).then(adminData => {
+                                const adminSocketID = adminData.socket;
+                                const socket = riwaqConnectedClients[adminSocketID];
+                                if (socket) {
+                                    /****
+                                     * get client data
+                                     * */
+                                    pg.getRecord('users', userId).then(clientData => {//TODO: try to optimize this (get column not all record)
+                                        socket.emit('data', {
+                                            type: 'ask',
+                                            id: userId,
+                                            socket: socketId,
+                                            account: clientData.account,
+                                            name: clientData.fname + " " + clientData.lname,
+                                            profile: clientData.profile
+                                        });
+                                        /****
+                                         * Respond Client
+                                         * */
+                                        res.json({
+                                            status: 0,
+                                            msg: `Ask for join sent to admin`
+                                        })
+                                    });
+                                } else {
+                                    console.log(`user [userId: ${userId}] try to join session [id: ${sessionId}] but Admin [userId: ${adminData.id}] has no session!`);
+                                }
+                            });
+                        }
+                        /***
+                         * Recorded Session
+                         * */
+                        else {
+                            //     TODO: Future !
+                        }
+                    });
+                } catch (error) {
+                    res.status(500).send('Internal Server Error');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        })();
+            })();
+        } else {
+            console.error(`user [userId: ${userId}] Not Authorized to Join to Session [${sessionId}]`);
+            res.json({
+                status: 1,
+                msg: `user [userId: ${userId}] Not Authorized to Join Session [${sessionId}]`
+            })
+        }
     } catch (error) {
         res.status(500).send('Internal Server Error');
     }
@@ -483,112 +910,6 @@ app.get('/countryList', (req, res) => {
         }
     });
 });
-app.get('/loadBookData/:userId/:bookId', (req, res) => {
-    const userID = req.params.userId;
-    const bookID = req.params.bookId;
-    /* Get Needed Data From Record */
-    pg.getRecord(`user_${userID}`, Number(bookID)).then(data1 => {
-        pg.getRecord(`books`, Number(bookID)).then(data2 => {
-            const authorID = data2.authorid;
-            pg.getRecord(`authors`, Number(authorID)).then(data3 => {
-                res.json({...data1, ...data2, author: data3})
-            })
-        });
-    });
-});
-app.post('/goodreads/:userId', upload.single('file'), (req, res) => {
-    const id = req.params.userId;
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
-    }
-    const dataPath = req.file.path;
-    /* Write Data To Database */
-    pg.createTable(`user_${id}`,
-        'id INTEGER PRIMARY KEY NOT NULL UNIQUE,' +
-        'reviewId INTEGER NOT NULL UNIQUE,' +
-        'dateRead DATE,' +
-        'dateAdd DATE,' +
-        'bookshelf TEXT,' +
-        'bookShelves TEXT[],' +
-        'myRate DOUBLE PRECISION,' +
-        'FOREIGN KEY (id) REFERENCES books(id)'
-    ).then(() => {
-        /* Create Reviews Table */
-        /*TODO: add goodreads Reviews below */
-        pg.createTable(`review_${id}`,
-            'bookId INTEGER NOT NULL,' +
-            'review TEXT,' +
-            'threadId INTEGER,' +
-            'dateReview TIMESTAMP,' +
-            'likesCount INTEGER,' +
-            `FOREIGN KEY (bookId) REFERENCES user_${id}(id)`
-        ).then(() => {
-            /* Open Uploaded File To Read */
-            fs.readFile(dataPath, 'utf8', function (err, data) {
-                if (err) throw err;
-                let books = JSON.parse(data);
-                /* Insert Data to Tables */
-                let bookCover, bookAbout, exist = 0;
-                let temp = 0;
-                //TODO: For Future if I create My DB this step will be deleted
-                /*TODO: think about if the client himself do all this staff and give me prepared json file*/
-                books.forEach(book => {
-                    /* check if Book Exist */
-                    (async () => {
-                        exist = await pg.checkIfIdExists("books", book["Book Id"]);
-                        /* Add Book To Main Books Database */
-                        if (!exist) {
-                            bookCover = "https://marketplace.canva.com/EAFaQMYuZbo/1/0/1003w/canva-brown-rusty-mystery-novel-book-cover-hG1QhA7BiBU.jpg";
-                            bookAbout = "book about";
-                            await pg.insertData(`books`, {
-                                id: book["Book Id"],
-                                title: book['Title'],
-                                avgrating: book['Average Rating'],
-                                authorid: 1,//TODO: assign author name to id
-                                coversrc: bookCover, //TODO: do it work
-                                isbn: "ISBN",//TODO: Check
-                                publisher: book['Publisher'],
-                                pagescount: book['Number of Pages'],
-                                readcount: 1234,
-                                //TODO: pubdate: book['Original Publication Year'] > 0 ? book['Original Publication Year'] : book['Year Published'],
-                                pubdate: book['Year Published'],
-                                about: bookAbout,// TODO: do it work
-                                tags: book['Bookshelves'].split(",")
-                            }).then(res => {
-                                console.log(`Book [${book['Title']}] added with Id [${book['Book Id']}]`);
-                            }).catch(err => console.error('Error inserting data:', err));
-                        }
-                        /* Add Book To User's Books Database */
-                        await pg.insertData(`user_${id}`, {
-                            id: book["Book Id"],
-                            reviewId: book["Book Id"],//TODO: do it
-                            dateRead: (book['Date Read'] === "" ? new Date("1970") : new Date(book['Date Read'])),
-                            dateAdd: (book['Date Added'] === "" ? new Date("1970") : new Date(book['Date Added'])),
-                            bookshelf: book['Exclusive Shelf'],
-                            bookShelves: book["Bookshelves"].split(","),
-                            myRate: book['My Rating']
-                        });
-                    })();
-                });
-            });
-            /* Remove File From Cache After Read */
-            fs.unlink(dataPath, (err) => {
-                if (err) {
-                    console.error(`Error deleting file: ${err.message}`);
-                }
-            });
-        });
-    });
-    /* Go back to Main Again */
-    res.redirect(`/iqraa?userId=${id}`);
-});
-/*******************************
- *   Books Related Requests
- ********************************/
-//TODO: There is book view default and one for library
-app.get('/bookview', (req, res) => {
-    res.sendFile(path.join(__dirname, "static", "bookView.html"));
-})
 /*******************************
  *   Searching Requests
  ********************************/
@@ -613,13 +934,11 @@ app.post('/search', (req, res) => {
                 }
                 /* Respond Client */
                 res.json({
-                    result: books.slice(0, maximumRetrievedQueries),
-                    msg: "Data Retrieved"
+                    result: books.slice(0, maximumRetrievedQueries), msg: "Data Retrieved"
                 });
             } else {
                 res.json({
-                    result: null,
-                    msg: 'No Data Retrieved'
+                    result: null, msg: 'No Data Retrieved'
                 });
             }
         })
@@ -630,9 +949,62 @@ app.post('/search', (req, res) => {
 /*******************************
  *   Main Routine
  ********************************/
-https.createServer(options, app).listen(port, () => {
-    console.log(`Server running at https://${DOMAIN}:${port}`);
+const server = https.createServer(options, app);
+// Create a Socket.IO server using the HTTP server
+const sockets = socketIo(server);
+// Handle Socket.IO connections
+sockets.on('connection', (socket) => {
+    console.log(`New Riwaq client connected with ID: ${socket.id}`);
+    riwaqConnectedClients[socket.id] = socket;
+
+    // Send a welcome message to the newly connected client
+    socket.emit('data', {type: 'init', id: socket.id, message: 'Welcome to the Riwaq server!'});
+    // Handle messages from clients
+    socket.on('message', (message) => {
+        console.log('Received:', message);
+
+        // Broadcast the message to all connected clients
+        sockets.emit('message', message);
+    });
+    // Handle Ask Permission Requests
+    socket.on('askPermission', (req) => {
+        const {permit, socket} = req;
+        const clientSocket = riwaqConnectedClients[socket];
+        /***
+         * Permit Client
+         * */
+        if (permit) {
+            const {sessionId, client} = req;
+            // Respond Client
+            if (clientSocket) {
+                clientSocket.emit('resPermission', {
+                    permit: true
+                });
+            }
+            // Write Data
+            pg.updateRecord_Push('riwaq', sessionId, 'partiesids', client);
+        }
+        /***
+         * Decline Client
+         * */
+        else {
+            if (clientSocket) {
+                clientSocket.emit('resPermission', {
+                    permit: false
+                });
+            }
+        }
+    })
+    // Handle client disconnection
+    socket.on('disconnect', () => {
+        console.log(`Riwaq Client disconnected with ID: ${socket.id}`);
+        delete riwaqConnectedClients[socket.id];
+    });
 });
+// init Server
+server.listen(port, () => {
+    console.log(`Server running at https://${DOMAIN}:${port}`);
+})
 process.on('SIGINT', async () => {
     console.log('Closing database pool...');
     await pool.end();

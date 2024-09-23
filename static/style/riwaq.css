@@ -1,5 +1,16 @@
 body {
     font-family: arbicNormal, serif;
+    overflow: hidden;
+}
+
+#modal {
+    display: none;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: green;
 }
 
 input {
@@ -24,7 +35,7 @@ header {
     flex-wrap: wrap;
     position: absolute;
     z-index: 1;
-    top: 40px;
+    top: 55px;
     right: 5px;
     padding-top: 10px;
     padding-left: 10px;
@@ -53,6 +64,10 @@ header {
     margin-bottom: 5px;
 }
 
+.conversationUserImg:hover {
+    border: solid 1px var(--App-linkHoverColor)
+}
+
 .conversationUserTitle {
     display: flex;
     flex-direction: column;
@@ -78,7 +93,7 @@ header {
 #markers {
     display: block;
     position: absolute;
-    z-index: 1;
+    z-index: 0;
     top: 70px;
     right: 20px;
     width: 40px;
@@ -156,7 +171,6 @@ header {
 #initBt {
     display: block;
     position: fixed;
-    z-index: 1;
     bottom: 10px;
     left: 20px;
     background-color: var(--App-navBgColor);
@@ -164,6 +178,7 @@ header {
 }
 
 #initIcon {
+    transform: scaleX(-1);
     position: relative;
     top: 2px
 }
@@ -240,12 +255,13 @@ header {
 }
 
 #conversationChat {
+    display: block;
     position: absolute;
     top: 22%;
     right: 22%;
-    display: block;
     color: var(--App-textColor);
 }
+
 
 .chatUser {
     display: block;
@@ -350,12 +366,15 @@ header {
     position: absolute;
     z-index: 1;
     left: 100px;
-    top: 4px;
-    text-indent: 3px;
-    border: none;
+    top: 3px;
+    text-indent: 4px;
     background-color: var(--App-panelBorderColor);
     color: var(--App-textColor);
     font-size: 18px;
+}
+
+#messageInputText_in::-webkit-input-placeholder {
+    color: var(--App-placeholderColor);
 }
 
 .emoji-picker {
@@ -393,12 +412,16 @@ header {
     background-color: var(--App-panelBgColor);
 }
 
-#myScreenVideo,
-#otherScreen video {
+#myScreenVideo {
     display: block;
-    height: 100%;
-    width: 100%;
+    height: 180px;
+    width: 210px;
+    right: 5px;
+    padding: 1%;
     position: relative;
+    border: solid 1px var(--App-panelBorderColor);
+    box-shadow: 0 2px 4px var(--App-panelBorderColor);
+    border-radius: 5px;
 }
 
 #otherScreen {
@@ -459,4 +482,10 @@ header {
         opacity: 0;
         transform: scale(1);
     }
+}
+
+#jitsiConferenceFrame0{
+    position: absolute;
+    top: 0;
+    left: 0;
 }

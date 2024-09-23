@@ -4,114 +4,101 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Iqraa</title>
-    <link rel="icon" href="assets/book-open-reader-solid.svg">
-    <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
+    <title>إقراء</title>
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon">
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/fontawesome/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="style/sign.css">
+    <link rel="stylesheet" href="style/loader.css">
     <link rel="stylesheet" href="style/fonts.css">
 </head>
 
 <body>
-    <!-- Placeholder for Alert -->
-    <div id="alertPlaceholder"></div>
-    <div id="signWindow" style="font-family: Moharram;">
-        <div class="container">
-            <div class="row">
-                <div>
-                    <img height="100%" src="assets/login_wall.jpg" id="login_wall" />
-                </div>
-                <div id="signForm" class="pt-3 me-3">
-                    <!-- Placeholder for Sign Form -->
-                    <form class="pt-4">
-                        <!-- Profile -->
-                        <div class="row mb-4" id="signProfile">
-                            <div class="col">
-                                <img src="assets/profile.png" class="cursorBt border rounded-circle p-1"
-                                    id="signProfileImg" alt="صورة المستخدم" height="80px" width="80px"
-                                    title="صورة المستخدم">
+<!-- Placeholder for Alert -->
+<div id="alertPlaceholder"></div>
+<!-- Sign Window -->
+<div id="signWindow">
+    <div class="container">
+        <div class="row">
+            <div>
+                <img height="100%" src="assets/login_wall.jpg" id="login_wall"/>
+            </div>
+            <div id="signForm" class="pt-3 me-3">
+                <form class="pt-4">
+                    <!-- Profile -->
+                    <div class="row mb-4" id="signProfile">
+                        <div class="col">
+                            <img src="assets/profile.png" class="cursorBt border rounded-circle p-1"
+                                 id="signProfileImg" alt="صورة المستخدم" height="80px" width="80px"
+                                 title="صورة المستخدم">
+                        </div>
+                    </div>
+                    <!-- userName -->
+                    <div class="row mb-2">
+                        <div class="col">
+                            <input type="email" class="form-control" placeholder="اسم المستخدم" required
+                                   id="username"></div>
+                    </div>
+                    <!-- Password -->
+                    <div class="row mb-2">
+                        <div class="col">
+                            <input type="password" class="form-control" required placeholder="كلمة المرور"
+                                   id="password">
+                            <i class="fa-regular fa-eye-slash" id="passwordIcon"></i>
+                        </div>
+                    </div>
+                    <!-- remember me -->
+                    <div class="form-check mb-2">
+                        <input class="form-check-input float-end me-2 ms-2" type="checkbox" value=""
+                               style="cursor: pointer;" id="remeberMe">
+                        <label class="form-check-label" for="remeberMe"
+                               style="position: relative;top: -6px;font-size: 24px;">تذكرني</label>
+                    </div>
+                    <!-- Login Button -->
+                    <div class="row mb-3 m-0">
+                        <button type="submit" id="loginBt" class="rounded fw-bold pt-2 pb-2">تسجيل الدخول</button>
+                    </div>
+                    <!-- Or Divider -->
+                    <div class="divider d-flex align-items-center mb-3">
+                        <p class="text-center fw-bold mx-3 mb-0" style="font-size: 22px;letter-spacing: 2px;">أو</p>
+                    </div>
+                    <!-- Manual sign up -->
+                    <div class="row mb-2">
+                        <div class="col">
+                            <div id="signUpBt" class="rounded fw-bold pt-2 pb-2"> تسجيل مستخدم جديد
+                                <i class="fa-solid fa-book-open-reader me-2"
+                                   style="color: var(--App-textColor);position: relative;top: 2px;"></i>
                             </div>
                         </div>
-                        <!-- userName -->
-                        <div class="row mb-2">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="اسم المستخدم" required
-                                    id="username">
+                    </div>
+                    <!-- Sign up Use 3rd-party -->
+                    <div class="row mb-2" id="signUpBt3rd">
+                        <div class="col">
+                            <div id="signUpGoogleBt" class="rounded fw-bold pt-2 pb-2"> التسجيل بإستخدام جوجل
+                                <img src="assets/google_logo.png" alt="" height="18px" class="me-2">
                             </div>
                         </div>
-                        <!-- Password -->
-                        <div class="row mb-2">
-                            <div class="col">
-                                <input type="password" class="form-control" required placeholder="كلمة المرور"
-                                    id="password">
-                                <i class="fa-regular fa-eye-slash" id="passwordIcon"></i>
+                        <div class="col">
+                            <div id="signUpMSBt" class="rounded fw-bold pt-2 pb-2">التسجيل بإستخدام مايكروسوفت
+                                <img src="assets/microsoft_logo.png" alt="" height="18px" class="me-2">
                             </div>
                         </div>
-                        <!-- remember me -->
-                        <div class="form-check mb-2">
-                            <input class="form-check-input float-end me-2 ms-2" type="checkbox" value=""
-                                style="cursor: pointer;" id="remeberMe">
-                            <label class="form-check-label" for="remeberMe"
-                                style="position: relative;top: -6px;font-size: 24px;">تذكرني</label>
-                        </div>
-                        <!-- Login Button -->
-                        <div class="row mb-3 m-0">
-                            <button type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="loginBt"
-                                class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
-                                style="word-spacing: 2px;text-align: center;font-size: 22px;background-color: var(--App-panelBorderColor); color: var(--App-textColor);"
-                                aria-pressed="true">تسجيل الدخول</button>
-
-                        </div>
-                        <!-- Or Divider -->
-                        <div class="divider d-flex align-items-center mb-3">
-                            <p class="text-center fw-bold mx-3 mb-0" style="font-size: 22px;letter-spacing: 2px;">أو</p>
-                        </div>
-                        <!-- Manual sign up -->
-                        <div class="row mb-2">
-                            <div class="col">
-                                <!-- TODO: make it <a> tag -->
-                                <a href="signup.html" style="position: absolute;width: 100%;height: 45px"></a>
-                                <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpBt"
-                                    class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
-                                    style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
-                                    aria-pressed="true">
-                                    تسجيل مستخدم جديد
-                                    <i class="fa-solid fa-book-open-reader me-2"
-                                        style="color: var(--App-textColor);position: relative;top: 2px;"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Sign up Use 3rd=party -->
-                        <div class="row mb-2" id="signUpBt3rd">
-                            <div class="col">
-                                <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpGoogleBt"
-                                    class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
-                                    style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
-                                    aria-pressed="true">
-                                    التسجيل بإستخدام جوجل
-                                    <img src="assets/google_logo.png" alt="" height="18px" class="me-2">
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpMSBt"
-                                    class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
-                                    style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
-                                    aria-pressed="true">
-                                    التسجيل بإستخدام مايكروسوفت
-                                    <img src="assets/microsoft_logo.png" alt="" height="18px" class="me-2">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="JS/components.js"></script>
-    <script src="JS/misc.js"></script>
-    <script src="JS/theme.js"></script>
-    <script src="JS/sign.js"></script>
+</div>
+<!-- Secondary Window -->
+<div id="SecondaryWindow" class="rounded">
+    <span id="SecondaryWindowHeader"><span id="SecondaryWindowHeader_"></span></span>
+    <span id="SecondaryWindowBody"></span>
+    <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
+</div>
+<!-- External Scripts -->
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="JS/components.js"></script>
+<script src="JS/sign.js" type="module"></script>
 </body>
 
 </html>

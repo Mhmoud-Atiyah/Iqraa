@@ -1,3 +1,5 @@
+import misc from "./misc.js"
+
 const sections = ["read", "to-read", "suggest"];
 
 function bookCard(parent, bookData) {
@@ -23,11 +25,13 @@ function showOpt(parent, showOptData) {
     parent.append(element)
 }
 
+/******************
+ * Main Load Routine
+ * *****************/
 function loadSection(section) {
-    getData(`loadUserSection/${ID}/${section}`).then((sectionData) => {
-        //const books = JSON.parse(sectionData["books"]);
-        const books = sectionData;
-        //const tags = JSON.parse(sectionData["tags"]);
+    misc.getData(`loadUserSection/${misc.ID}/${section}`).then((books) => {
+        //const books = JSON.parse(books["books"]);
+        //const tags = JSON.parse(books["tags"]);
         if (books.length === 0) { /* No Books Here */
             return;
         }
@@ -37,37 +41,47 @@ function loadSection(section) {
         Div.id = "mainChild";
         Div.className = "album py-4";
         Container.className = "container";
-        /* Mobile View */
-        if (window.innerWidth <= 480){
+        /*************
+         * Mobile View
+         * ***********/
+        if (window.innerWidth <= 480) {
             Row.className = "row row-cols-3 row-cols-sm-2 row-cols-md-6 g-2 mb-4 pb-4";
-        }else {
+        } else {
             Row.className = "row row-cols-1 row-cols-sm-2 row-cols-md-6 g-2";
         }
         Container.append(Row);
         Div.append(Container);
         mainView.append(Div);
-        /* Create Books Elements */
+        /*********************
+         * Create Books Elements
+         * **********************/
         for (let index = 0; index < books.length; index++) {
             bookCard(Row, books[index]);
         }
-        /* Add Click Listener */
+        /********************
+         * Add Click Listener
+         * *******************/
         for (let index = 0; index < openBookBt.length; index++) {
             openBookBt[index].onclick = () => {
-                if (!isElectron()) {
-                    window.location.href = `https://${DOMAIN}/bookview?userId=${ID}&bookId=${openBookBt[index].getAttribute("data-id")}`;
+                if (!misc.isElectron()) {
+                    window.location.href = `https://${misc.DOMAIN}/bookview?userId=${misc.ID}&bookId=${openBookBt[index].getAttribute("data-id")}`;
                 } else {
-                    window.IPC.openBookWindow(openBookBt[index].getAttribute("data-id"), ID);
+                    window.IPC.openBookWindow(openBookBt[index].getAttribute("data-id"), misc.ID);
                 }
             }
         }
-        ;
-        /* Create Books Tags */
+        /******************
+         * TODO: Create Books Tags
+         * ****************/
         /*   for (let index = 0; index < tags.length; index++) {
                showOpt(showOptions, tags[index].tag);
            }*/
     })
-};
+}
 
+/*****************
+ * Auto Run Routine
+ * **************/
 for (let index = 0; index < userSection.length; index++) {
     userSection[index].onclick = () => {
         if (document.getElementById("mainChild")) {
@@ -76,7 +90,6 @@ for (let index = 0; index < userSection.length; index++) {
                 showOptions.lastChild.remove();
             }
         }
-        ;
         mainView.setAttribute("data-section", `${sections[index]}`);
         loadSection(sections[index]);
     }

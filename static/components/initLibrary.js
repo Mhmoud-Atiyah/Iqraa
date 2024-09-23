@@ -14,9 +14,9 @@ export default function initLibrary(libraryName) {
                         <img src="assets/libraryLogo.png" class="rounded pt-2" alt="createLibrary_Cover" height="180px" 
                             width="100%" id="createLibrary_Cover" style="background-color: var(--App-panelBorderColor);filter: grayscale(100%)">
                         <!-- Library Cover Button -->
-                        <a class="btn rounded border mt-2 pt-2" href="#" id="createLibrary_browse_cover"
+                        <a class="btn rounded border mt-2" href="#" id="createLibrary_browse_cover"
                             style="background-color: var(--App-panelBorderColor);color: var(--App-navTextColor);display: block">
-                        اختر ملف<i class="fa-solid fa-file-import me-2"></i>
+                        اختر غلاف<i class="fa-solid fa-file-import me-2"></i>
                             <input class="form-control" name="CL_Cover" type="file" style="display:none" id="createLibrary_browse_cover_input" accept=".png,.jpg">
                         </a>
                     </div>
@@ -114,7 +114,9 @@ export default function initLibrary(libraryName) {
                 </form>
             </div>
         `, "تكوين");
-    /* Get Location Button */
+    /********************
+     * Get Location Button
+     * *******************/
     document.getElementById('createLibrary_LocationBt').addEventListener('click', async function () {
         try {
             libraryLocation = await misc.getUserLocation();
@@ -129,18 +131,23 @@ export default function initLibrary(libraryName) {
             console.log(error.message);
         }
     });
-    /* Get Cover Button */
+    /******************
+     * Get Cover Button
+     * ***************/
     document.getElementById("createLibrary_browse_cover").onclick = () => {
         document.getElementById("createLibrary_browse_cover_input").click();
-        /*TODO: load cover to window */
         document.getElementById("createLibrary_browse_cover_input").onchange = (evt) => {
             const cover = evt.target.files[0];
             if (cover) {
-                document.getElementById("createLibrary_rightSide").firstChild.src = URL.createObjectURL(cover);
+                document.getElementById("createLibrary_rightSide").children[0].src = URL.createObjectURL(cover);
+                document.getElementById("createLibrary_Cover").style.filter = "grayscale(0)";
+
             }
         }
     }
-    /* Create Library Button */
+    /**********************
+     * Create Library Button
+     * ********************/
     //TODO: put some checks on posted data
     document.getElementById("SecondaryWindowBt_").onclick = () => {
         let spinner = document.createElement("span");
@@ -148,23 +155,23 @@ export default function initLibrary(libraryName) {
         spinner.style.marginTop = "50px";
         spinner.style.marginRight = "30%";
         document.getElementById("createLibrary_rightSide").append(spinner);
-        setTimeout(() => {
-            /*TODO: Loading Message or sign or gif */
-            misc.postData(`editConfig/${misc.ID}/`, {
-                newlibrary: false
-            }).then((res) => {
-                if (res) {
-                    console.log(res);
-                    // Clear Screen
-                    while (mainView.firstChild) {
-                        // Remove each child element
-                        mainView.removeChild(mainView.firstChild);
-                    }
-                    document.getElementById("uploadForm").submit();
+        /************
+         * Create Data
+         * **********/
+        misc.postData(`editConfig/${misc.ID}/`, {
+            newlibrary: false
+        }).then((res) => {
+            if (res) {
+                console.log(res);
+                // Clear Screen
+                while (mainView.firstChild) {
+                    // Remove each child element
+                    mainView.removeChild(mainView.firstChild);
                 }
-            }).catch(error => {
-                console.error('Error:', error);
-            });
-        }, 2000);
+                document.getElementById("uploadForm").submit();
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
     }
 }

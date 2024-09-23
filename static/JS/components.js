@@ -25,6 +25,7 @@ const searchList = document.getElementById("search-inputListItems");
 const sign = {
     alertPlaceholder: document.getElementById('alertPlaceholder'),
     signWindow: document.getElementById("signWindow"),
+    loginWall: document.getElementById("login_wall"),
     signForm: document.getElementById("signForm"),
     signProfile: document.getElementById("signProfileImg"),
     loginBt: document.getElementById("loginBt"),
@@ -61,7 +62,6 @@ const riwaq = {
     initModal: document.getElementById("initSession"),
     initSessionBt: document.getElementById("initSessionBt"),
     joinSessionBt: document.getElementById("joinSessionBt"),
-    SessionExitBt: document.getElementById("SessionExitBt"),
     initIcon: document.getElementById("initIcon"),
     BookNameInput: document.getElementById("BookName"),
     BookNameField: document.getElementById("BookNameField"),
@@ -79,6 +79,7 @@ const riwaq = {
     AcademyModeBt: document.getElementById("AcademyModeBt"),
     UsersWindow: document.getElementById("conversationUsers"),
     myScreen: document.getElementById("myScreenVideo"),
+    messageSection: document.getElementById("messageInput"),
     messageInput: document.getElementById("messageInputText_in"),
     emojiBt: document.getElementById("messageInputEmoji"),
     emojiPicker: document.getElementById("emoji-picker"),

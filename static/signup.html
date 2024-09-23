@@ -6,140 +6,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل مستخدم جديد</title>
     <link rel="icon" href="assets/book-open-reader-solid.svg">
-    <link href="assets/bootstrap-5.3.2-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/fontawesome-free-6.5.1-web/css/all.css" rel="stylesheet">
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/fontawesome/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="style/sign.css">
-    <link rel="stylesheet" href="style/lightTheme.css">
     <link rel="stylesheet" href="style/fonts.css">
 </head>
 
 <body>
-    <!-- Placeholder for Alert -->
-    <div id="alertPlaceholder"></div>
-    <div id="signWindow" style="font-family: Moharram;">
-        <div class="container">
-            <div class="row">
-                <div>
-                    <img height="100%" src="assets/login_wall.jpg" id="login_wall" />
-                </div>
-                <div id="signForm" class="pt-3 me-3">
-                    <!-- Placeholder for Sign Form -->
-                    <form class="pt-4" id="signUpForm">
-                        <!-- Profile -->
-                        <div class="row mb-2" id="signProfile">
-                            <div class="col">
-                                <img src="assets/profile.png" class="cursorBt border rounded-circle p-1"
-                                    id="SUsignProfileImg" alt="صورة المستخدم" height="80px" width="80px"
-                                    title="صورة المستخدم">
+<!-- Placeholder for Alert -->
+<div id="alertPlaceholder"></div>
+<div id="signWindow">
+    <div class="container">
+        <div class="row">
+            <div>
+                <img height="100%" src="assets/login_wall.jpg" id="login_wall"/>
+            </div>
+            <div id="signForm" class="pt-3 me-3">
+                <form class="pt-4" id="signUpForm" enctype="multipart/form-data">
+                    <!-- Profile -->
+                    <div class="row mb-2" id="signProfile">
+                        <div class="col">
+                            <img src="assets/profile.png" class="cursorBt border rounded-circle p-1 mb-2 me-4"
+                                 id="signProfileImg" alt="صورة المستخدم" height="80px" width="80px"
+                                 title="صورة المستخدم">
+                            <i class="fas fa-circle-plus"
+                               style="font-size: 24px;position: relative;left: 53px;top: 37px;"></i>
+                        </div>
+                        <input class="form-control" type="file" style="display:none" id="browse_signProfileImg" name="profilePic" accept=".png,.jpg">
+                    </div>
+                    <!-- Name -->
+                    <div class="row mb-2">
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="الاسم الأول" required>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="اسم العائلة" required>
+                        </div>
+                    </div>
+                    <!-- Account and Gender -->
+                    <div class="row mb-2" id="AccountAndGender">
+                        <div class="col-9" id="AccountInput">
+                            <input type="email" class="form-control" placeholder="البريد الإلكتروني" required>
+                        </div>
+                        <div class="col" id="GenderInput">
+                            <select class="form-select" id="gender" required style="cursor:pointer">
+                                <option value="" hidden>الجنس</option>
+                                <option>ذكر</option>
+                                <option>أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- DOB and Country -->
+                    <div class="row mb-2">
+                        <div class="col">
+                            <input type="text" id="DOB" class="form-control" required placeholder="تاريخ الميلاد" max="2018-12-31" min="1950-01-01"
+                                   onfocus="(this.type='date')" onblur="(this.type='text')">
+                        </div>
+                        <div class="col">
+                            <select class="form-select" id="Country" required style="cursor:pointer">
+                                <option value="" hidden>البلد</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Password -->
+                    <div class="row mb-2">
+                        <div class="col">
+                            <input type="password" class="form-control" required placeholder="كلمة المرور">
+                        </div>
+                        <div class="col">
+                            <input type="password" class="form-control" required placeholder="تأكيد كلمة المرور">
+                        </div>
+                    </div>
+                    <!-- read Conditions and Terms -->
+                    <div class="form-check mb-2">
+                        <input class="form-check-input float-end me-2 ms-2" type="checkbox" value=""
+                               style="cursor: pointer;" id="readConditions" required>
+                        <label class="form-check-label" for="readConditions"
+                               style="position: relative;top: -6px;font-size: 24px;">لقد قرأت
+                            ووافقت على
+                            <a href="#"><u class="ms-1 me-1">البنود</u></a>
+                            و<a href="#"><u class="ms-1 me-1">حالة الخدمة</u></a>
+                            و<b class="ms-1 me-1">كيفية الاستخدام</b>.
+                        </label>
+                    </div>
+                    <!-- Sign up Button -->
+                    <div class="row m-0">
+                        <button type="submit" id="signBt" class="rounded fw-bold pt-2 pb-2">تسجيل مستخدم جديد</button>
+                    </div>
+                    <!-- Sign in Option -->
+                    <div class="row" style="text-align: center;font-size: 22px;height: 40px;">
+                        <p>لديك حساب بالفعل<span
+                                style="font-family:NumberFont, serif;position:relative;top:4px;right:1px">؟</span>
+                            &nbsp;<a id="signInBt" href="/login"><b><u>تسجيل الدخول</u></b></a></p>
+                    </div>
+                    <!-- Or Divider -->
+                    <div class="divider d-flex align-items-center mb-2">
+                        <p class="text-center fw-bold mx-3 mb-0"
+                           style="font-size: 22px;letter-spacing: 2px;">أو</p>
+                    </div>
+                    <!-- Sign up Use 3rd=party -->
+                    <div class="row mb-2" id="signUpBt3rd">
+                        <div class="col">
+                            <div id="signUpGoogleBt" class="rounded fw-bold pt-2 pb-2 cursorBt">التسجيل بإستخدام جوجل
+                                <img src="assets/google_logo.png" alt="" height="18px" class="me-2">
                             </div>
                         </div>
-                        <input class="form-control" type="file" style="display:none" id="browse_SUsignProfileImg"
-                            accept=".png,.jpg">
-                        <!-- Name -->
-                        <div class="row mb-2">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="الاسم الأول" required>
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="اسم العائلة" required>
+                        <div class="col">
+                            <div id="signUpMSBt" class="rounded fw-bold pt-2 pb-2 cursorBt">التسجيل بإستخدام مايكروسوفت
+                                <img src="assets/microsoft_logo.png" alt="" height="18px" class="me-2">
                             </div>
                         </div>
-                        <!-- Account and Gender -->
-                        <div class="row mb-2" id="AccountAndGender">
-                            <div class="col-9" id="AccountInput">
-                                <input type="email" class="form-control" placeholder="البريد الإلكتروني" required>
-                            </div>
-                            <div class="col" id="GenderInput">
-                                <select class="form-select" id="gender" required style="cursor:pointer">
-                                    <option value="" hidden>الجنس</option>
-                                    <option>ذكر</option>
-                                    <option>أنثى</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- DOB and Country -->
-                        <div class="row mb-2">
-                            <div class="col">
-                                <input type="text" id="DOB" class="form-control" required placeholder="تاريخ الميلاد"
-                                    onfocus="(this.type='date')" onblur="(this.type='text')">
-                            </div>
-                            <div class="col">
-                                <select class="form-select" id="Country" required style="cursor:pointer">
-                                    <option value="" hidden>البلد</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- Password -->
-                        <div class="row mb-2">
-                            <div class="col">
-                                <input type="password" class="form-control" required placeholder="كلمة المرور">
-                            </div>
-                            <div class="col">
-                                <input type="password" class="form-control" required placeholder="تأكيد كلمة المرور">
-                            </div>
-                        </div>
-                        <!-- read Conditions and Terms -->
-                        <div class="form-check mb-2">
-                            <input class="form-check-input float-end me-2 ms-2" type="checkbox" value=""
-                                style="cursor: pointer;" id="readConditions" required>
-                            <label class="form-check-label" for="readConditions"
-                                style="position: relative;top: -6px;font-size: 24px;">لقد قرأت
-                                ووافقت على
-                                <u class="ms-1 me-1">البنود</u>
-                                و<u class="ms-1 me-1">حالة الخدمة</u>
-                                و<b class="ms-1 me-1">كيفية الاستخدام</b>.
-                            </label>
-                        </div>
-                        <!-- Sign up Button -->
-                        <div class="row m-0">
-                            <button type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signBt"
-                                class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
-                                style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
-                                aria-pressed="true">تسجيل مستخدم جديد</button>
-                        </div>
-                        <!-- Sign in Option -->
-                        <div class="row" style="text-align: center;font-size: 22px;height: 40px;">
-                            <p>لديك حساب بالفعل<span
-                                    style="font-family:NumberFont;position:relative;top:4px;right:1px">؟</span>
-                                &nbsp;<a href="#" id="signUpLogin" style="color: var(--App-textColor);"><b><u>
-                                            تسجيل الدخول</u></b></a></p>
-                        </div>
-                        <!-- Or Divider -->
-                        <div class="divider d-flex align-items-center mb-2">
-                            <p class="text-center fw-bold mx-3 mb-0 text-muted"
-                                style="font-size: 22px;letter-spacing: 2px;">أو</p>
-                        </div>
-                        <!-- Sign up Use 3rd=party -->
-                        <div class="row mb-2" id="signUpBt3rd">
-                            <div class="col">
-                                <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpGoogleBt"
-                                    class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
-                                    style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
-                                    aria-pressed="true">
-                                    التسجيل بإستخدام جوجل
-                                    <img src="assets/google_logo.png" alt="" height="18px" class="me-2">
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div type="submit" data-mdb-button-init="" data-mdb-ripple-init="" id="signUpMSBt"
-                                    class="rounded border fw-bold pt-2 pb-2" data-mdb-button-initialized="true"
-                                    style="word-spacing: 2px;text-align: center;font-size: 18px;background-color: var(--App-panelBorderColor);"
-                                    aria-pressed="true">
-                                    التسجيل بإستخدام مايكروسوفت
-                                    <img src="assets/microsoft_logo.png" alt="" height="18px" class="me-2">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <script src="assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="JS/components.js"></script>
-    <script src="JS/misc.js"></script>
-    <script src="JS/theme.js"></script>
-    <script src="JS/signup.js"></script>
+</div>
+<!-- Secondary Window -->
+<div id="SecondaryWindow" class="rounded">
+    <span id="SecondaryWindowHeader"><span id="SecondaryWindowHeader_"></span></span>
+    <span id="SecondaryWindowBody"></span>
+    <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
+</div>
+<!-- External Scripts -->
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="JS/components.js"></script>
+<script src="JS/signup.js" type="module"></script>
 </body>
 
 </html>

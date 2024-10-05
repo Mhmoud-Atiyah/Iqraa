@@ -127,21 +127,33 @@ else {
     if (pathname === '/riwaq' || pathname === '/library') {
         window.location.href = `iqraa`
     }
-    themeBt.className = "fa-solid fa-moon";
-    statusBt.setAttribute("data-mode", "light");
+    /****
+     * NOTE: on Internet User View the Warning Window 'd be Already Loaded.
+     * */
     misc.loadTheme("lightTheme");
-    /* Connection Setting */
+    /***
+     * Theme
+     * */
+    themeBt.className = "fa-solid fa-moon";
+    themeBt.setAttribute('data-bs-toggle', 'modal');
+    themeBt.setAttribute('data-bs-target', '#confirmationModal');
+    /****
+     * Add book Button
+     * */
+    addBookBt.setAttribute('data-bs-toggle', 'modal');
+    addBookBt.setAttribute('data-bs-target', '#confirmationModal');
+    /***
+     * Conection
+     * */
     statusBt.className = "fa-solid fa-signal";
+    statusBt.setAttribute('data-bs-toggle', 'modal');
+    statusBt.setAttribute('data-bs-target', '#confirmationModal');
+    statusBt.setAttribute("data-mode", "light");
     statusBt.setAttribute("data-mode", "on");
     accountBt.innerText = 'حساب زائر';
     profileBt.src = "assets/profile.png";
     console.log("أنت الآن في وضعية زائر");
 }
-
-/*******
- * Header Buttons
- * *******/
-
 /********
  * Connection Button
  * ********/
@@ -174,15 +186,6 @@ statusBt.onclick = () => {
             })
         }
     }
-    /***
-     * Visitor Interface
-     * */
-    else {
-        showHideSecondaryWindow("أقراء", "يمكنك الانضمام إلى منصة أقراء بسهولة<br>اضغط انضمام للإستمتاع بكافة الخيارات المتاحة", "إنضمام")
-        document.getElementById("SecondaryWindowBt_").onclick = () => {
-            window.location.href = `https://${misc.DOMAIN}/signup`;
-        }
-    }
 }//TODO: اقفل او افتح اللي مفروض يتعمل بعد قفل او فتح الاتصال
 /********
  * Theme Button
@@ -211,11 +214,6 @@ themeBt.onclick = () => {
                     misc.loadTheme("lightTheme");
                 }
             });
-        }
-    } else {
-        showHideSecondaryWindow("أقراء", "يمكنك الانضمام إلى منصة أقراء بسهولة<br>اضغط انضمام للإستمتاع بكافة الخيارات المتاحة", "إنضمام")
-        document.getElementById("SecondaryWindowBt_").onclick = () => {
-            window.location.href = `https://${misc.DOMAIN}/signup`;
         }
     }
 }

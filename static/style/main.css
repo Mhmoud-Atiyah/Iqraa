@@ -47,6 +47,27 @@ ul {
     cursor: pointer;
 }
 
+.userNameBt {
+    color: var(--App-textColor);
+}
+
+.userNameBt:hover {
+    text-decoration: underline;
+    color: var(--App-linkHoverColor);
+}
+
+.reviewBt {
+    padding: 6px 12px 5px 5px;
+    background-color: var(--App-bgColor);
+    color: var(--App-iconColor);
+    border: solid 1px var(--App-panelBorderColor);
+    cursor: pointer;
+}
+
+.reviewBt:hover {
+    background-color: var(--App-panelBgColor);
+}
+
 .loader {
     width: 48px;
     height: 48px;
@@ -97,10 +118,11 @@ ul {
 
 .bookshelfBt {
     color: var(--App-textColor);
-    background-color: var(--App-inputBgColor);
-    border-color: var(--App-inputBorderColor);
+    background-color: var(--App-panelBgColor);
+    border: var(--App-panelBorderColor) solid 2px;
 }
-.bookshelfBt:hover{
+
+.bookshelfBt:hover {
     background-color: var(--App-inputBgColor);
 }
 
@@ -114,7 +136,8 @@ body {
 }
 
 #header {
-    display: block;
+    display: flex;
+    flex-direction: row;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -127,12 +150,23 @@ body {
     border: solid 1px var(--App-panelBorderColor);
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    overflow: hidden;
 }
 
 #headerRight {
-    position: fixed;
-    right: 10px;
-    top: 8px;
+    position: relative;
+    width: 25%;
+}
+
+#headerCenter {
+    position: relative;
+    width: 50%;
+    margin-left: 25px;
+}
+
+#headerLeft {
+    position: relative;
+    width: 25%;
 }
 
 #theme-icon {
@@ -154,30 +188,57 @@ body {
     width: 32px;
 }
 
-#addBookBt {
-    font-size: 18px;
-    display: block;
+#tagsList {
+    display: flex;
+    flex-direction: row;
+    direction: rtl;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    /*line-height: 2em;*/
+}
+
+.tagBt {
+    background-color: var(--App-inputBgColor);
+    color: var(--App-placeholderColor);
     font-family: Moharram, serif;
-    height: 36px;
-    width: 80px;
-    margin-top: 2px;
+    letter-spacing: 1px;
+    padding: 0 7px 3px 7px;
+}
+
+.tagBtActive {
+    color: var(--App-buttonTextColor);
+    background-color: var(--App-buttonHoverBgColor);
+}
+
+.tagBt:hover {
+    color: var(--App-buttonTextColor);
+    background-color: var(--App-buttonHoverBgColor);
+}
+
+.searchSide {
+    position: absolute;
+    width: 75%;
+}
+
+#searchBt {
+    position: absolute;
+    top: 4px;
+    left: 8px;
 }
 
 #searchBt i {
-    font-size: 18px;
-    position: relative;
-    top: 5px;
     z-index: 1;
     color: var(--App-placeholderColor);
 }
 
+/*TODO: Adjust Dimensions */
 #search-input {
     position: relative;
-    top: 0;
+    top: 2px;
     left: 0;
     z-index: 0;
     height: 36px;
-    margin-top: 2px;
+    width: 100%;
     direction: rtl;
     text-indent: 15px;
     font-family: GilroyLight, serif;
@@ -190,9 +251,6 @@ body {
     display: none;
     position: relative;
     z-index: 1;
-    top: -4px;
-    left: 9px;
-    /*TODO: remove height attribute */
     overflow-y: scroll;
     border: solid 1px var(--App-inputBorderColor);
     border-bottom-left-radius: 5px;
@@ -249,20 +307,23 @@ body {
     background-color: var(--App-panelBgColor);
 }
 
-#secondary-nav {
-    direction: rtl;
-    width: 600px;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    line-height: 2em;
+#addBookBt {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    color: var(--App-navTextColor);
+    border: solid 1px var(--App-inputBorderColor);
+    background-color: var(--App-panelBorderColor);
+    display: block;
+    font-family: Moharram, serif;
+    height: 36px;
+    padding: 0 6px 0 6px;
 }
 
-.secondary-nav-item {
-    font-family: TheYearofTheCamelBold, serif;
-    font-size: 16px;
-    margin-left: 5px;
-    padding-right: 4px;
-    padding-left: 4px;
+#addBookBt:hover {
+    color: var(--App-starsColor);
+    border: solid 1px var(--App-starsColor);
+    background-color: transparent;
 }
 
 #main {
@@ -349,11 +410,10 @@ body {
     display: block;
     position: absolute;
     z-index: 1;
-    /*TODO: make it dynamic */
     top: 15%;
     color: var(--App-textColor);
     background-color: var(--App-panelBgColor);
-    border: solid 1px var(--App-secondaryTextColor);
+    border: solid 1px var(--App-panelBorderColor);
     height: auto;
     max-width: 70%;
     animation-name: fadeInOpacity;
@@ -382,6 +442,20 @@ body {
     user-select: none;
 }
 
+#SecondaryWindowHeader_close i {
+    background-color: var(--App-lightRedColor);
+    position: absolute;
+    top: 16px;
+    padding: 5px 5px 3px 5px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#SecondaryWindowHeader_close i:hover {
+    background-color: var(--App-redColor);
+
+}
+
 #SecondaryWindowHeader span {
     position: relative;
     top: -10px;
@@ -392,38 +466,49 @@ body {
 
 #SecondaryWindowBt {
     display: block;
-    position: absolute;
-    bottom: 7%;
-    padding-right: 7%;
-    height: 30px;
+    position: relative;
+    bottom: 10px;
     width: 100%;
+    margin-top: 4px;
+    padding: 6px 16px 6px 0;
 }
 
 #SecondaryWindowBt span {
     background-color: var(--App-panelBorderColor);
     position: relative;
-    font-family: TheYearofTheCamelBold, serif;
-    font-size: 18px;
-    padding: 8px 15px 5px 15px;
+    font-family: Monadi, serif;
+    font-size: 14px;
     user-select: none;
-}
-
-#SecondaryWindowBt span:hover {
-    background-color: var(--App-panelBgColor);
-    cursor: pointer;
+    padding: 9px;
 }
 
 #SecondaryWindowBody {
     display: block;
     padding: 10px;
-    margin-bottom: 55px;
     color: var(--App-textColor);
     font-family: TheYearofTheCamelBold, serif;
     word-spacing: 2px;
     font-size: 16px;
 }
 
-/* Add Book Style */
+.modal-content {
+    color: var(--App-textColor);
+    background-color: var(--App-panelBgColor);
+    border: solid 1px var(--App-panelBorderColor);
+    font-family: Monadi, serif;
+}
+
+.modal-content #yesBtn {
+    background-color: var(--App-inputBgColor);
+    color: var(--App-textColor);
+    border: solid 1px var(--App-panelBorderColor);
+}
+
+.modal-content #noBtn {
+    background-color: var(--App-mutedRedColor);
+    border: solid 1px var(--App-panelBorderColor);
+}
+
 .rating {
     display: flex;
     flex-direction: row-reverse;
@@ -435,7 +520,7 @@ body {
 }
 
 .rating label {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     cursor: pointer;
     padding: 0 0.1rem;
 }

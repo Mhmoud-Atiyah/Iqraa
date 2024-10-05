@@ -18,9 +18,12 @@
     --App-inputBgColor: #424242;
     --App-inputBorderColor: #555555;
     --App-placeholderColor: #999999;
-    --App-highlightColor: #ffd700;
+    --App-highlightColor: #fc0;
     --App-starsColor: #e87400;
     --App-redColor: #DB4437;
+    --App-lightRedColor: #E57368;
+    --App-darkRedColor: #A1322C;
+    --App-mutedRedColor: #B7423A;
     --LOADER_1: #98FB98;
     --LOADER_2: #CCCCCC;
     --LOADER_3: #87CEEB;
@@ -45,7 +48,7 @@
 
 a {
     text-decoration: none;
-    color: var(--App-linkColor);
+    color: var(--App-textColor);
 }
 
 input {

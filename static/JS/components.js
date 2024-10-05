@@ -2,8 +2,11 @@
 // Main Elements
 //---------------------------------------------------------
 const mainView = document.getElementById("main");
-const userSection = document.getElementsByClassName("mySection");
-const showOptions = document.getElementById("secondary-nav");// Tags
+const myBooks = document.getElementsByClassName("myBooks")[0];
+const headerTags = document.getElementById("headerCenter");
+const headerRight = document.getElementById("headerRight");
+const headerLeft = document.getElementById("headerLeft");
+const tagsArea = document.getElementById("tagsList");// Tags
 const read_Bt = document.getElementById("read");
 const statusBt = document.getElementById("status-icon");
 const Dock = document.getElementById("nav");
@@ -39,21 +42,34 @@ const sign = {
 };
 const book_view = {
     view: document.getElementsByClassName("book_view")[0],
+    Modal: document.getElementById("ModalPlaceHolder"),
+    UserComments: document.getElementById("UserCommentsSpace"),
     cover: document.getElementById("book_view_cover"),
     title: document.getElementById("book_view_title"),
     pagesCount: document.getElementById("book_view_pagesCount"),
     readCount: document.getElementById("book_view_readCount"),
     pubDate: document.getElementById("book_view_pubDate"),
-    ratingStars: document.getElementsByClassName("ratingBt"),
     rating: document.getElementById("book_view_rating"),
+    ratingNumber: document.getElementById("book_view_rating_number"),
     readBt: document.getElementById("book_view_readBt"),
     readNowBt: document.getElementById("book_view_readNowBt"),
     wantreadBt: document.getElementById("book_view_wantreadBt"),
     purchaseBt: document.getElementById("book_view_purchaseBt"),
+    authorPage: document.getElementById("authorPage"),
+    authorPageSpinner: document.getElementById("authorPageSpinner"),
+    author_page: document.getElementById("author_pageNo"),
+    author_prev: document.getElementById("author_prev"),
+    author_next: document.getElementById("author_next"),
+    authorTitle: document.getElementsByClassName("authorDataTitle")[0],
     authorName: document.getElementById("authorName"),
     authorProfile: document.getElementById("authorProfile"),
     authorInfo: document.getElementById("authorInfo"),
+    authorDOB: document.getElementById("authorDOB"),
+    authorDOB_date: document.getElementById("authorDOB_date"),
+    authorDOD: document.getElementById("authorDOD"),
     bookAbout: document.getElementById("book_viewAbout"),
+    riwaqList: document.getElementById("riwaqSection"),
+    suggestionList: document.getElementById("suggestionList"),
     bookTagsList: document.getElementById("book_tags"),
     bookTag: document.getElementsByClassName("book_tag_bt")
 }

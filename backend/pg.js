@@ -49,6 +49,43 @@ async function createTable(tableName, columns) {
     }
 }
 
+/**
+ * @function deleteRecord
+ * @brief Deletes a specified record from the PostgreSQL database.
+ *
+ * This asynchronous function deletes a record from the specified table
+ * where the ID matches the given `recordID`.
+ *
+ * @param {string} tableName - The name of the table from which to delete the record.
+ * @param {number} recordID - The ID of the record to be deleted.
+ *
+ * @async
+ * @throws {Error} Throws an error if the delete operation fails. The error includes details of the failure.
+ *
+ * @example
+ * const userID = 123;
+ *
+ * deleteRecord('users', userID)
+ *   .then(() => console.log('Delete successful'))
+ *   .catch(err => console.error('Delete failed', err));
+ */
+async function deleteRecord(tableName, recordID) {
+    // Define the SQL query to delete the record
+    const query = `
+        DELETE
+        FROM \"${tableName}\"
+        WHERE id = $1
+    `;
+
+    try {
+        const result = await pool.query(query, [recordID]);
+        console.log(`Record [ID: ${recordID}] deleted successfully:`, result.rowCount);
+    } catch (err) {
+        console.error('Error deleting record:', err.stack);
+        throw err;  // Re-throw the error to be handled by the caller
+    }
+}
+
 // Connect to the database
 /**
  * Inserts data into a specified PostgreSQL table.
@@ -219,6 +256,53 @@ async function updateRecord(tableName, recordID, column, newValue) {
 }
 
 /**
+ * @function updateRecords
+ * @brief Updates specified columns for a user record in the PostgreSQL database.
+ *
+ * This asynchronous function updates the values of specified columns in the `users` table
+ * for a record where the user's ID matches the given `recordID`. The columns to be updated
+ * are dynamically specified in the `updates` parameter, which should be an object where
+ * keys are column names and values are the new values to set.
+ *
+ * @param {string} tableName - Table to edit.
+ * @param {number} recordID - The ID of the user whose record needs to be updated.
+ * @param {Object} updates - An object containing column-value pairs to be updated.
+ *
+ * @async
+ * @throws {Error} Throws an error if the update operation fails. The error includes details of the failure.
+ *
+ * @example
+ * const userID = 123;
+ * const updates = { email: 'newemail@example.com', username: 'newusername' };
+ *
+ * updateRecords('users', userID, updates)
+ *   .then(() => console.log('Update successful'))
+ *   .catch(err => console.error('Update failed', err));
+ */
+async function updateRecords(tableName, recordID, updates) {
+    const setClause = Object.keys(updates)
+        .map((key, index) => `${key} = $${index + 1}`)
+        .join(', ');
+
+    const values = Object.values(updates);
+
+    // Define the SQL query with parameters
+    const query = `
+        UPDATE \"${tableName}\"
+        SET ${setClause}
+        WHERE id = $${values.length + 1}
+    `;
+
+    try {
+        const result = await pool.query(query, [...values, recordID]);
+        console.log(`Record [ID: ${recordID}] updated successfully:`, result.rowCount);
+    } catch (err) {
+        console.error('Error updating record:', err.stack);
+        throw err;  // Re-throw the error to be handled by the caller
+    }
+}
+
+/**
  * @brief Adds an item to an array column in a database record.
  *
  * This function updates a specific record in a table by appending a new item
@@ -308,11 +392,54 @@ async function getRecord(table, recordID) {
                 WHERE id = $1;
             `;
             const result = await pool.query(query, [recordID]);
+            // console.log(result.rows[0]);
             // Check if any row was returned and return the first row if found
             return result.rows.length > 0 ? result.rows[0] : null;
+        }else {
+            console.log("error")
         }
     } catch (error) {
         console.error(`user try to Retrieve [${recordID}] but Not found in ${table} table: `, error);
+    }
+}
+
+/**
+ * @brief Fetches the 'title' and 'coverSrc' columns for a given array of IDs from a PostgreSQL table.
+ *
+ * This function connects to a PostgreSQL database, retrieves the 'name' and 'id' columns
+ * for the provided array of IDs from the specified table, and returns the result as an array of objects.
+ *
+ * @param {string} tableName - The name of the table from which to fetch the columns.
+ * @param {number[]} ids - An array of IDs to filter the query.
+ * @return {Promise<Array<{id: number, name: string}>>} A promise that resolves to an array
+ *         of objects, each containing 'id' and 'name' properties.
+ *
+ * @throws Will throw an error if there is a problem with the database query or connection.
+ *
+ * @example
+ * const ids = [1, 2, 3];
+ * fetchNameAndIdByIds('books', ids).then(result => {
+ *     console.log(result);
+ * }).catch(err => {
+ *     console.error('Error:', err);
+ * });
+ */
+async function getRecordBooks(tableName, ids) {
+    try {
+        // Query to fetch 'id' and 'name' columns from the specified table
+        const query = `SELECT id, title, coversrc
+                       FROM "${tableName}"
+                       WHERE id = ANY ($1::int[])`;
+
+
+        // Execute the query and store the result
+        const res = await pool.query(query, [ids]);
+
+        // Return the rows containing 'title' and 'coverSrc'
+        return res.rows;
+    } catch (error) {
+        console.error('Database query error:', error);
+        throw error;
     }
 }
 
@@ -426,11 +553,28 @@ async function loadMainView(userID, section) {
     try {
         // Construct the dynamic table name
         const tableName = `books_${userID}`;
-
+        let query = ``;
+        /****
+         * Read Or Want
+         * */
+        if (section === 'read' || section === 'to-read') {
+            query = `SELECT id
+                     FROM \"${tableName}\"
+                     where bookshelf = '${section}'`;
+        }
+        /****
+         * Based On Tag
+         * */
+        else {
+            query = `SELECT id
+                     FROM \"${tableName}\"
+                     where '${section}' = ANY (bookshelves)`;
+        }
+        query = `SELECT id
+                 FROM \"${tableName}\"
+                 where bookshelf = '${section}'`;
         // Step 1: Query the dynamic table to get book IDs for the specified user ID
-        const myBooksIDs = await pool.query(`SELECT id
-                                             FROM \"${tableName}\"
-                                             where bookshelf = '${section}'`);
+        const myBooksIDs = await pool.query(query);
         /**************
          * Books Exist ?
          * *************/
@@ -495,14 +639,17 @@ async function searchBooks(bookName) {
 module.exports = {
     pool,
     insertData,
+    deleteRecord,
     createTable,
     getRecord,
+    getRecordBooks,
     getUsersRecords,
     getLibrarySectionBooks,
     checkUserCredentials,
     authenticateUser,
     checkIfIdExists,
     updateRecord,
+    updateRecords,
     updateRecord_Push,
     updateRecord_Pop,
     loadMainView,

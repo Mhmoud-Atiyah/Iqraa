@@ -151,6 +151,11 @@ window.onload = () => {
             const headerCenterSpace = document.body.offsetWidth - document.getElementById("headerRight").offsetWidth - searchInput.offsetWidth - addBookBt.offsetWidth - 80;
             document.getElementById("headerCenter").style.right = document.getElementById("headerRight").offsetWidth + 40 + 'px';
             document.getElementById("headerCenter").style.width = headerCenterSpace + 'px';
+            /*****
+             * Load Effect
+             * ****/
+            document.getElementsByClassName('loader')[0].remove();
+            mainView.style.filter = "blur(0)";
         }
         /****************
          * Welcome Message

@@ -1,4 +1,6 @@
-const ID = getQueryParams().userId || null; // get ID of User Open The Window
+const ID = localStorage.getItem('userId') || null; // get ID of User Open The Window
+const hashedPass = localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null; // get Hashed Password of User Open The Window
+const bookId = getQueryParams().bookId || null;
 //TODO: Set Ip of your Server
 const DOMAIN = "iqraa.ws";
 /* Some Default Values */
@@ -152,7 +154,6 @@ function postForm(path, data, file) {
     });
 }
 
-
 // Function to get ID Of User
 function getQueryParams() {
     const query = window.location.search.substring(1);
@@ -207,6 +208,68 @@ function convertToArabicNumeral(number) {
     }
 
     return arabicNumber;
+}
+
+/**
+ * @brief Returns a human-readable "time ago" string in English and Arabic based on the current time and a past date.
+ *
+ * @param {Date|string} pastDate - The date in the past to compare against the current time.
+ * @param {string} language - The language for the output ('en' for English, 'ar' for Arabic).
+ * @return {string} A string describing how long ago the past date was (e.g., "2 hours ago" or "منذ ساعتين").
+ *
+ * @example
+ * const pastDate = new Date('2024-10-01T14:00:00Z');
+ * const result = timeAgo(pastDate, 'ar'); // For Arabic
+ * console.log(result);  // Outputs something like "منذ 3 أيام"
+ */
+function timeAgo(pastDate, language = 'en') {
+    const currentTime = new Date();
+    const previousTime = new Date(pastDate);
+
+    const seconds = Math.floor((currentTime - previousTime) / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(days / 365);
+
+    const timeStrings = {
+        en: {
+            seconds: (seconds) => `${seconds} seconds ago`,
+            minutes: (minutes) => `${minutes} minutes ago`,
+            hours: (hours) => `${hours} hours ago`,
+            days: (days) => `${days} days ago`,
+            weeks: (weeks) => `${weeks} weeks ago`,
+            months: (months) => `${months} months ago`,
+            years: (years) => `${years} years ago`,
+        },
+        ar: {
+            seconds: (seconds) => `منذ ${seconds} ثانية`,
+            minutes: (minutes) => `منذ ${minutes} دقيقة`,
+            hours: (hours) => `منذ ${hours} ساعة`,
+            days: (days) => `منذ ${days} يوم`,
+            weeks: (weeks) => `منذ ${weeks} أسبوع`,
+            months: (months) => `منذ ${months} شهر`,
+            years: (years) => `منذ ${years} سنة`,
+        },
+    };
+
+    if (seconds < 60) {
+        return timeStrings[language].seconds(seconds);
+    } else if (minutes < 60) {
+        return timeStrings[language].minutes(minutes);
+    } else if (hours < 24) {
+        return timeStrings[language].hours(hours);
+    } else if (days < 7) {
+        return timeStrings[language].days(days);
+    } else if (weeks < 4) {
+        return timeStrings[language].weeks(weeks);
+    } else if (months < 12) {
+        return timeStrings[language].months(months);
+    } else {
+        return timeStrings[language].years(years);
+    }
 }
 
 // Check if it Browser or Electron
@@ -398,6 +461,7 @@ export default {
     getQueryParams,
     validatePassword,
     convertToArabicNumeral,
+    timeAgo,
     isElectron,
     generateHashWeb,
     enableMicrophone,
@@ -410,5 +474,7 @@ export default {
     MinimumSearchInput,
     DOMAIN,
     ID,
+    hashedPass,
+    bookId,
     currency
 }

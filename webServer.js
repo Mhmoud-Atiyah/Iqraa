@@ -44,9 +44,12 @@ app.use(express.static(path.join(__dirname, 'static')));
  ********************************/
 app.get('/', (req, res) => {
     //TODO: on load https://iqraa.com redirect to page where to check user cred from localstorage
-    res.sendFile(path.join(__dirname, "test.html"));
+    res.sendFile(path.join(__dirname, "static", "main.html"));
 });
 app.get('/iqraa', (req, res) => {
+    res.sendFile(path.join(__dirname, "static", "main.html"));
+})
+app.get('/tag', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "main.html"));
 })
 /*******************************
@@ -156,9 +159,11 @@ app.post('/signup', upload.single('file'), (req, res) => {
                             pg.createTable(`review_${userId}`,
                                 `id integer references "books_${userId}"(id) not null primary key,` +
                                 "review text," +
-                                "threadid uuid not null," +
+                                "threadid uuid[] not null," +
+                                "hash text," +
                                 "datereview timestamp," +
-                                "likescount integer"
+                                "likescount integer," +
+                                "commentscount integer"
                             ).then(() => {
                                 console.log(`User [userID: ${userId} ] Reviews Table Created Successfully`)
                             });
@@ -232,96 +237,174 @@ app.post('/editConfig/:userId', (req, res) => {
         });
     }).catch(err => console.error('Update failed', err));
 })
-app.get('/loadUserSection/:userId/:Section', (req, res) => {
-    const id = req.params.userId;
-    const section = req.params.Section;//TODO: get data based on section also
-    /***************************
-     * Get Data From User Database
-     * **************************/
-    pg.loadMainView(id, section).then(books => {
-        // Send it To user
-        res.json(books);
-    });
+app.post('/loadUserSection', (req, res) => {
+    try {
+        /***
+         * Get credentials
+         * */
+        const {userId, hashedPass, section} = req.body;
+        /********************
+         * User Authorized
+         * ******************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            (async () => {
+                    try {
+                        /***************************
+                         * Get Data From User Database
+                         * **************************/
+                        pg.loadMainView(userId, section).then(books => {
+                            res.json(books);
+                        });
+                    } catch (error) {
+                        res.status(500).send('Internal Server Error');
+                    }
+                }
+            )();
+        }
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
 })
 app.post('/addToMyBooks', (req, res) => {
     try {
-        /* Get credentials */
-        const {bookId, userId, hashedPass, data} = req.body;
-        /****************
-         * If User Exist ?
-         * **************/
-        pg.getRecord("users", userId).then(credentials => {
-            if (credentials != null) {
-                /********************
-                 * User Authorized
-                 * ******************/
-                if (hashedPass != null && hashedPass === credentials.pass) {
-                    (async () => {
+        /***
+         * Add With Read Tag
+         * */
+        if (req.body.data !== undefined) {
+            /***
+             * Get credentials
+             * */
+            const {bookId, userId, hashedPass, data} = req.body;
+            /********************
+             * User Authorized
+             * ******************/
+            if (pg.authenticateUser(userId, hashedPass)) {
+                (async () => {
                         try {
+                            /*******************
+                             * Check book Existence
+                             * ******************/
                             const exists = await pg.checkIfIdExists(`books_${userId}`, bookId);
+                            /***
+                             * First Time
+                             * */
                             if (!exists) {
                                 /************
                                  * Add new Book
                                  * **********/
                                 pg.insertData(`books_${userId}`, {
                                     id: bookId,
+                                    dateRead: data[0] || new Date(),
+                                    dateadd: data[1] || new Date(),
+                                    bookshelf: data[2],
                                     reviewId: userId,//TODO: create database relation for this
-                                    dateRead: data[0],
-                                    bookshelf: data[1],
-                                    bookShelves: data[2],
-                                    myRate: data[3]
+                                    bookShelves: data[4],
+                                    myRate: data[5]
                                 }).then(() => {
                                     console.log(`Book of id [${bookId}] added to user [${userId}] table`);
-                                    res.send(`Book of id [${bookId}] added to user [${userId}] table`)
-                                });
-                            } else {
-                                /* Check if bookshelves contain same bookshelf in request */
-                                pg.getRecord(`books_${userId}`, bookId).then(record => {
-                                    /* change bookshelf if needed */
-                                    let recordBookshelf;
-                                    record.bookshelf === "read" ? recordBookshelf = "to-read" : recordBookshelf = "read";
-                                    /* Change BookShelves */
-                                    const bookshelves = new Set(record.bookshelves);
-                                    let recordBookshelves = record.bookshelves;
-                                    /* Check Routine */
-                                    data[3].forEach(bookshelf => {
-                                        if (!bookshelves.has(bookshelf)) {
-                                            recordBookshelves.push(bookshelf);
-                                        }
+                                    res.json({
+                                        status: 0,
+                                        msg: `Book of id [${bookId}] added to user [${userId}] table`
                                     })
-                                    /* Write Back */
-                                    pg.updateRecord(`user_${userId}`, bookId, "bookshelves", recordBookshelves).then(() => {
-                                        pg.updateRecord(`user_${userId}`, bookId, "bookshelf", recordBookshelf).then(() => {
-                                            console.log(`Book of id [${bookId}] already exist in user [${userId}] table`);
-                                            res.send(`Book of id [${bookId}] already exist in user [${userId}] table`);
-                                        });
+                                });
+                            }
+                            /***
+                             * read or to-read
+                             * */
+                            else {
+                                pg.updateRecords(`books_${userId}`, bookId, {
+                                    dateRead: data[0] || new Date(),
+                                    dateadd: data[1] || new Date(),
+                                    bookshelf: data[2],
+                                    reviewId: userId,//TODO: create database relation for this
+                                    bookShelves: data[4],
+                                    myRate: data[5],
+                                }).then(() => {
+                                    console.log(`Book of id [${bookId}] already exist in user [${userId}] table`);
+                                    res.json({
+                                        status: 0,
+                                        msg: `Book of id [${bookId}] already exist in user [${userId}] table so bookshelf updated only!`
                                     });
                                 });
                             }
                         } catch (error) {
                             res.status(500).send('Internal Server Error');
                         }
-                    })();
-                }
-                /********************
-                 * User Not Authorized
-                 * ******************/
-                else {
-                    res.json({
-                        status: 1,
-                        msg: `You're not Authorized to make this as user [${userId}]`
-                    });
-                    console.error(`User [userId: ${userId}] Not Authorized to add book [bookId: ${bookId}]`);
-                }
+                    }
+                )();
             }
-        });
+        }
+        /***
+         * Add With Want Tag
+         * */
+        else {
+            /***
+             * Get credentials
+             * */
+            const {bookId, userId, hashedPass} = req.body;
+            /********************
+             * User Authorized
+             * ******************/
+            if (pg.authenticateUser(userId, hashedPass)) {
+                (async () => {
+                        try {
+                            /*******************
+                             * Check book Existence
+                             * ******************/
+                            const exists = await pg.checkIfIdExists(`books_${userId}`, bookId);
+                            /***
+                             * First Time
+                             * */
+                            if (!exists) {
+                                /************
+                                 * Add new Book
+                                 * **********/
+                                pg.insertData(`books_${userId}`, {
+                                    id: bookId,
+                                    dateadd: new Date(),
+                                    dateread: null,
+                                    bookshelf: 'to-read',
+                                    //TODO: create database relation for this
+                                    reviewId: userId
+                                }).then(() => {
+                                    console.log(`Book of id [${bookId}] added to user [${userId}] table`);
+                                    res.json({
+                                        status: 0,
+                                        msg: `Book of id [${bookId}] added to user [${userId}] table`
+                                    })
+                                });
+                            }
+                            /***
+                             *  Read Already Not Want
+                             * */
+                            else {
+                                pg.updateRecords(`books_${userId}`, bookId, {
+                                    dateread: null,
+                                    bookshelf: 'to-read'
+                                }).then(() => {
+                                    console.log(`Book of id [${bookId}] already exist in user [${userId}] table`);
+                                    res.json({
+                                        status: 0,
+                                        msg: `Book of id [${bookId}] already exist in user [${userId}] table so bookshelf updated only!`
+                                    });
+                                });
+                            }
+                        } catch (error) {
+                            res.status(500).send('Internal Server Error');
+                        }
+                    }
+                )();
+            }
+        }
     } catch (error) {
         res.status(500).send('Internal Server Error');
     }
-});
+})
 app.post('/deleteFromMyBooks', (req, res) => {
     try {
-        /* Get credentials */
+        /***
+         * Get credentials
+         * */
         const {bookId, userId, hashedPass} = req.body;
         /***************
          * User Authorized
@@ -334,7 +417,7 @@ app.post('/deleteFromMyBooks', (req, res) => {
                      * ******************/
                     const exists = await pg.checkIfIdExists(`books_${userId}`, bookId);
                     if (exists) {
-                        pg.updateRecord(`books_${userId}`, bookId, 'bookshelf', null).then(() => {
+                        pg.deleteRecord(`books_${userId}`, bookId).then(() => {
                             res.json({
                                 status: 0,
                                 msg: `user [userId: ${userId}] remove book [bookId: ${bookId}] form his Data`
@@ -347,6 +430,56 @@ app.post('/deleteFromMyBooks', (req, res) => {
                         res.json({
                             status: 1,
                             msg: `user [userId: ${userId}] have no book [bookId: ${bookId}] on his Data`
+                        })
+                    }
+                } catch (error) {
+                    res.status(500).send('Internal Server Error');
+                }
+            })();
+        }
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+});
+app.post('/loadUserReview', (req, res) => {
+    try {
+        /***
+         * Get credentials
+         * */
+        const {userId, hashedPass, table, book} = req.body;
+        /***************
+         * User Authorized
+         * **************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            (async () => {
+                try {
+                    /*******************
+                     * Check Book(user review) Existence
+                     * ******************/
+                    const exists = await pg.checkIfIdExists(`review_${table}`, book);
+                    if (exists) {
+                        pg.getRecord(`review_${table}`, Number(book)).then(reviewData => {
+                            pg.getUsersRecords([table]).then(userData => {
+                                delete userData[0].account;
+                                delete userData[0].socket;
+                                // TODO: Future If delete userId from response
+                                res.json({
+                                    status: 0,
+                                    msg: {
+                                        review: reviewData,
+                                        user: userData[0]
+                                    }
+                                })
+                            });
+                        }).then(() => {
+                            console.log(`User [userId: ${userId}] try to retrieve Review of book [bookId: ${book}] from user [userId: ${table}] review table.`);
+                        })
+                    }
+                    // User has no review on this book
+                    else {
+                        res.json({
+                            status: 1,
+                            msg: `user [userId: ${userId}] have no book [bookId: ${book}] on his Data`
                         })
                     }
                 } catch (error) {
@@ -391,6 +524,32 @@ app.get('/loadBookData/:userId/:bookId', (req, res) => {
             })
         });
     }
+});
+app.get('/loadBooksDataMain/:booksIds', (req, res) => {
+    const booksIDs = req.params.booksIds.split(',') || 1; // Numbers
+    /*************
+     * Load Data
+     * ************/
+    pg.getRecordBooks('books', booksIDs).then(data => {
+        res.json({
+            status: 0,
+            msg: data
+        })
+    });
+});
+app.get('/loadAuthorData/:authorId', (req, res) => {
+    const authorId = req.params.authorId;
+    pg.getRecord(`authors`, Number(authorId)).then(authorData => {
+        res.json({
+            status: 0,
+            author: authorData
+        })
+    }).catch(err => {
+        res.json({
+            status: 500,
+            author: `Error On Retrieve Author [authorId: ${authorId}] Data`
+        })
+    })
 });
 app.post('/goodreads', upload.single('file'), (req, res) => {
     const {userId, hashedPass} = req.body;

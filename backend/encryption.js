@@ -7,7 +7,7 @@ const iv = crypto.randomBytes(16);
 
 /**
  * @brief Generates a hash for the given input using SHA-256 algorithm.
- * 
+ *
  * @param {string} input - The input string to hash.
  * @return {string} The resulting hash in hexadecimal format.
  */
@@ -16,8 +16,37 @@ function generateHash(input) {
 }
 
 /**
+ * @brief Generates a cryptographic value based on a provided hash and another plaintext value (e.g., a number).
+ *
+ * This function uses HMAC with SHA-256 to combine a hashed password and a plaintext number into a new cryptographic value.
+ *
+ * @param {string} hash - The hash generated from a password.
+ * @param {number|string} plaintext - A plaintext value (usually a number) that will be combined with the hash.
+ * @return {string} A cryptographic value generated using HMAC-SHA256.
+ *
+ * @example
+ * const passwordHash = 'a1b2c3d4e5f6g7h8';  // Example hash
+ * const plaintext = 12345;
+ * const result = generateCryptographicValue(passwordHash, plaintext);
+ * console.log(result);  // Outputs cryptographic value
+ */
+function generateCryptographicValue(hash, plaintext) {
+    // Convert plaintext (number) to a string if necessary
+    const message = typeof plaintext === 'number' ? plaintext.toString() : plaintext;
+
+    // Create an HMAC object using SHA-256 and the provided hash as the key
+    const hmac = crypto.createHmac('sha256', hash);
+
+    // Update the HMAC with the plaintext message
+    hmac.update(message);
+
+    // Return the resulting cryptographic value as a hexadecimal string
+    return hmac.digest('hex');
+}
+
+/**
  * @brief Verifies if the given input matches the provided hash.
- * 
+ *
  * @param {string} input - The input string to verify.
  * @param {string} hash - The hash to compare against.
  * @return {boolean} True if the input matches the hash, false otherwise.
@@ -28,7 +57,7 @@ function verifyHash(input, hash) {
 
 /**
  * @brief Generates a 32-byte key and saves it to a specified file.
- * 
+ *
  * @param {string} filePath - The path where the key file will be saved.
  */
 function generateKeyToFile(filePath) {
@@ -39,7 +68,7 @@ function generateKeyToFile(filePath) {
 
 /**
  * @brief Encrypts the given input using AES-256-CBC algorithm.
- * 
+ *
  * @param {string} input - The input string to encrypt.
  * @return {string} The resulting encrypted string in hexadecimal format.
  */
@@ -57,7 +86,7 @@ function encrypt(input, keyPath) {
 
 /**
  * @brief Decrypts the given input using AES-256-CBC algorithm.
- * 
+ *
  * @param {string} encrypted - The encrypted string in hexadecimal format.
  * @return {string} The resulting decrypted string.
  */
@@ -74,6 +103,7 @@ function decrypt(encrypted, keyPath) {
 
 module.exports = {
     generateHash,
+    generateCryptographicValue,
     verifyHash,
     encrypt,
     decrypt

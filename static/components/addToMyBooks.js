@@ -1,3 +1,17 @@
+//TODO: Get it from json File based on book type
+const starsInfo = [
+    "حبكة مثيرة ومترابطة تجذب القارئ",
+    "شخصيات معقدة تنمو وتتطور على مدار القصة",
+    "لغة واضحة وجذابة تناسب الموضوع",
+    "توازن جيد في تقدم الأحداث يبقي القارئ مهتمًا",
+    "مواضيع عميقة ومثيرة للتفكير مع القراء",
+    "القدرة على إثارة مشاعر قوية لدى القارئ",
+    "تفاصيل غنية وعالم مُصمم بشكل جيد (خاصة في الخيال)",
+    "محادثات طبيعية تعكس شخصيات القصة",
+    "صراعات مهمة تدفع القصة للأمام",
+    "نهاية مُرضية ومرتبطة بأحداث الكتاب"
+];
+
 function formatDate(date) {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
@@ -6,53 +20,70 @@ function formatDate(date) {
 }
 
 export default function AddToMyBooks(tags) {
-    let tagsStr = ""
+    let tagsStr = "";
     for (let i = 0; i < tags.length; i++) {
         tagsStr += `<div class="bookshelfBt rounded btn mb-2 ms-2">${tags[i]}</div>`;
     }
     return `
-<form id="addBookModal" style="user-select: none;margin-top: 10px;width: 400px">
+<form id="addBookModal" class="p-3 pt-0" style="user-select: none;width: 400px">
+<!-- Book Rate -->
+    <div class="row mb-2">
+        <span class="col-2 pt-2" style="font-family: Monadi, serif">التقييم</span>
+        <div class="col pt-1">
+            <div  id="addBookModal_rate" class="rating rounded ps-1 pe-1 fs-4">
+                <span class="ratingBt cursorBt me-1" data-traits="1">&#9733;
+                    <span class="info-box">${starsInfo[0]}</span>
+                </span>
+                <span class="ratingBt cursorBt me-1" data-traits="2">&#9733;
+                    <span class="info-box">${starsInfo[1]}</span>
+                </span>
+                <span class="ratingBt cursorBt me-1" data-traits="3">&#9733;
+                    <span class="info-box">${starsInfo[2]}</span>
+                </span>
+                <span class="ratingBt cursorBt me-1" data-traits="4">&#9733;
+                    <span class="info-box">${starsInfo[3]}</span>
+                </span>
+                <span class="ratingBt cursorBt me-1" data-traits="5">&#9733;
+                    <span class="info-box">${starsInfo[4]}</span>
+                </span>
+                <span class="ratingBt cursorBt me-1" data-traits="6">&#9733;
+                    <span class="info-box">${starsInfo[5]}</span>
+                </span>
+                <span class="ratingBt cursorBt me-1" data-traits="7">&#9733;
+                    <span class="info-box">${starsInfo[6]}</span>
+                </span>
+                <span class="ratingBt cursorBt me-1" data-traits="8">&#9733;
+                    <span class="info-box">${starsInfo[7]}</span>
+                </span>
+                <span class="ratingBt cursorBt me-1" data-traits="9">&#9733;
+                    <span class="info-box">${starsInfo[8]}</span>
+                </span>
+                <span class="ratingBt cursorBt me-1" data-traits="10">&#9733;
+                    <span class="info-box">${starsInfo[9]}</span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <!-- User Review -->
+    <div class="row" id="addBookModal_comment">
+     <textarea id="myBookComment" class="form-control pt-2 pb-2 mb-2" rows="4" placeholder="مراجعة الكتاب"></textarea>
+    </div>
     <!-- Date Of Start/End -->
-    <div class="row">
-        <div class="col mb-2">
-        <div class="row">
-            <label class="col-2" style="height: 20px; font-family: Moharram, serif;font-size: 28px;position:relative;top: -4px">من</label>
-            <input type="text" id="addBookModal_dateRead_from" class="col form-control me-2" required placeholder="${formatDate(new Date())}" 
+    <div class="row mt-2 mb-2">
+            <input type="text" id="addBookModal_dateRead_from" class="col form-control me-2" required placeholder="حدد تاريخ البداية" 
                     max="${formatDate(new Date())}" min="2000-01-01" onfocus="(this.type='date')" onblur="(this.type='text')" style="font-family: NumberFont, serif;">
-        </div>   
-        </div>
-        <div class="col mb-2">
-            <div class="row">
-                <label class="col-2" style="height: 20px; font-family: Moharram, serif;font-size: 28px;position:relative;top: -4px;right: -5px">إلى</label>
-                <input type="text" id="addBookModal_dateRead_to" class="col form-control me-2" required placeholder="${formatDate(new Date())}" 
+            <span class="col-1 pt-2 fs-5 ms-2"><i class="fa-solid fa-arrow-alt-circle-left"></i></span>
+            <input type="text" id="addBookModal_dateRead_to" class="col form-control me-2" required placeholder="حدد تاريخ النهاية" 
                     max="${formatDate(new Date())}" min="2000-01-01" onfocus="(this.type='date')" onblur="(this.type='text')" style="font-family: NumberFont, serif;">
-            </div>
-        </div>
-    </div>
-    <!-- Book Rate -->
-    <div class="row">
-        <div class="col mb-2">
-            <div  id="addBookModal_rate" class="rating me-2 rounded ps-2 pe-2" style="direction: ltr;flex: 1 1 auto;box-sizing: border-box;">
-                <input type="radio" class="ratingBt" name="rating" id="star1" value="1"><label for="star1">&#9733;</label>
-                <input type="radio" class="ratingBt" name="rating" id="star2" value="2"><label for="star3">&#9733;</label>
-                <input type="radio" class="ratingBt" name="rating" id="star3" value="3"><label for="star2">&#9733;</label>
-                <input type="radio" class="ratingBt" name="rating" id="star4" value="4"><label for="star4">&#9733;</label>
-                <input type="radio" class="ratingBt" name="rating" id="star5" value="5"><label for="star5">&#9733;</label>
-            </div>
-        </div>
-    </div>
+    </div>    
     <!-- User Tags -->
-    <div id="addBookModal_bookshelves">
+    <div class="row" id="addBookModal_bookshelves">
         <div class="container mt-2">
             <div class="button-container pe-3">
                 ${tagsStr}
             </div>
         </div>
     </div>
-    <!-- User Review -->
-    <div id="addBookModal_comment">
-     <textarea id="myBookComment" class="form-control pt-2 pb-2 mb-2" rows="4" placeholder="مراجعة الكتاب"></textarea>
-  </div>
 </form>
 `;
 }

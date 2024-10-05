@@ -23,6 +23,7 @@
     font-family: Omar;
     src: url("./fonts/Omar.ttf");
 }
+
 @font-face {
     font-family: DecorationFont1;
     src: url(./fonts/DiwaniBent.ttf);
@@ -35,12 +36,17 @@
 
 @font-face {
     font-family: DecorationFont3;
-    src: url(./fonts/Old\ Antic\ Decorative.ttf);
+    src: url(./fonts/OldAnticDecorative.ttf);
 }
 
 @font-face {
     font-family: NumberFont;
     src: url(./fonts/ArabicNumbers.ttf);
+}
+
+@font-face {
+    font-family: NumberFontLight;
+    src: url(./fonts/ArabicNumbersLight.otf);
 }
 
 /* English Fonts */

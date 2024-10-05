@@ -1,9 +1,11 @@
 import showHideSecondaryWindow from './SecondaryWindow.js'
+import misc from "./misc.js";
 /* Global Vars */
 var Rating = 0;
 
 addBookBt.onclick = () => {
-    const content = `
+    if (misc.ID != null) {
+        const content = `
     <div class="container" style="width:700px">
         <div class="row">
         <!-- Right Side -->
@@ -96,119 +98,125 @@ addBookBt.onclick = () => {
     </div>
     <div id="alertPlaceholder"></div>
     `;
-    showHideSecondaryWindow("اضف كتاب", content, "اضف الكتاب");
-    let browse_coverBt = document.getElementById("browse_cover");
-    let download_coverBt = document.getElementById("download_cover");
-    let browse_cover = document.getElementById("browse_cover_input");
-    let bookCoverImg = document.getElementById("bookCover");
-    let BookName = document.getElementById("BookName");
-    let BookAuthor = document.getElementById("BookAuthor");
-    let BookPC = document.getElementById("BookPagesCount");
-    let BookPubDate = document.getElementById("BookPubDate");
-    let BookPublisher = document.getElementById("BookPublisher");
-    let bookAbout = document.getElementById("bookAbout");
-    let ratingBts = document.getElementsByClassName("ratingBt");
-    let alertPlaceholder = document.getElementsByClassName("alertPlaceholder");
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            event.preventDefault();  // Prevent the form from submitting
-            showHideSecondaryWindow();
-        }
-    });
-
-    // Cover Browse Button
-    browse_coverBt.onclick = () => {
-        browse_cover.click();
-    }
-    browse_cover.oninput = () => {
-        if (browse_cover.value != "") {
-            bookCoverImg.src = browse_cover.files[0].path;
-            bookCoverImg.style.filter = "";
-        }
-    }
-    // Cover Download Button
-    download_coverBt.onclick = () => {
-        if (BookName.value != "") {
-            //TODO: Retrieve Cover by name
-        } else {
-            BookName.style.border = "solid 1px red";
-            BookName.placeholder = "اكتب اسم الكتاب اولاً ليتم البحث"
-            setTimeout(() => {
-                BookName.style.border = "";
-                BookName.placeholder = "اسم الكتاب"
-            }, 3000);
-        }
-    }
-    // bookPageCount Button
-    BookPC.oninput = () => {
-        if (BookPC.value.length > 4) {
-            BookPC.style.border = "solid 1px red";
-            setTimeout(() => {
-                BookPC.style.border = "";
-            }, 2000);
-        };
-    }
-    // PubDate Button
-    BookPubDate.oninput = () => {
-        if (BookPubDate.value.length > 4 ||
-            BookPubDate.value > 2025) {
-            BookPubDate.style.border = "solid 1px red";
-            setTimeout(() => {
-                BookPubDate.style.border = "";
-            }, 2000);
-        };
-    }
-    // Rating Buttons
-    for (let index = 0; index < ratingBts.length; index++) {
-        ratingBts[index].onclick = () => {
-            Rating = 5 - index;
-        }
-    }
-    // addBookBt
-    SecondaryWindowBt.onclick = () => {
-        if (BookName.value === "" ||
-            BookAuthor.value === "" ||
-            BookPC.value === "" ||
-            BookPC.value.length > 4 ||
-            BookPubDate.value === "" ||
-            BookPublisher.value === "" ||
-            BookPubDate.value.length > 4 ||
-            bookAbout.value === ""
-        ) {
-            let requiredElements = document.getElementsByClassName("required");
-            for (let index = 0; index < requiredElements.length; index++) {
-                if (requiredElements[index].value === "") {
-                    requiredElements[index].style.border = "solid 1px red";
-                };
+        showHideSecondaryWindow("اضف كتاب", content, "اضف الكتاب");
+        let browse_coverBt = document.getElementById("browse_cover");
+        let download_coverBt = document.getElementById("download_cover");
+        let browse_cover = document.getElementById("browse_cover_input");
+        let bookCoverImg = document.getElementById("bookCover");
+        let BookName = document.getElementById("BookName");
+        let BookAuthor = document.getElementById("BookAuthor");
+        let BookPC = document.getElementById("BookPagesCount");
+        let BookPubDate = document.getElementById("BookPubDate");
+        let BookPublisher = document.getElementById("BookPublisher");
+        let bookAbout = document.getElementById("bookAbout");
+        let ratingBts = document.getElementsByClassName("ratingBt");
+        let alertPlaceholder = document.getElementsByClassName("alertPlaceholder");
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();  // Prevent the form from submitting
+                showHideSecondaryWindow();
             }
-            setTimeout(() => {
+        });
+
+        // Cover Browse Button
+        browse_coverBt.onclick = () => {
+            browse_cover.click();
+        }
+        browse_cover.oninput = () => {
+            if (browse_cover.value != "") {
+                bookCoverImg.src = browse_cover.files[0].path;
+                bookCoverImg.style.filter = "";
+            }
+        }
+        // Cover Download Button
+        download_coverBt.onclick = () => {
+            if (BookName.value != "") {
+                //TODO: Retrieve Cover by name
+            } else {
+                BookName.style.border = "solid 1px red";
+                BookName.placeholder = "اكتب اسم الكتاب اولاً ليتم البحث"
+                setTimeout(() => {
+                    BookName.style.border = "";
+                    BookName.placeholder = "اسم الكتاب"
+                }, 3000);
+            }
+        }
+        // bookPageCount Button
+        BookPC.oninput = () => {
+            if (BookPC.value.length > 4) {
+                BookPC.style.border = "solid 1px red";
+                setTimeout(() => {
+                    BookPC.style.border = "";
+                }, 2000);
+            }
+            ;
+        }
+        // PubDate Button
+        BookPubDate.oninput = () => {
+            if (BookPubDate.value.length > 4 ||
+                BookPubDate.value > 2025) {
+                BookPubDate.style.border = "solid 1px red";
+                setTimeout(() => {
+                    BookPubDate.style.border = "";
+                }, 2000);
+            }
+            ;
+        }
+        // Rating Buttons
+        for (let index = 0; index < ratingBts.length; index++) {
+            ratingBts[index].onclick = () => {
+                Rating = 5 - index;
+            }
+        }
+        // addBookBt
+        SecondaryWindowBt.onclick = () => {
+            if (BookName.value === "" ||
+                BookAuthor.value === "" ||
+                BookPC.value === "" ||
+                BookPC.value.length > 4 ||
+                BookPubDate.value === "" ||
+                BookPublisher.value === "" ||
+                BookPubDate.value.length > 4 ||
+                bookAbout.value === ""
+            ) {
+                let requiredElements = document.getElementsByClassName("required");
                 for (let index = 0; index < requiredElements.length; index++) {
                     if (requiredElements[index].value === "") {
-                        requiredElements[index].style.border = "";
-                    };
+                        requiredElements[index].style.border = "solid 1px red";
+                    }
+                    ;
                 }
-            }, 3000);
-            return;
-        } else {
-            /* Check Cover Exist ? */
-            if (bookCoverImg.src != "") {
-                bookCoverImg.src = "assets/bookCover.jpg"
-            };
-            // POST data to Server
-            postData(`addbook`, {
-                bookCover: browse_cover.files[0].path,
-                bookName: BookName.value,
-                bookAuthor: BookAuthor.value,
-                bookPC: BookPC.value,
-                bookPubDate: BookPubDate.value,
-                bookPublisher: BookPublisher.value,
-                bookRating: Rating,
-                bookAbout: bookAbout.value
-            }).then(() => {
-                showHideSecondaryWindow();
-            }).catch(error => {
-                console.error('Error:', error);
-            });
+                setTimeout(() => {
+                    for (let index = 0; index < requiredElements.length; index++) {
+                        if (requiredElements[index].value === "") {
+                            requiredElements[index].style.border = "";
+                        }
+                        ;
+                    }
+                }, 3000);
+                return;
+            } else {
+                /* Check Cover Exist ? */
+                if (bookCoverImg.src != "") {
+                    bookCoverImg.src = "assets/bookCover.jpg"
+                }
+                ;
+                // POST data to Server
+                postData(`addbook`, {
+                    bookCover: browse_cover.files[0].path,
+                    bookName: BookName.value,
+                    bookAuthor: BookAuthor.value,
+                    bookPC: BookPC.value,
+                    bookPubDate: BookPubDate.value,
+                    bookPublisher: BookPublisher.value,
+                    bookRating: Rating,
+                    bookAbout: bookAbout.value
+                }).then(() => {
+                    showHideSecondaryWindow();
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            }
         }
     }
 }

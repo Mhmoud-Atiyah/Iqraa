@@ -16,205 +16,149 @@
 
 <body>
 <!-- Header -->
-<div id="header" dir="ltr">
-    <div id="headerRight">
-        <!-- User Profile -->
-        <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
-                    <strong id="profile-name" class="me-1" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
-                    <img id="profile-pic" class="profilePic rounded-circle">
-                </span>
-        <!-- App Dark Mode -->
-        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="theme-icon"
-                                                                               class="#"></i></span>
+<div id="header">
+    <div id="headerRight" class="pt-1">
         <!-- App Connection Status -->
         <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="status-icon"
                                                                                class="#"></i></span>
+        <!-- App Dark Mode -->
+        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="theme-icon"
+                                                                               class="#"></i></span>
+        <!-- User Profile -->
+        <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
+            <img id="profile-pic" class="rounded-circle profilePic">
+            <strong id="profile-name" class="me-2" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
+        </span>
+
     </div>
-    <div id="headerLeft">
-        <!-- Search Input -->
-        <form class="d-flex" role="search">
-            <!-- Add Book button -->
-            <button id="addBookBt" class="btn btn-outline-warning d-inline-flex align-items-center fw-bold"
-                    type="button">اضف كتاب
-            </button>
-            <!-- Search Book -->
-            <div>
-                <button id="searchBt" style="position: absolute;left: 90px;color: var(--App-textColor)"
-                        class="btn d-inline-flex align-items-center fs-4" type="button">
-                    <i class="fa-solid fa-magnifying-glass" style=""></i>
-                </button>
-                <input class="form-control ms-2 me-4" id="search-input" type="search" placeholder="بحث">
-                <div id="search-inputList">
-                    <ul id="search-inputListItems">
-                        <!-- placeholder for Search Reponses -->
-                    </ul>
-                </div>
-            </div>
-        </form>
+    <div id="headerCenter">
         <!-- Secondary Show Options -->
-        <div class="navbar-collapse" id="navbarCollapse">
-            <ul id="secondary-nav" class="navbar-nav mb-2 mb-md-0">
+        <div>
+            <ul id="tagsList" class="p-1">
                 <!-- PLACEHOLDER For Books Tags -->
             </ul>
         </div>
     </div>
-</div>
-<!--Section: book view-->
-<div class="book_view container">
-    <!-- Book Details -->
-    <div class="p-md-3 mb-4 rounded col-md-10 bookData">
-        <!-- Book Cover -->
-        <img id="book_view_cover" src="assets/bookCover.jpg" class="float-start" title="عنوان الكتاب"
-             style="filter: grayscale(100%);">
-        <!-- Book Data -->
-        <div class="px-0 pe-2 pb-2 me-3">
-            <!-- Book Title and Rating -->
-            <div style="display: inline-block;" class="pb-1" id="book_view_title_rating">
-                <div class="lead fw-bold ms-3" id="book_view_title"
-                     style="display:inline;flex: 1 1 auto;box-sizing: border-box"></div>
-                <div id="book_view_rating" class="ms-3 rating"
-                     style="display: inline-block;direction: ltr;flex: 1 1 auto;box-sizing: border-box">(
-                    <input type="radio" class="ratingBt" name="rating" id="star1" value="1"><label
-                            for="star1">&#9733;</label>
-                    <input type="radio" class="ratingBt" name="rating" id="star3" value="3"><label
-                            for="star3">&#9733;</label>
-                    <input type="radio" class="ratingBt" name="rating" id="star2" value="2"><label
-                            for="star2">&#9733;</label>
-                    <input type="radio" class="ratingBt" name="rating" id="star4" value="4"><label
-                            for="star4">&#9733;</label>
-                    <input type="radio" class="ratingBt" name="rating" id="star5" value="5"><label
-                            for="star5">&#9733;</label>
-                    )
+    <div id="headerLeft">
+        <!-- Search Input -->
+        <form class="d-flex" role="search">
+            <!-- Search Book -->
+            <div class="container searchSide">
+                <button id="searchBt" class="btn d-inline-flex align-items-center " type="button">
+                    <i class="fa-solid fa-magnifying-glass fs-5"></i>
+                </button>
+                <input class="form-control" id="search-input" type="search" placeholder="بحث">
+                <div id="search-inputList">
+                    <ul id="search-inputListItems"><!-- placeholder for Search Responses --></ul>
                 </div>
             </div>
-            <!-- Book Pubish Date -->
-            <div class="small fw-bold fs-5 ms-3" id="book_view_pubDate"></div>
-            <!-- Book read Count -->
-            <div class="small fw-bold fs-5 ms-3" id="book_view_readCount"></div>
-            <!-- Book Pages Count -->
-            <div class="small fw-bold fs-5 ms-3" id="book_view_pagesCount"></div>
-            <!-- Book Options -->
-            <div class="fw-bold pt-2">
-                <div class="book_options mt-3 pb-2">
-                    <nav class="book_optionsNav">
-                        <a class="read_bt Btn fw-bold" id="book_view_readBt">قرأت&nbsp;
-                            <i class="fa-solid fa-book-medical"></i></a>
-                        <a class="wantread_bt Btn fw-bold" id="book_view_wantreadBt">أحب&nbsp;
-                            <i class="fa-solid fa-heart"></i></a>
-                        <a class="readNow_bt Btn fw-bold" id="book_view_readNowBt">قراءه&nbsp;
-                            <i class="fa-brands fa-readme"></i></a>
-                        <a class="book_purchase_bt Btn fw-bold" id="book_view_purchaseBt" href="#">شراء&nbsp;
-                            <i class="fa-solid fa-bag-shopping"></i></a>
-                    </nav>
-                </div>
+            <!-- Add Book button -->
+            <div class="addbookSide" style="width: 25%;">
+                <div id="addBookBt" class="fs-5 fw-bold rounded" type="button">اضف كتاب</div>
             </div>
-        </div>
-    </div>
-    <!-- Author Section -->
-    <div class="row mb-2">
-        <div class="col-md-8">
-            <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative authorData p-2">
-                <!-- Author title -->
-                <div class="col pe-4 pt-2 d-flex flex-column position-static authorTitle">
-                    <div class="d-inline-block fs-3 fw-bold" style="letter-spacing: 1px;">المؤلف</div>
-                    <div class="mb-0 fs-4 fw-bold cursorBt" id="authorName"></div>
-                    <p class="card-text mb-auto fs-4" id="authorInfo"></p>
-                </div>
-                <!-- Author Profile -->
-                <div class="col-auto d-none d-lg-block p-3">
-                    <img id="authorProfile" class="rounded cursorBt" src="assets/profile.png">
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <!-- About Book -->
-    <div class="row">
-        <div class="col-md-8">
-            <!-- TODO: add Alert banner like (Goodreads Choice Award: Winner for Best Fiction (2023)) -->
-            <article class="blog-post mb-4" id="book_viewAbout"></article>
-            <nav class="blog-pagination" aria-label="Pagination" id="book_tags">
-                <!-- placeholder for Book tags -->
-            </nav>
-
-        </div>
+        </form>
     </div>
 </div>
-<!-- User Comments -->
-<section class="UserComments">
-    <div class="container mt-5">
-        <!-- My thread -->
-        <div class="card mb-4">
-            <div class="card-body pt-2 pb-2 ps-4 pe-4 rounded"
-                 style="background-color: var(--App-panelBgColor);color: var(--App-textColor);">
-                <div class="row">
-                    <!-- User Comment -->
-                    <div class="d-flex flex-start p-2 rounded">
-                        <img class="rounded-circle shadow-1-strong ms-3" src="assets/profile.jpg"
-                             alt="avatar" width="54" height="54"/>
-                        <div class="flex-grow-1 flex-shrink-1">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p class="mb-1">
-                                        <span class="fw-bold">اسم المستخدم -</span>
-                                        <span class="small">منذ ساعتين</span>
-                                        <span class="small"><i class="fas fa-list-dots"></i></span>
-                                    </p>
-                                </div>
-                                <textarea id="myBookComment" class="form-control rounded border pt-2 pb-2" rows="1"
-                                          style="background-color: var(--App-inputBgColor);color: var(--App-textColor);resize: none"
-                                          placeholder="تعليقك !"></textarea>
-                            </div>
+<!-- Main View -->
+<div id="main" class="container">
+    <!-- Book View -->
+    <div class="book_view container row">
+        <!-- Book Details -->
+        <div class="col-8 ms-2">
+            <!-- Book Details -->
+            <div class="p-md-3 mb-4 rounded bookData">
+                <!-- Book Cover -->
+                <img id="book_view_cover" src="assets/bookCover.jpg" class="float-start mt-2" title="عنوان الكتاب"
+                     style="filter: grayscale(100%);">
+                <!-- Book Data -->
+                <div class="px-0 pe-2 pb-2 me-3">
+                    <!-- Book Title and Rating -->
+                    <div style="display: inline-block;" class="pb-0" id="book_view_title_rating">
+                        <!-- Title -->
+                        <div class="lead fw-bold ms-3" id="book_view_title"
+                             style="display:inline;flex: 1 1 auto;box-sizing: border-box"></div>
+                        <!-- Rate -->
+                        <div id="book_view_rating" class="ms-3 rating"
+                             style="display: inline-block;direction: ltr;flex: 1 1 auto;box-sizing: border-box">
+                            (&nbsp;<span id="book_view_rating_number" class="fs-6"
+                                         style="font-family: NumberFontLight, serif;letter-spacing: 1px"></span>&nbsp;)
+                        </div>
+                    </div>
+                    <!-- Book Pubish Date -->
+                    <div class="small fw-bold fs-5 ms-3" id="book_view_pubDate"></div>
+                    <!-- Book read Count -->
+                    <div class="small fw-bold fs-5 ms-3" id="book_view_readCount"></div>
+                    <!-- Book Pages Count -->
+                    <div class="small fw-bold fs-5 ms-3" id="book_view_pagesCount"></div>
+                    <!-- Book Options -->
+                    <div class="fw-bold pt-2">
+                        <div class="book_options mt-3 pb-2">
+                            <nav class="book_optionsNav">
+                                <a class="read_bt Btn fw-bold" id="book_view_readBt">قرأت&nbsp;
+                                    <i class="fa-solid fa-book-medical"></i></a>
+                                <a class="wantread_bt Btn fw-bold" id="book_view_wantreadBt">أحب&nbsp;
+                                    <i class="fa-solid fa-heart"></i></a>
+                                <a class="readNow_bt Btn fw-bold" id="book_view_readNowBt">قراءه&nbsp;
+                                    <i class="fa-brands fa-readme"></i></a>
+                                <a class="book_purchase_bt Btn fw-bold" id="book_view_purchaseBt" href="#">شراء&nbsp;
+                                    <i class="fa-solid fa-bag-shopping"></i></a>
+                            </nav>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- About Book -->
+            <div class="row p-2">
+                <!-- TODO: add Alert banner like (Goodreads Choice Award: Winner for Best Fiction (2023)) -->
+                <article class="blog-post mb-4" id="book_viewAbout"></article>
+                <nav class="blog-pagination mt-2" aria-label="Pagination" id="book_tags">
+                    <!-- placeholder for Book tags -->
+                </nav>
+            </div>
         </div>
-        <!-- User Threads -->
-        <div class="card">
-            <div class="card-body p-4 rounded"
-                 style="background-color: var(--App-panelBgColor);color: var(--App-textColor);">
-                <div class="row">
-                    <!-- User Comment -->
-                    <div class="d-flex flex-start rounded p-2 border">
-                        <img class="rounded-circle shadow-1-strong ms-3"
-                             src="data:image/webp;base64,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"
-                             alt="avatar" width="54" height="54"/>
-                        <div class="flex-grow-1 flex-shrink-1">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p class="mb-1">
-                                        <span class="fw-bold">اسم المستخدم -</span>
-                                        <span class="small">منذ ساعتين</span>
-                                    </p>
-                                    <div>
-                                        <i class="fa-regular fa-thumbs-up ms-1"></i>
-                                        <i class="fa-regular fa-comment ms-1"></i>
-                                        <i class="fa-regular fa-share-from-square ms-1"></i>
-                                    </div>
-                                </div>
-                                <p class="small mb-0">إنها حقيقة مثبتة منذ زمن طويل أن المحتوى المقروء للصفحة سوف يلهي
-                                    القارئ.</p>
+        <!-- Author Section -->
+        <div class="col">
+            <div class="mb-2">
+                <div class="g-0 rounded overflow-hidden shadow-sm h-md-250 authorData p-2">
+                    <div class="col d-flex flex-column position-static">
+                        <div class="d-inline-block fs-3 fw-bold text-center lh-1 mb-1 rounded authorDataTitle_"
+                             style="letter-spacing: 1px;background-color: var(--App-panelBorderColor);user-select: none">
+                            <span class="authorDataTitle">المؤلف</span>
+                            <div class="float-start fs-6 p-2">
+                                <i class="fa-solid fa-chevron-right cursorBt " id="author_next"></i>
+                                <span class="fs-6" style="font-family: NumberFont, serif" id="author_pageNo"></span>
+                                <i class="fa-solid fa-chevron-left cursorBt" id="author_prev"></i>
                             </div>
-                            <!-- Other User Reply -->
-                            <div class="d-flex flex-start mt-3 me-3"
-                                 style="color: var(--App-secondaryTextColor);">
-                                <img class="rounded-circle shadow-1-strong ms-3"
-                                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf_ZfCbowyK3WBfUy-hZgPmdXR0tm7nqjpwg&s"
-                                     alt="avatar" width="54" height="54"/>
-                                <div class="flex-grow-1 flex-shrink-1">
-                                    <div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="mb-1" style="color: var(--App-textColor);">ماريا
-                                                سامنثا -
-                                                <span class="small">منذ ساعتين</span>
-                                            </p>
+                        </div>
+                        <div>
+                            <div id="authorPageSpinner"></div>
+                            <div id="authorPage">
+                                <!-- Author Details -->
+                                <div class="container">
+                                    <div class="row">
+                                        <!-- Author Info -->
+                                        <div class="col pt-2">
+                                            <div class="fs-3 fw-bold text-center cursorBt" id="authorName"></div>
+                                            <div class="row text-center">
+                                                <span class="fs-5" id="authorDOB"></span>
+                                                <span class="fw-bold fs-6" id="authorDOB_date"
+                                                      style="font-family: NumberFont, serif;font-size: 18px"></span>
+                                            </div>
+                                            <div class="row text-center">
+                                                <span class="fs-5" id="authorDOD"></span>
+                                            </div>
                                         </div>
-                                        <p class="small mb-0">إنها حقيقة مثبتة منذ زمن طويل أن المحتوى
-                                            المقروء
-                                            للصفحة سوف يلهي القارئ.</p>
+                                        <!-- Author Profile -->
+                                        <div class="col">
+                                            <div class="d-lg-block p-2 text-start">
+                                                <img id="authorProfile" class="rounded cursorBt"
+                                                     src="assets/profile.png">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- Author About -->
+                                <p class="card-text mb-auto fs-4 pe-3" id="authorInfo"></p>
                             </div>
                         </div>
                     </div>
@@ -222,13 +166,46 @@
             </div>
         </div>
     </div>
-</section>
+    <!-- Riwaq Section -->
+    <div class="container row rounded shadow-sm mt-2 me-3" id="riwaqSection">
+        <p class="fs-3 text-success text-center fw-bold"> Riwaq Screen </p>
+    </div>
+    <!-- Suggestion Section -->
+    <div class="container row rounded shadow-sm mt-4 me-3 align-content-center" id="Suggestion">
+        <div id="bookCarousel" class="carousel slide" data-wrap="false" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="container">
+                        <div class="row" id="suggestionList">
+                            <!--Placeholder-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- User Comments -->
+    <section class="UserComments mt-4 col">
+        <div class="container ps-4" id="UserCommentsSpace">
+            <!--TODO: Add User Rating here -->
+        </div>
+    </section>
+</div>
 <!-- Secondary Window -->
 <div id="SecondaryWindow" class="rounded">
-    <span id="SecondaryWindowHeader"><span id="SecondaryWindowHeader_"></span></span>
+    <span id="SecondaryWindowHeader">
+        <span id="SecondaryWindowHeader_close" class="float-end me-2 cursorBt">
+            <i class="fa-solid fa-xmark rounded-circle"></i>
+        </span>
+        <span id="SecondaryWindowHeader_"></span>
+    </span>
     <span id="SecondaryWindowBody"></span>
-    <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
+    <span id="SecondaryWindowBt">
+        <span class="rounded fw-bold cursorBt" id="SecondaryWindowBt_"></span>
+    </span>
 </div>
+<!-- Modal Placeholder -->
+<div id="ModalPlaceHolder"></div>
 <!-- External Scripts -->
 <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="JS/components.js"></script><!-- Dark Mode and Themes -->
@@ -236,7 +213,6 @@
 <script src="JS/search.js" type="module"></script><!-- Search Routines -->
 <script src="JS/addBook.js" type="module"></script><!-- Add Book -->
 <script src="JS/bookView.js" type="module"></script>
-
 </body>
 
 </html>

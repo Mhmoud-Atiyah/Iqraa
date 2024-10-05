@@ -36,29 +36,9 @@ body {
 
 #book_viewAbout {
     color: var(--App-textColor);
-    font-family: TheYearofTheCamelLight, serif;
-    font-size: 18px;
+    font-family: Moharram, serif;
+    font-size: 26px;
     word-spacing: 2px;
-}
-
-.rating {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: center;
-}
-
-.rating input {
-    display: none;
-}
-
-.rating label {
-    font-size: 1.4rem;
-    cursor: pointer;
-    padding: 0 0.1rem;
-}
-
-.rating input:checked ~ label {
-    color: #f5b301;
 }
 
 #book_view_title_rating {
@@ -68,6 +48,24 @@ body {
     display: block flex;
     flex-wrap: wrap;
     flex-direction: row;
+}
+
+.book_view_rating_stars {
+    position: relative;
+    top: 2px;
+    --percent: calc(var(--rating) / 5 * 100%);
+    display: inline-block;
+    font-size: 28px;
+    font-family: Monadi, serif;
+    transform: scaleX(-1);
+
+    &::before {
+        content: '★★★★★';
+        letter-spacing: 2px;
+        background: linear-gradient(90deg, var(--App-starsColor) var(--percent), #fff var(--percent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 }
 
 #book_view_cover {
@@ -86,15 +84,115 @@ body {
 #book_view_pubDate,
 #book_view_pagesCount,
 #book_view_readCount,
-.authorTitle {
+.authorData {
     font-family: Moharram, serif;
     word-spacing: 3px;
 }
 
+.UserComment-container {
+    display: block;
+    width: 100%;
+    background-color: var(--App-bgColor);
+    border: solid 2px var(--App-panelBgColor);;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.reviewCount {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    right: -64px;
+    top: 4.3rem;
+    width: 54px;
+    font-family: NumberFont, serif;
+    font-size: 14px;
+    text-align: center;
+}
+
+.reviewCount i {
+    color: var(--App-placeholderColor);
+}
+
+.reviewCountLike,
+.reviewCountReply {
+    color: var(--App-placeholderColor);
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.reviewCount a:hover {
+    color: var(--App-linkHoverColor);
+    transform: scale(1.2); /* Zoom in by 20% */
+}
+
+.UserComments-tree li {
+    border-top: solid 1px var(--App-placeholderColor);
+}
+
+.UserComments-tree-NotNested .reviewCount {
+    display: none;
+}
+
+.UserComments-tree-NotNested {
+    padding-top: 6px;
+    padding-bottom: 12px;
+}
+
+.UserComments-tree-Nested {
+    margin-top: 12px;
+    padding-top: .5rem;
+}
+
+.UserComments-tree-NotNested:first-child {
+    margin-top: 1rem;
+}
+
+.reviewText {
+    display: block;
+    color: var(--App-placeholderColor);
+    font-family: Monadi, serif;
+}
+
 #authorProfile {
     filter: grayscale(100%);
+    height: 170px;
+    width: 170px;
+}
+
+#author_prev:hover,
+#author_next:hover {
+    color: var(--App-buttonHoverBgColor);
+    transform: scale(1.2); /* Zoom in by 20% */
+}
+
+#riwaqSection,
+#Suggestion {
+    display: block;
     height: 200px;
-    width: 180px;
+    width: 96%;
+    background-color: var(--App-panelBgColor);
+}
+
+.loader {
+    position: fixed;
+    top: 50px;
+}
+
+.modal-content #yesBtn:hover {
+    background-color: var(--App-inputBorderColor);
+}
+
+.info-box {
+    font-size: 14px;
+    display: none;
+    position: absolute;
+    background-color: var(--App-inputBgColor);
+    border: 1px solid var(--App-panelBgColor);
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
 @media (max-width: 480px) {

@@ -116,12 +116,14 @@ sign.signForm.addEventListener('submit', (event) => {
                      * ***************/
                     if (sign.remeberMe.checked) {
                         localStorage.setItem("userName", userName);
+                        localStorage.setItem("userId", res.userID);
                         localStorage.setItem("userPass", `|||${passWord}`);
                         localStorage.setItem("userProfile", `${res.profile}`);
                     } else {
                         /***************************************************************
                          * Put Hashed Password in Client Storage to Authenticate client
                          * **************************************************************/
+                        localStorage.setItem("userId", res.userID);
                         localStorage.setItem("userPass", `|||${passWord}`);
                         localStorage.removeItem("userName");
                         localStorage.removeItem("userProfile");

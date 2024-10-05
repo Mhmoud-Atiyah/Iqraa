@@ -1,5 +1,9 @@
 import misc from "./misc.js"
 import showHideSecondaryWindow from './SecondaryWindow.js';
+import headerTag from "../components/headerTag.js";
+import loadSection from "../components/loadSection.js";
+
+const tagId = misc.getQueryParams().tagId || null;
 
 /**********************
  * Main Routine On start
@@ -11,6 +15,30 @@ window.onload = () => {
      * */
     if (misc.ID !== null) {
         misc.getData(`loadConfig/${misc.ID}`).then((config) => {
+            /***
+             * Main Books
+             * */
+            if (tagId != null) {
+
+            }
+            /***
+             * Load Tags
+             * */
+            headerTag(tagsArea, 'to-read', 'أعجبني');
+            if (Array.isArray(config.tags)) {
+                for (let i = 0; i < config.tags.length; i++) {
+                    if (config.tags[i] !== tagId) {
+                        headerTag(tagsArea, config.tags[i], config.tags[i]);
+                    }
+                    // Activate Tag
+                    else {
+                        headerTag(tagsArea, config.tags[i], config.tags[i], true);
+                    }
+
+                }
+                // Load Section
+                loadSection(tagId);
+            }
             /*************
              * Current Book
              * *************/
@@ -100,6 +128,11 @@ window.onload = () => {
                     };
                 }
             }
+            /*****
+             * Load Effect
+             * ****/
+            document.getElementsByClassName('loader')[0].remove();
+            mainView.style.filter = "blur(0)";
         })
     }
     /***
@@ -111,6 +144,18 @@ window.onload = () => {
         current.className = "cursorBt";
         // TODO: Create Iqraa Welcome Window
     }
+}
+/***
+ * My Books
+ * */
+myBooks.onclick = () => {
+    if (document.getElementById("mainChild")) {
+        document.getElementById("mainChild").remove();
+    }
+    // Set Current
+    mainView.setAttribute("data-section", `read`);
+    // Load Screen
+    loadSection('read');
 }
 /***********
  * Open Book
@@ -130,7 +175,7 @@ for (let index = 0; index < openBookBt.length; index++) {
  * **************/
 settingBt.onclick = () => {
     /*TODO: Set it right and responsive */
-    showHideSecondaryWindow();
+    showHideSecondaryWindow('الإعدادات', 'تظبيط شوية حاجات في الاعدادات', 'تمام');
 }
 /****************
  * Library button

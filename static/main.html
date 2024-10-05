@@ -16,45 +16,47 @@
 
 <body style="font-family: Moharram;">
 <!-- Header -->
-<div id="header" dir="ltr">
-    <div id="headerRight">
-        <!-- User Profile -->
-        <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
-                    <strong id="profile-name" class="me-1" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
-                    <img id="profile-pic" class="rounded-circle profilePic">
-                </span>
-        <!-- App Dark Mode -->
-        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="theme-icon"
-                                                                               class="#"></i></span>
+<div id="header">
+    <div id="headerRight" class="pt-1">
         <!-- App Connection Status -->
         <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="status-icon"
                                                                                class="#"></i></span>
+        <!-- App Dark Mode -->
+        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="theme-icon"
+                                                                               class="#"></i></span>
+        <!-- User Profile -->
+        <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
+            <img id="profile-pic" class="rounded-circle profilePic">
+            <strong id="profile-name" class="me-2" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
+        </span>
+
+    </div>
+    <div id="headerCenter">
+        <!-- Secondary Show Options -->
+        <div>
+            <ul id="tagsList" class="p-1">
+                <!-- PLACEHOLDER For Books Tags -->
+            </ul>
+        </div>
     </div>
     <div id="headerLeft">
         <!-- Search Input -->
-        <form class="d-flex" role="search" style="display: inline-block;width: 30%">
-            <!-- Add Book button -->
-            <button id="addBookBt" class="btn btn-outline-warning d-inline-flex align-items-center fw-bold"
-                    type="button">اضف كتاب
-            </button>
+        <form class="d-flex" role="search">
             <!-- Search Book -->
-            <div>
-                <button id="searchBt" style="position: absolute; left: 90px"
-                        class="btn d-inline-flex align-items-center fs-4" type="button">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+            <div class="container searchSide">
+                <button id="searchBt" class="btn d-inline-flex align-items-center " type="button">
+                    <i class="fa-solid fa-magnifying-glass fs-5"></i>
                 </button>
-                <input class="form-control ms-2 me-4" id="search-input" type="search" placeholder="بحث">
+                <input class="form-control" id="search-input" type="search" placeholder="بحث">
                 <div id="search-inputList">
                     <ul id="search-inputListItems"><!-- placeholder for Search Responses --></ul>
                 </div>
             </div>
+            <!-- Add Book button -->
+            <div class="addbookSide" style="width: 25%;">
+                <div id="addBookBt" class="fs-5 fw-bold rounded" type="button">اضف كتاب</div>
+            </div>
         </form>
-        <!-- Secondary Show Options -->
-        <div class="navbar-collapse" id="navbarCollapse">
-            <ul id="secondary-nav" class="navbar-nav mb-2 mb-md-0">
-                <!-- PLACEHOLDER For Books Tags -->
-            </ul>
-        </div>
     </div>
 </div>
 <!--  Main View -->
@@ -63,8 +65,8 @@
 <div id="nav" class="navbar navbar-expand-md">
     <div class="col-md-1"><img class="cursorBt" id="current" src="#"></div>
     <div class="row">
-        <div id="myBooks" class="navBt mySection col-md-1 nav-bt cursorBt">كتبي</div>
-        <div id="want" class="navBt mySection col-md-1 nav-bt cursorBt">أعجبني</div>
+        <div id="myBooks" class="navBt myBooks col-md-1 nav-bt cursorBt">كتبي</div>
+        <div id="#" class="navBt col-md-1 nav-bt cursorBt">المنصة</div>
         <div id="library_bt" class="navBt col-md-1 nav-bt cursorBt">المكتبة</div>
         <div id="session" class="navBt col-md-1 nav-bt cursorBt">الرواق</div>
     </div>
@@ -75,11 +77,15 @@
 </div>
 <!-- Secondary Window -->
 <div id="SecondaryWindow" class="rounded">
-    <span id="SecondaryWindowHeader"><span id="SecondaryWindowHeader_"></span></span>
+    <span id="SecondaryWindowHeader">
+        <span id="SecondaryWindowHeader_close" class="float-end me-2 cursorBt">
+            <i class="fa-solid fa-xmark rounded-circle"></i>
+        </span>
+        <span id="SecondaryWindowHeader_"></span>
+    </span>
     <span id="SecondaryWindowBody"></span>
     <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
 </div>
-
 <!-- External Scripts -->
 <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="JS/components.js"></script><!-- Dark Mode and Themes -->

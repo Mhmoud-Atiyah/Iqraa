@@ -115,7 +115,6 @@ async function insertData(tableName, data) {
             VALUES (${keys.map((_, i) => `$${i + 1}`).join(', ')})
         `;
         const result = await pool.query(query, values);
-        console.log(`Data Added to [TABLE: ${tableName}] successfully:`, result.rowCount);
     } catch (err) {
         console.error('Error executing query', err.stack);
         throw new Error('Failed to insert data');
@@ -526,7 +525,7 @@ async function getLibrarySectionBooks(SectionId) {
         // Loop over each book to get details
         for (const book of books) {
             const detailsQuery = 'SELECT * FROM books WHERE id = $1';
-            const detailsResult = await pool.query(detailsQuery, [book.bookid]);
+            const detailsResult = await pool.query(detailsQuery, [book.id]);
             const details = detailsResult.rows[0]; // Assuming one-to-one relationship
             delete book.hash;
             // Combine book data with its details

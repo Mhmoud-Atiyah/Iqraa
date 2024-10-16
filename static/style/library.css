@@ -7,45 +7,13 @@ body {
     color: var(--App-textColor);
 }
 
+
+#headerRight {
+    width: 30%;
+}
+
 #headerCenter {
-    display: inline-flex;
-    flex-wrap: nowrap;
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    height: 100%;
-    direction: rtl;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    background-color: transparent;
-    font-family: Moharram, serif;
-    font-size: 28px;
-    word-spacing: 1px;
-}
-
-#headerCenterBTs {
-    display: inline-flex;
-    flex-wrap: nowrap;
-    position: relative;
-    padding-bottom: 5px;
-}
-
-.headerCenterBt {
-    text-align: center;
-    background-color: var(--App-inputBgColor);
-    display: inline-flex;
-    flex-wrap: nowrap;
-    width: max-content;
-    height: 30px;
-    line-height: .8em;
-    padding-right: 8px;
-    padding-left: 8px;
-    color: var(--App-placeholderColor);
-}
-
-.headerCenterBt:hover {
-    color: var(--App-buttonTextColor);
-    background-color: var(--App-buttonHoverBgColor);
+    width: 45%;
 }
 
 .aboutIcon {

@@ -1,17 +1,23 @@
-# Use the official Node.js image from the Docker Hub
-FROM node:latest
+# Use the official Node.js LTS image
+FROM node:18-alpine
 
-# Set the working directory in the container
-WORKDIR .
+# Set working directory
+WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json (or yarn.lock)
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Copy the rest of your application code
+# Install dependencies
+RUN npm install --production
+
+# Copy the rest of the application code
 COPY . .
 
-# Expose the port that the app runs on
+# Expose the port your app runs on (e.g., 3000)
 EXPOSE 443
 
-# Command to run the application
-CMD [ "node", "webserver.js" ]
+# Define environment variable for production
+ENV NODE_ENV=production
+
+# Start the application
+CMD ["node", "./webServer.js"]

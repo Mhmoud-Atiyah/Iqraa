@@ -26,10 +26,16 @@
                                                                                class="#"></i></span>
         <!-- User Profile -->
         <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
-            <img id="profile-pic" class="rounded-circle profilePic">
+            <img id="profile-pic" class="rounded-circle profilePic cursorBt dropdown-toggle" data-bs-toggle="dropdown"
+                 aria-expanded="true">
             <strong id="profile-name" class="me-2" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
+            <ul class="dropdown-menu text-small shadow text-end" id="profileMenu"
+                data-popper-placement="top-start">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item fs-5" href="#" id="logOutBt">تسجيل الخروج</a></li>
+            </ul>
         </span>
-
     </div>
     <div id="headerCenter">
         <!-- Secondary Show Options -->

@@ -4,9 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const multer = require('multer');
+const xlsx = require('node-xlsx').default;
 const {v4: uuidv4} = require('uuid');
 const pool = require('./backend/pg');
-const {generateHash} = require("./backend/encryption");
+const {generateHash, generateCryptographicValue} = require("./backend/encryption");
 const pg = require('./backend/pg');
 const {checkUserCredentials} = require("./backend/pg");
 const {getCover, getAbout} = require("./backend/bookData");
@@ -624,23 +625,41 @@ app.get('/library', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "library.html"));
 })
 app.post('/loadLibrary', (req, res) => {
-    const {userId, libraryId, hashedPass} = req.body;
-    /* Get Data From User Database */
-    (async () => {
-        try {
-            const exists = await pg.getRecord("users", userId);
-            if (exists != null) { // Exist as User Not Library User !
-                /* Check Password */
-                if (hashedPass != null && hashedPass === exists.pass) {
-                    if (libraryId != null) {
+    try {
+        /***
+         * Get credentials
+         *  */
+        const {userId, hashedPass, libraryId} = req.body;
+        /***************
+         * User Authorized
+         * **************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            if (libraryId != null) {
+                (async () => {
+                    try {
                         pg.getRecord("library", libraryId).then(libraryData => {
-                            // check if UserId is Library Admin
+                            /***
+                             * check if UserId is Library Admin
+                             * */
                             if (libraryData != null) {
-                                if (libraryData.adminid === Number(userId)) {
-                                    res.send(libraryData);
+                                /***
+                                 * Send Full Library Data
+                                 * */
+                                if (libraryData.adminid === userId) {
+                                    res.json({
+                                        status: 0,
+                                        msg: libraryData
+                                    })
                                     console.log(`${libraryData.title} Library Retrieved Successfully by Admin [userId: ${userId}]`);
-                                } else { // check if UserId in Library Parties or Library is Public
-                                    if (libraryData.parties.includes(Number(userId)) || libraryData.access === "public") {
+                                }
+                                /****
+                                 * Send Partial Needed Data
+                                 * */
+                                else {
+                                    /****
+                                     * check if UserId in Library Parties or Library is Public
+                                     * */
+                                    if (libraryData.parties.includes(userId) || libraryData.access === "public") {
                                         // Drop Sensitive Data
                                         delete libraryData.adminid;
                                         delete libraryData.hash;
@@ -648,25 +667,39 @@ app.post('/loadLibrary', (req, res) => {
                                         delete libraryData.requests;
                                         // if Library Viewed Public
                                         if (libraryData.access === "public") delete libraryData.parties;
-                                        res.send(libraryData);
+                                        res.json({
+                                            status: 0,
+                                            msg: libraryData
+                                        })
                                         console.log(`${libraryData.title} Library Retrieved Successfully by Party [userId: ${userId}]`);
-                                    } else {// Not Admin nor Parties
-                                        res.send(`[userId: ${userId}] Not Belong To Library [${libraryId}]`);
+                                    }
+                                    /***
+                                     * Not Admin nor Parties
+                                     * */
+                                    else {
+                                        res.json({
+                                            status: 1,
+                                            msg: `[userId: ${userId}] Not Belong To Library [${libraryId}]`
+                                        })
                                     }
                                 }
                             }
                         });
+                    } catch (error) {
+                        res.status(500).send('Internal Server Error');
                     }
-                } else {
-                    console.log(`User [${userId}] Not Authorized`);
-                }
-            } else {
-                console.log(`User [${userId}] Not Found`);
+                })();
             }
-        } catch (error) {
-            console.error('Error:', error);
+        } else {
+            console.error(`user [userId: ${userId}] Not Authorized to retrieve Library Data`);
+            res.json({
+                status: 1,
+                msg: `user [userId: ${userId}] Not Authorized to retrieve Library Data`
+            })
         }
-    })();
+    } catch (error) {
+        console.error('Error:', error);
+    }
 })
 app.post('/loadLibraries', (req, res) => {
     const {userId, libraryId, hashedPass} = req.body;
@@ -696,11 +729,10 @@ app.post('/loadLibraries', (req, res) => {
     })();
 })
 app.get('/loadLibrarySection/:section', (req, res) => {
-    const sectionId = req.params.section || null;
+    const sectionId = req.params.section || null;// UUID
     if (sectionId != null) {
         pg.getLibrarySectionBooks(String(sectionId)).then(data => {
             // Drop Sensitive Data
-
             res.send(data);
         })
     }
@@ -722,7 +754,6 @@ app.post('/createLibrary/:userId', upload.single('CL_Cover'), (req, res) => {
     const GIS = req.body.CL_GIS.split(",") || null;
     const libraryId = uuidv4();
     const libraryMain = uuidv4();
-    console.log("line 1")
     /* Write Data To Database */
     pg.insertData('library', {
         id: libraryId,
@@ -730,7 +761,7 @@ app.post('/createLibrary/:userId', upload.single('CL_Cover'), (req, res) => {
         title: CL_Name,
         type: CL_Type,
         cover: libraryCover,
-        hash: generateHash(libraryId),/*TODO: make more robust one */
+        hash: generateCryptographicValue(id, libraryId),/*TODO: make more robust one */
         parties: [id],
         main: libraryMain,
         currency: CL_Currency,
@@ -741,27 +772,24 @@ app.post('/createLibrary/:userId', upload.single('CL_Cover'), (req, res) => {
         socialmedia: [CL_SM_website, CL_SM_twitter, CL_SM_facebook, CL_SM_instagram],
         access: "private" //TODO: get it from form
     }).then(() => {
-
-        console.log("line 2")
         /* Create main Library table */
         pg.createTable(`"${libraryMain}"`, `
-        bookid    int NOT NULL REFERENCES books (id) ON DELETE SET NULL,
-        hash      text,
+        id    int NOT NULL REFERENCES books (id) ON DELETE SET NULL,
         price     int,
-        state     text,
-        section     text,
-        available text`).then(() => {
-
-            console.log("line 3")
+        format    text,
+        hash      text,
+        paid      bool,
+        read      bool,
+        sell      bool,
+        preview   text,
+        section   text`).then(() => {
             pg.updateRecord("users", id, "mylibrary", libraryId).then(() => {
-
-                console.log("line 4")
                 console.log(`library [${libraryId}] created successfully`);
             }).catch(err => console.error('Update failed', err));
         });
     });
     /* Go back to Main Again */
-    res.redirect(`/library?libraryId=${libraryId}&userId=${id}`);
+    res.redirect(`/library`);
 });
 app.post('/joinLibrary', (req, res) => {
     const {userId, libraryId, hashedPass} = req.body;
@@ -816,16 +844,88 @@ app.post('/joinLibrary', (req, res) => {
         }
     })();
 })
-app.post('/libraryExcel/:userId', upload.single('file'), (req, res) => {
-    const id = req.params.userId;
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
+app.post('/libraryExcel', upload.single('file'), (req, res) => {
+    try {
+        /***
+         * Get credentials
+         *  */
+        const {userId, hashedPass, libraryId} = req.body;
+        /***************
+         * User Authorized
+         * **************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            if (libraryId != null) {
+                try {
+                    // Parse a file
+                    const excelFile = req.file ? req.file.path : 'assets/profile.png';
+                    const File = xlsx.parse(excelFile),
+                        Data = File[0].data,
+                        libraryHash = generateCryptographicValue(hashedPass, libraryId);
+                    /***
+                     * Write Data To Database
+                     * */
+                    for (let i = 0; i < Data.length; i++) {
+                        const book = Data[i];
+                        /***
+                         * Excel Entry Contain Must Data
+                         * */
+                        if (book.length > 0 && book[0] !== null && book[1] !== null && !isNaN(book[1])) {
+                            //TODO: const bookId = Search(book[0]);
+                            // make sure that no two books get same id
+                            const bookId = 5295735;
+                            (async () => {
+                                /****
+                                 * Book Already Existed ?
+                                 * */
+                                const exists = await pg.checkIfIdExists(libraryId, bookId);
+                                // If it doesn't exist, proceed with insertion
+                                if (!exists) {
+                                    const bookData = {
+                                        id: bookId,
+                                        price: Number(book[1]),
+                                        format: book[2] === "رقمي" ? "electronic" : "hardcover",
+                                        sell: book[3],
+                                        read: book[4],
+                                        paid: book[5],
+                                        preview: book[6] || null,
+                                        section: book[7],
+                                    };
+                                    // Include 'hash' only if the book is paid
+                                    if (book[5] !== null && book[5]) {
+                                        bookData.hash = generateCryptographicValue(libraryHash, `${bookId}`);
+                                    }
+                                    // Step 3: Insert the data
+                                    await pg.insertData(libraryId, bookData);
+                                    console.log(`User [userId: ${userId}] Add Book [bookId: ${bookId}] to Library [libraryId: ${libraryId}]`);
+                                }
+                            })();
+                        }
+                        /****
+                         * Respond User based on itertaion
+                         * */
+                        if (i === Data.length - 1) {
+                            // TODO: Select best Count to response
+                            console.log(`user [userId: ${userId}] Completed Add Data To Library [libraryId: ${libraryId}] by Excel File`);
+                            res.json({
+                                status: 0,
+                                msg: `user [userId: ${userId}] Add Data To Library [libraryId: ${libraryId}] by Excel File`
+                            })
+                        }
+                    }
+                } catch (error) {
+                    res.status(500).send('Internal Server Error');
+                }
+            }
+        } else {
+            console.error(`user [userId: ${userId}] Not Authorized to retrieve Library Data`);
+            res.json({
+                status: 1,
+                msg: `user [userId: ${userId}] Not Authorized to retrieve Library Data`
+            })
+        }
+    } catch (error) {
+        console.error('Error:', error);
     }
-    const dataPath = req.file.path;
-    /* Write Data To Database */
-
-    /* Go back to Main Again */
-    res.redirect(`/library?userId=${id}`);
 });
 /*******************************
  *   Riwaq's Requests

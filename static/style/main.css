@@ -10,9 +10,11 @@ textarea::-webkit-resizer {
 input[type="search"],
 input[type="text"],
 input[type="number"],
+input[type="checkbox"],
 input[type="date"],
 textarea[class="form-control"],
 #myBookComment,
+#recognizedText,/* OCR in Library */
 #addBookModal_rate,
 select[class="form-select"] {
     font-family: GilroyLight, serif;
@@ -150,7 +152,7 @@ body {
     border: solid 1px var(--App-panelBorderColor);
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    overflow: hidden;
+    /*overflow-x: hidden;*/
 }
 
 #headerRight {
@@ -178,6 +180,18 @@ body {
     font-size: 16px;
     padding-top: 10px;
     transform: scaleX(-1);
+}
+
+#profileMenu {
+    position: absolute;
+    inset: auto auto 0px 0px;
+    margin: 0px;
+    z-index: 1;
+    transform: translate(0px, -34px);
+    color: var(--App-textColor);
+    background-color: var(--App-panelBorderColor);
+    border: solid 1px var(--App-panelBorderColor);
+
 }
 
 .profilePic {

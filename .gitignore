@@ -4,3 +4,4 @@ node_modules/**/**
 data/**/**
 static/assets/**/**
 out/
+.env

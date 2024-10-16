@@ -1,9 +1,4 @@
 import misc from "./misc.js"
-import showHideSecondaryWindow from "./SecondaryWindow.js";
-import libraryAbout from "../components/libraryAbout.js";
-import libraryResource from "../components/libraryResource.js";
-import libraryExtensions from "../components/libraryExtensions.js";
-import libraryParties from "../components/libraryParties.js";
 import riwaqScreen from "../components/riwaqScreen.js";
 
 const Href = new URL(window.location.href);
@@ -217,6 +212,20 @@ themeBt.onclick = () => {
         }
     }
 }
+/****
+ * log-Out Bt
+ * */
+logOutBt.onclick = () => {
+    /****
+     * Remove all DB of User
+     * */
+    localStorage.removeItem('userId')
+    localStorage.removeItem('userPass')
+    /***
+     * Redirect To login Page
+     * */
+    window.location.href = '/login';
+}
 /*******
  * Riwaq Buttons
  * *******/
@@ -356,56 +365,6 @@ if (pathname === '/riwaq') {
                 riwaq.initBt.style.bottom = '10px';
                 document.getElementById("initSession").style.bottom = '60px'
             }
-        }
-    }
-}
-/*******
- * Library Buttons
- * *******/
-if (pathname === '/library') {
-    /****************
-     * Library Info Bt
-     * ***************/
-    library.LibraryInfoBt.onclick = () => {
-        showHideSecondaryWindow("بطاقة التعريف", libraryAbout(LibraryData), "تمام");
-    }
-    /****************
-     * Parties Button
-     * **************/
-    library.PartiesBt.onclick = () => {
-        // TODO: you have two choices 1. for each id get data or from pg create routine to get data
-        libraryParties({
-            id: 1,
-            libraryId: "8ca33e51-4a1d-4831-952d-beac82779e00",
-            name: "Emma Watson Filipe",
-            visits: 23,
-            cover: "https://ntvb.tmsimg.com/assets/assets/247026_v9_bc.jpg"
-        });
-    }
-    /********************
-     * LibraryExtensionsBt
-     * *********************/
-    library.ExtensionsBt.onclick = () => {
-        // TODO: add extension for library which print book on demand !
-        libraryExtensions();
-    }
-    /*********************
-     * Book OCR Scan Bt
-     * ********************/
-    library.OCRBt.onclick = () => {
-        let div = `<video id="OCRScreen" autoplay></video>`;
-        showHideSecondaryWindow("البحث عن الكتاب بالغلاف", div, "تم");
-        /* TODO: misc.enableCamera().then(() => {});*/
-    }
-    /***************
-     * Admin Mode Bt
-     **************/
-    library.AdminModeBt.onclick = () => {
-        if (LibraryData.adminid != null && LibraryData.hash != null) {
-            // User is Admin
-            libraryResource();
-        } else {
-            showHideSecondaryWindow("حدد مصادر بيانات المكتبة", `لا يمكنك تحديد مصادر هذه المكتبة أنت عضو بها فقط !<br>`, "تمام");
         }
     }
 }

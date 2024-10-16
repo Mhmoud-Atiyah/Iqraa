@@ -25,6 +25,7 @@ const searchBt = document.getElementById("searchBt");
 const searchInput = document.getElementById("search-input");
 const searchListWindow = document.getElementById("search-inputList");
 const searchList = document.getElementById("search-inputListItems");
+const logOutBt = document.getElementById("logOutBt");
 const sign = {
     alertPlaceholder: document.getElementById('alertPlaceholder'),
     signWindow: document.getElementById("signWindow"),

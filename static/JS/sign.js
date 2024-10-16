@@ -133,7 +133,7 @@ sign.signForm.addEventListener('submit', (event) => {
                          * Browser Interface
                          * *****************/
                         if (!misc.isElectron()) {
-                            window.location.href = `https://${misc.DOMAIN}/iqraa?userId=${res.userID}`;
+                            window.location.href = `/`;
                         }
                         /******************
                          * Electron Interface
@@ -209,7 +209,7 @@ sign.passwordIcon.onclick = () => {
  * Sign-Up Manual
  * **************/
 sign.signUpBt.onclick = () => {
-    window.location.href = `https://${misc.DOMAIN}/signup`;
+    window.location.href = `/signup`;
 }
 /**************************
  * Sign-Up Using Google

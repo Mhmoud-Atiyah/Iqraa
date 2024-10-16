@@ -182,7 +182,7 @@ settingBt.onclick = () => {
  * **************/
 libraryBt.onclick = () => {
     if (!misc.isElectron()) {
-        window.location.href = `https://${misc.DOMAIN}/library?userId=${misc.ID}`;
+        window.location.href = `/library`;
     } else {
         window.IPC.openLibraryWindow(misc.ID);
     }
@@ -192,7 +192,7 @@ libraryBt.onclick = () => {
  * ************/
 riwaqBt.onclick = () => {
     if (!misc.isElectron()) {
-        window.location.href = `https://${misc.DOMAIN}/riwaq?userId=${misc.ID}`;
+        window.location.href = `/riwaq`;
     } else {
         window.IPC.openRiwaqWindow(misc.ID);
     }

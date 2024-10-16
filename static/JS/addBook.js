@@ -6,10 +6,10 @@ var Rating = 0;
 addBookBt.onclick = () => {
     if (misc.ID != null) {
         const content = `
-    <div class="container" style="width:700px">
+    <div class="container pb-3" style="width:700px">
         <div class="row">
         <!-- Right Side -->
-            <div class="col-4 p-3" style="width: 220px">
+            <div class="col-4 rounded p-3 mt-3 ms-2 pt-4" style="width: 220px;border: solid 1px var(--App-panelBorderColor)">
                 <!-- Book Cover -->
                 <img src="assets/bookCover.jpg" height="180px" width="180px" id="bookCover" style="filter: grayscale(100%)">
                 <!-- Book Cover Buttons -->
@@ -20,15 +20,11 @@ addBookBt.onclick = () => {
                         id="browse_cover">اختر ملف<i class="fa-solid fa-file-import me-2"></i>
                         <input class="form-control" type="file" style="display:none" id="browse_cover_input" accept=".png,.jpg">
                     </a>
-                    <a class="btn border rounded m-2 mt-0" style="color: var(--App-navTextColor);display:block" href="#"
-                        id="download_cover">تحميل الغلاف<i class="fa-solid fa-cloud-arrow-down me-2"></i>
-                    </a>
                 </div>
             </div>
-
         <!-- Main Section -->
             <div class="mainSide col-8 rounded p-3 mt-3 pt-4" 
-                style="background-color: var(--App-footerBgColor);display: block;height: 100%;">
+                style="border: solid 2px var(--App-panelBorderColor);display: block;height: 100%;">
                 <!-- Book Name -->
                 <div class="container">
                     <div class="row align-items-start">
@@ -63,10 +59,10 @@ addBookBt.onclick = () => {
                                 data-placement="bottom" title="سنة بين 1800 و 2025" style="font-family: NumberFont;">
                         </div>
                         <div class="col col-4">
-                            <div class="container border rounded pt-2"
-                                style="background-color: var(--App-panelBgColor);">
+                            <div class="container rounded pt-2 ps-2 pe-2"
+                                style="background-color: var(--App-inputBgColor);border: solid 1px var(--App-inputBorderColor);color: var(--App-placeholderColor)">
                                 <form>
-                                    <div class="form-group fw-bold">
+                                    <div class="form-group">
                                         <div class="rating">
                                             <input type="radio" class="ratingBt" name="rating" id="star5"
                                                 value="5"><label for="star5">&#9733;</label>
@@ -100,7 +96,6 @@ addBookBt.onclick = () => {
     `;
         showHideSecondaryWindow("اضف كتاب", content, "اضف الكتاب");
         let browse_coverBt = document.getElementById("browse_cover");
-        let download_coverBt = document.getElementById("download_cover");
         let browse_cover = document.getElementById("browse_cover_input");
         let bookCoverImg = document.getElementById("bookCover");
         let BookName = document.getElementById("BookName");
@@ -126,19 +121,6 @@ addBookBt.onclick = () => {
             if (browse_cover.value != "") {
                 bookCoverImg.src = browse_cover.files[0].path;
                 bookCoverImg.style.filter = "";
-            }
-        }
-        // Cover Download Button
-        download_coverBt.onclick = () => {
-            if (BookName.value != "") {
-                //TODO: Retrieve Cover by name
-            } else {
-                BookName.style.border = "solid 1px red";
-                BookName.placeholder = "اكتب اسم الكتاب اولاً ليتم البحث"
-                setTimeout(() => {
-                    BookName.style.border = "";
-                    BookName.placeholder = "اسم الكتاب"
-                }, 3000);
             }
         }
         // bookPageCount Button

@@ -1,6 +1,7 @@
+
 function createLibraryBook(BookData) {
     return `
-         <div class="bookItem rounded openBookBt mb-3" data-id="${BookData.bookid}" style="width: 15.4%">
+         <a href="/bookview?bookId=${BookData.id}" class="bookItem rounded openBookBt mb-3" data-id="${BookData.id}" style="width: 15.4%">
                     <img class="bookCover cursorBt" src="${BookData.details.coversrc}"
                         alt="${BookData.title}" srcset="" title="${BookData.details.title}">
                     <span class="bookItemData">
@@ -13,7 +14,7 @@ function createLibraryBook(BookData) {
                         </span>
                         <span class="bookItemPriceBt rounded cursorBt"><i class="fa-solid fa-cart-shopping"></i></span>
                     </span>
-                </div>
+                </a>
     `;
 }
 // TODO: Sections Views

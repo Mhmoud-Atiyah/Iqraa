@@ -14,70 +14,73 @@
 </head>
 <body>
 <!-- Header -->
-<div id="header" dir="ltr">
-    <div id="headerRight">
-        <!-- User Profile -->
-        <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
-                    <strong id="profile-name" class="me-1" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
-                    <img id="profile-pic" class="profilePic rounded-circle">
-                </span>
-        <!-- Admin Mode Bt -->
-        <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false" title="تحديد مصادر بيانات المكتبة">
-                    <i class="fa-solid fa-database" id="AdminModeBt"></i>
-        </span>
-        <!-- OCR Bt -->
-        <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false" title="(OCR) البحث عن الغلاف">
-                    <i class="fa-solid fa-barcode" id="OCRBt"></i>
-              </span>
-        <!-- Extensions Bt -->
+<div id="header">
+    <div id="headerRight" class="pt-1">
+        <!-- App Connection Status -->
+        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="status-icon"
+                                                                               class="#"></i></span>
+        <!-- App Dark Mode -->
+        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="theme-icon"
+                                                                               class="#"></i></span>
+        <!-- Library's Info -->
         <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
-                    <i class="fa-solid fa-puzzle-piece" id="ExtensionsBt" style="transform: scaleX(-1);"></i>
+                    <i class="fa-solid fa-qrcode" id="LibraryInfoBt"></i>
                 </span>
         <!-- Parties Bt -->
         <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
                     <i class="fa-solid fa-users" id="partiesBt"></i>
                 </span>
-        <!-- Library's Info -->
+        <!-- Extensions Bt -->
         <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false">
-                    <i class="fa-solid fa-qrcode" id="LibraryInfoBt"></i>
+                    <i class="fa-solid fa-puzzle-piece" id="ExtensionsBt" style="transform: scaleX(-1);"></i>
                 </span>
-        <!-- App Dark Mode -->
-        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="theme-icon"
-                                                                               class="#"></i></span>
-        <!-- App Connection Status -->
-        <span class="align-items-right ms-3 cursorBt" aria-expanded="false"><i id="status-icon"
-                                                                               class="#"></i></span>
+        <!-- OCR Bt -->
+        <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false" title="(OCR) البحث عن الغلاف">
+                    <i class="fa-solid fa-barcode" id="OCRBt"></i>
+              </span>
+        <!-- Admin Mode Bt -->
+        <span class="align-items-right ms-3 cursorBt headerBt" aria-expanded="false" title="تحديد مصادر بيانات المكتبة">
+                    <i class="fa-solid fa-database" id="AdminModeBt"></i>
+        </span>
+        <!-- User Profile -->
+        <span class="align-items-right fw-bold" aria-expanded="false" style="user-select: none;">
+            <img id="profile-pic" class="rounded-circle profilePic cursorBt dropdown-toggle" data-bs-toggle="dropdown"
+                 aria-expanded="true">
+            <strong id="profile-name" class="me-2" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
+            <ul class="dropdown-menu text-small shadow text-end" id="profileMenu"
+                data-popper-placement="top-start">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item fs-5" href="#" id="logOutBt">تسجيل الخروج</a></li>
+            </ul>
+        </span>
     </div>
     <div id="headerCenter">
-        <div class="#" id="headerCenterBTs" role="group">
-            <!-- Placeholder for Libraries Buttons -->
+        <!-- Secondary Show Options -->
+        <div>
+            <ul id="tagsList" class="p-1">
+                <!-- PLACEHOLDER For Books Tags -->
+            </ul>
         </div>
     </div>
     <div id="headerLeft">
         <!-- Search Input -->
-        <form class="d-flex" role="search" style="display: inline-block;width: 30%">
-            <!-- Add Book button -->
-            <button id="addBookBt" class="btn btn-outline-warning d-inline-flex align-items-center fw-bold"
-                    type="button">اضف كتاب
-            </button>
+        <form class="d-flex" role="search">
             <!-- Search Book -->
-            <div>
-                <button id="searchBt" style="position: absolute; left: 90px"
-                        class="btn d-inline-flex align-items-center fs-4" type="button">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+            <div class="container searchSide">
+                <button id="searchBt" class="btn d-inline-flex align-items-center " type="button">
+                    <i class="fa-solid fa-magnifying-glass fs-5"></i>
                 </button>
-                <input class="form-control ms-2 me-4" id="search-input" type="search" placeholder="بحث">
+                <input class="form-control" id="search-input" type="search" placeholder="بحث">
                 <div id="search-inputList">
                     <ul id="search-inputListItems"><!-- placeholder for Search Responses --></ul>
                 </div>
             </div>
+            <!-- Add Book button -->
+            <div class="addbookSide" style="width: 25%;">
+                <div id="addBookBt" class="fs-5 fw-bold rounded" type="button">اضف كتاب</div>
+            </div>
         </form>
-        <!-- Secondary Show Options -->
-        <div class="navbar-collapse" id="navbarCollapse">
-            <ul id="secondary-nav" class="navbar-nav mb-2 mb-md-0">
-                <!-- PLACEHOLDER For Books Tags -->
-            </ul>
-        </div>
     </div>
 </div>
 <!--  Main View -->
@@ -129,6 +132,8 @@
     <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
 </div>
 <!-- External Scripts -->
+<!-- Include Tesseract.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@v2.1.5/dist/tesseract.min.js"></script>
 <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="JS/components.js"></script><!-- Dark Mode and Themes -->
 <script src="JS/header.js" type="module"></script><!-- Top Header -->

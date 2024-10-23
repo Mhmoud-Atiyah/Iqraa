@@ -15,7 +15,7 @@ export default function ocrScreen() {
         </div>
         <!-- Progress Bar -->
         <div class="progress mb-3 w-100" style="background-color: var(--App-inputBgColor);transform: scaleX(-1)">
-            <div id="ocrProgressBar" class="progress-bar" role="progressbar" style="width: 20%;color: var(--App-textColor);background-color: var(--App-placeholderColor)"></div>
+            <div id="ocrProgressBar" class="progress-bar" role="progressbar" style="color: var(--App-textColor);background-color: var(--App-placeholderColor)"></div>
         </div>
         <!-- Recognized Text Area -->
         <div class="rounded-1 w-100 text-lg-center mb-2">

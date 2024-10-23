@@ -11,6 +11,7 @@ input[type="search"],
 input[type="text"],
 input[type="number"],
 input[type="checkbox"],
+input[class="form-check-input"]:active::before,
 input[type="date"],
 textarea[class="form-control"],
 #myBookComment,
@@ -24,6 +25,7 @@ select[class="form-select"] {
 }
 
 input[type="search"]::-webkit-input-placeholder,
+input[type="number"]::-webkit-input-placeholder,
 textarea[class="form-control"]::-webkit-input-placeholder,
 #myBookComment::-webkit-input-placeholder,
 input[type="text"]::-webkit-input-placeholder,
@@ -47,6 +49,7 @@ ul {
 
 .cursorBt {
     cursor: pointer;
+    user-select: none;
 }
 
 .userNameBt {

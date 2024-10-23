@@ -16,7 +16,7 @@ export default function libraryExtensions() {
             <!-- Gutenberg -->
             <div class="form-check form-switch mb-1 mt-1 me-2">
                 <input class="form-check-input" type="checkbox">
-                <label class="form-check-label" for="flexSwitchCheckChecked">مكتبة جوتنبرج</label>
+                <label class="form-check-label" for="flexSwitchCheckChecked">مشروع جوتنبرج</label>
             </div>
             <!-- TelegramBot -->
             <div class="form-check form-switch mb-1 mt-1 me-2">

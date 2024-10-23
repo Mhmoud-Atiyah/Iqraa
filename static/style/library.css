@@ -7,7 +7,6 @@ body {
     color: var(--App-textColor);
 }
 
-
 #headerRight {
     width: 30%;
 }
@@ -17,116 +16,30 @@ body {
 }
 
 .aboutIcon {
-    color: var(--App-buttonTextColor);
-    background-color: var(--App-buttonBgColor);
-}
-
-.containerBook {
-    padding: 0 40px 10px 20px;
-    background-color: var(--App-panelBgColor);
-    border: solid 1px var(--App-panelBorderColor);
-}
-
-.rowTitle {
-    display: inline-block;
-    margin-bottom: 3px;
-    user-select: none;
-    position: relative;
-    top: 0;
-}
-
-.cursorBt:hover,
-.rowTitle:hover {
-    color: var(--App-linkHoverColor);
-}
-
-.rowTitle span {
-    font-family: Moharram, serif;
-    font-size: 32px;
-}
-
-.bookItem {
-    display: block;
+    color: var(--App-placeholderColor);
     background-color: var(--App-inputBgColor);
+}
+
+.aboutIcon:hover {
+    color: var(--App-textColor);
+    background-color: var(--App-inputBorderColor);
+}
+
+#browse_preview {
+    background-color: var(--App-inputBgColor);
+    padding: 0 6px 6px 6px;
     border: solid 1px var(--App-inputBorderColor);
-    width: 140px;
-    margin-left: 15px;
-}
-
-.bookCover {
-    padding-top: 10px;
-    margin-bottom: 12px;
-    height: 180px;
-    width: 100%;
-}
-
-.bookItemData {
-    text-align: center;
-}
-
-.bookItemTitle {
+    font-family: Omar, serif;
     display: inline-block;
-    font-weight: bold;
-    width: 90%;
-    height: 24px;
-    overflow: hidden;
-    margin-bottom: 3px;
-    font-size: 16px;
-}
-
-.bookItemAuthor {
-    display: inline-block;
-    font-weight: bold;
-    width: 90%;
-    height: 24px;
-    overflow: hidden;
-    margin-bottom: 3px;
-}
-
-.bookItemPrice {
-    display: block;
-    position: relative;
-    right: 3px;
-    padding-bottom: 10px;
-    width: 100%;
-    font-family: NumberFont, serif;
-}
-
-.bookItemPriceBt {
-    display: block;
-    position: relative;
-    padding: 10px 18px 5px 10px;
-    left: -7px;
-    bottom: 2px;
-    float: left;
-    background-color: var(--App-panelBgColor);
-}
-
-.bookItemPriceBt::after {
-    content: "";
     position: absolute;
     right: 0;
-    top: 12px;
-    border-width: 8px;
-    border-style: solid;
-    border-color: transparent var(--App-inputBgColor) transparent transparent;
+    margin-top: 10%;
+    margin-right: 70px;
 }
 
-.bookItemPriceText {
-    position: relative;
-    top: 7px;
-}
-
-.bookItemPriceTextCurrency {
-    font-family: TheYearofTheCamelBold, serif;
-    letter-spacing: 2px;
-    position: relative;
-    top: -2px;
-    right: 2px;
-}
-
-.bookItemPriceBt:hover {
-    background-color: var(--App-buttonHoverBgColor);
+#browse_preview:hover {
+    background-color: var(--App-panelBgColor);
+    color: var(--App-textColor);
 }
 
 #browse_excelFileBt,
@@ -154,6 +67,144 @@ body {
     width: 300px;
 }
 
-.partyBox:hover {
+.partyBox,
+.librarySourceView div {
+    user-select: none;
+    border: solid 1px var(--App-inputBorderColor);
+}
+
+.partyBox:hover,
+.bookItemOptionBt:hover,
+.librarySourceView div:hover {
     background-color: var(--App-inputBgColor);
+}
+
+/*
+ Book Items
+*/
+.containerBook {
+    padding: 0 40px 10px 20px;
+    border-right: solid 2px var(--App-panelBorderColor);
+}
+
+.rowTitle {
+    display: inline-block;
+    margin-bottom: 3px;
+    user-select: none;
+    position: relative;
+    top: 0;
+}
+
+.cursorBt:hover {
+    color: var(--App-linkHoverColor);
+}
+
+.rowTitle span {
+    font-family: Moharram, serif;
+    font-size: 32px;
+}
+
+.bookItem {
+    display: block;
+    background-color: var(--App-panelBgColor);
+    border: solid 1px var(--App-panelBorderColor);
+    width: 140px;
+    margin-left: 15px;
+}
+
+.bookItemFlag {
+    display: block;
+    height: 15px;
+    width: 116%;
+    background-color: var(--price-free);
+    position: relative;
+    z-index: 1;
+    top: 0;
+    left: 8%;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.bookCover {
+    margin-top: 12px;
+    margin-bottom: 10px;
+    height: 180px;
+    width: 100%;
+}
+
+.LibraryStamp {
+    height: 28px;
+    width: 28px;
+    display: inline-block;
+    position: absolute;
+}
+
+.bookItemTitle {
+    display: inline-block;
+    width: 90%;
+    height: 24px;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.bookItemAuthor {
+    display: inline-block;
+    font-size: 14px;
+    width: 90%;
+    height: 24px;
+    overflow: hidden;
+}
+
+.bookItemPrice {
+    color: var(--price-free); /*TODO: */
+    display: inline-block;
+    font-size: 14px;
+    width: 90%;
+    height: 24px;
+    font-family: NumberFont, serif;
+}
+
+.bookItemPriceTextCurrency {
+    font-family: Omar, serif;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.bookItemOptions {
+    display: block;
+    border-top: solid 1px var(--App-panelBorderColor);
+}
+
+.bookItemOptionBt {
+    margin-left: 6px;
+    padding-top: 6px;
+    border: solid 1px var(--App-panelBorderColor);
+}
+
+.delete-bt:hover {
+    background-color: var(--App-redColor);
+}
+
+.addbookAlert {
+    display: inline-block;
+    text-align: center;
+    font-family: Monadi, serif;
+    color: var(--App-redColor);
+    border: solid 1px var(--App-redColor);
+    position: relative;
+    left: 10%;
+    animation-name: fadeInAlert;
+    animation-iteration-count: 1;
+    animation-duration: 1s;
+}
+
+@keyframes fadeInAlert {
+    from {
+        left: 0;
+    }
+
+    to {
+        left: 10%;
+    }
 }

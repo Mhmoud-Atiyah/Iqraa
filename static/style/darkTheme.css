@@ -27,6 +27,12 @@
     --LOADER_1: #98FB98;
     --LOADER_2: #CCCCCC;
     --LOADER_3: #87CEEB;
+    --price-free: #81C784; /* Soft Green */
+    --price-low: #AED581; /* Light Green */
+    --price-moderate: #FFD54F; /* Soft Amber */
+    --price-high: #FFB74D; /* Light Orange */
+    --price-premium: #FF8A65; /* Light Deep Orange */
+    --price-paid: #E57373; /* Soft Red */
 }
 
 ::-webkit-scrollbar-track {

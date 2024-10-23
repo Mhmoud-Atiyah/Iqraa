@@ -119,12 +119,14 @@ sign.signForm.addEventListener('submit', (event) => {
                         localStorage.setItem("userId", res.userID);
                         localStorage.setItem("userPass", `|||${passWord}`);
                         localStorage.setItem("userProfile", `${res.profile}`);
+                        localStorage.setItem("libraryId", `${res.libraryId}`);
                     } else {
                         /***************************************************************
                          * Put Hashed Password in Client Storage to Authenticate client
                          * **************************************************************/
                         localStorage.setItem("userId", res.userID);
                         localStorage.setItem("userPass", `|||${passWord}`);
+                        localStorage.setItem("libraryId", `${res.libraryId}`);
                         localStorage.removeItem("userName");
                         localStorage.removeItem("userProfile");
                     }

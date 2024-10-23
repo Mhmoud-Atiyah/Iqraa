@@ -6,7 +6,7 @@ export default function libraryResource(mainUUID) {
             <div class="loader" style="position: absolute;top: 42%;right: 40%;display: none"></div>
             <div class="librarySourceView">
                 <!-- Excel -->
-                <div class="form-check mt-1 border rounded mb-2" style="font-family: Moharram, serif;font-size: 24px;padding-bottom: 4px;width: 300px;user-select: none">                
+                <div class="form-check mt-1 rounded mb-2" style="font-family: Moharram, serif;font-size: 24px;padding-bottom: 4px;width: 300px;user-select: none">                
                 <label class="form-check-label me-3" for="flexSwitchCheckChecked">تحميل مِلَفّ البيانات&nbsp;</label>
                 <a class="fs-5" href="https://github.com/Mhmoud-Atiyah/iqraa/blob/master/DOC/goodreads.md" target="_blank" 
                         title="شرح كيفية تحميل الملف والصيغة المطلوبة" style="text-decoration: underline">(الطريقة)</a>
@@ -17,7 +17,7 @@ export default function libraryResource(mainUUID) {
                     </a>
             </div>
                 <!-- OCR -->
-                <div class="form-check mt-1 border rounded mb-2" 
+                <div class="form-check mt-1 rounded mb-2" 
                     style="font-family: Moharram, serif;font-size: 24px;padding-bottom: 4px;user-select: none">
                     <label class="form-check-label me-3" for="flexSwitchCheckChecked">البحث بصورة الغلاف&nbsp;</label>
                     <a class="fw-bold border rounded cursorBt pe-2" href="#" id="CoverOCR">
@@ -25,7 +25,7 @@ export default function libraryResource(mainUUID) {
                     </a>
             </div>
                 <!-- Add Book -->
-                <div class="form-check mt-1 border rounded mb-2 text-end" 
+                <div class="form-check mt-1 rounded mb-2 text-end" 
                     style="font-family: Moharram, serif;font-size: 24px;padding-bottom: 4px;user-select: none">
                 <label class="me-3">أضف الكتاب يدويا</label>
                     <a class="fw-bold border rounded cursorBt pe-2 border-warning text-warning" href="#" id="sourceAddbook">

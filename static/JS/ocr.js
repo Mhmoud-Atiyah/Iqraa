@@ -31,14 +31,14 @@ async function initializeOCR(output) {
     }
 }
 
-export default async function OCR(video, canvas, output, exitButton) {
+export default async function OCR(video, canvas, output, ProgressBar, exitButton) {
     const ctx = canvas.getContext('2d');
     // Initialize Tesseract.js worker
     const Tesseract = window.Tesseract;
     const worker = Tesseract.createWorker({
         logger: m => {
             if (m.status === 'recognizing text') {
-                //console.log(`OCR Progress: ${(m.progress * 100).toFixed(2)}%`);
+                ProgressBar.style.width = `${(m.progress * 100).toFixed(2)}%`;
             }
         }
     });

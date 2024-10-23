@@ -76,15 +76,16 @@ app.post('/login', (req, res) => {
                      * *******************/
                     pg.getRecord("users", exists).then(data => {
                         res.json({
-                            status: 0, // 0 => success | 1 => failure
+                            status: 0,
                             userID: data.id,
-                            profile: data.profile
+                            profile: data.profile,
+                            libraryId: data.mylibrary
                         })
                     });
                 } else {
                     console.log('Invalid credentials');
                     res.json({
-                        status: 1 // 0 => success | 1 => failure
+                        status: 1
                     })
                 }
             } catch (error) {
@@ -552,6 +553,71 @@ app.get('/loadAuthorData/:authorId', (req, res) => {
         })
     })
 });
+app.post('/addBook', upload.single('file'), (req, res) => {
+    try {
+        /***
+         * Get credentials
+         *  */
+        const {userId, hashedPass, libraryId, bookName, publisher, price, type, section, Paid, read, sell} = req.body;
+        const dataFile = req.file ? req.file.path : null;
+        /***************
+         * User Authorized
+         * **************/
+        if (pg.authenticateUser(userId, hashedPass)) {
+            /***
+             * 1. Check Book Exists in Iqraa DB
+             * */
+                //TODO: if (search(bookName)){} which retrun bookId
+            const bookId = 3438000;// from last search
+            if (true) {
+                if (libraryId != null) {
+                    try {
+                        pg.insertData(libraryId, {
+                            id: bookId,
+                            price: price,
+                            format: type || "hardcover",
+                            hash: Paid === "false" ? generateCryptographicValue(hashedPass, `${bookId}`) : null,
+                            paid: Paid,
+                            read: read,
+                            sell: sell,
+                            section: section,
+                            preview: dataFile
+                        }).then(() => {
+                            console.log(`user [userId: ${userId}] add book [bookId: ${bookId}] to Library [libraryId: ${libraryId}]`);
+                            res.json({
+                                status: 0,
+                                msg: `user [userId: ${userId}] add book [bookId: ${bookId}] to Library [libraryId: ${libraryId}]`
+                            })
+                        });
+                    } catch (error) {
+                        res.status(500).send('Internal Server Error');
+                    }
+                }
+            }
+            /****
+             * New Book
+             * */
+            else {
+                /***
+                 * Add it to library then retreive main data from Goodreads
+                 * */
+                console.error(`user [userId: ${userId}] add book [bookId: ${bookId}] to Library [libraryId: ${libraryId}] and Main Books`);
+                res.json({
+                    status: 0,
+                    msg: `user [userId: ${userId}] add book [bookId: ${bookId}] to Library [libraryId: ${libraryId}]`
+                })
+            }
+        } else {
+            console.error(`user [userId: ${userId}] Not Authorized to add books to Library [libraryId: ${libraryId}]`);
+            res.json({
+                status: 1,
+                msg: `user [userId: ${userId}] Not Authorized to add books to Library [libraryId: ${libraryId}]`
+            })
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
 app.post('/goodreads', upload.single('file'), (req, res) => {
     const {userId, hashedPass} = req.body;
     const dataFile = req.file ? req.file.path : null;
@@ -618,6 +684,7 @@ app.post('/goodreads', upload.single('file'), (req, res) => {
 app.get('/bookview', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "bookView.html"));
 })
+
 /*******************************
  *   Library's Requests
  ********************************/

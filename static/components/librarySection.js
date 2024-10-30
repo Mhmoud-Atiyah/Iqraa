@@ -2,19 +2,23 @@
  * Options Buttons
  * */
 const optionsBts = {
-        myLibrary: {
-            'edit': "fa-regular fa-pen-to-square",
-            'delete': "fa-solid fa-trash-can"
-        },
-        otherLibrary: {
-            'preview': "fa-solid fa-magnifying-glass-chart",
-            'borrow': "fa-solid fa-brands fa-readme",
-            'purchase': "fa-solid fa-bag-shopping",
-        }
+    myLibrary: {
+        'edit': "fa-regular fa-pen-to-square",
+        'delete': "fa-solid fa-trash-can"
+    },
+    otherLibrary: {
+        'preview': "fa-solid fa-magnifying-glass-chart",
+        'borrow': "fa-solid fa-brands fa-readme",
+        'purchase': "fa-solid fa-bag-shopping",
+    },
+    printingLibrary: {
+        'preview': "fa-solid fa-magnifying-glass-chart",
+        'print': "fa-solid fa-print",
+        'purchase': "fa-solid fa-bag-shopping"
     }
-;
+}
 
-function createLibraryBook(BookData, paid = true) {
+function createLibraryBook(BookData, Currency, paid = true) {
     const LibraryBook = `
          <div href="/bookview?bookId=${BookData.id}" class="bookItem rounded openBookBt mb-3" style="width: 15.4%">
             <!-- Price Flag -->
@@ -24,7 +28,7 @@ function createLibraryBook(BookData, paid = true) {
                 <img class="bookCover cursorBt rounded-2" src="${BookData.details.coversrc}" alt="${BookData.title}" title="${BookData.details.title}">
             </a>
             <!-- Library Stamp (Optional) -->
-            <!--TODO: add this data to inputs -->
+            <!--TODO: add this data to inputs of library creation-->
             <div>
                 <img class="LibraryStamp rounded-circle mt-2" src="assets/libraryEmblem.png" alt="${BookData.title}" title="جميع الحقوق محفوظة ل مؤسسة هنداوي">
             </div>
@@ -34,7 +38,7 @@ function createLibraryBook(BookData, paid = true) {
                 <a href="/author?authorId=${BookData.details.authorid}" class="bookItemAuthor cursorBt openAuthorBt">${BookData.details.authornames[0]}</a>
             </div>
             <!-- Price (Optional) -->
-            <div class="bookItemPrice text-center">${BookData.price}<span class="bookItemPriceTextCurrency pe-1"></span></div>
+            <div class="bookItemPrice text-center">${BookData.price}<span class="bookItemPriceTextCurrency pe-1">${Currency}</span></div>
             <!-- Options -->
             <div class="bookItemOptions mt-2 pt-2 container pb-1">
                 <ul class="row">
@@ -48,7 +52,7 @@ function createLibraryBook(BookData, paid = true) {
 }
 
 // TODO: Sections Views
-export default function createLibrarySection(SectionTitle, Data) {
+export default function createLibrarySection(SectionTitle, Data, currency) {
     // Sort Sections First
     Data.sort((a, b) => {
         if (a.section < b.section) return -1;
@@ -67,7 +71,7 @@ export default function createLibrarySection(SectionTitle, Data) {
         <div class="row">`;
     // Append Books
     for (let i = 0; i < Data.length; i++) {
-        element += `${createLibraryBook(Data[i])}`;
+        element += `${createLibraryBook(Data[i], currency)}`;
     }
     element += `</div>`;
     let Div = document.createElement('div');

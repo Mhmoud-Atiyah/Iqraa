@@ -7,7 +7,6 @@ function openDatabase() {
 
         request.onupgradeneeded = function (event) {
             db = event.target.result;
-
             // Create Tables
             if (!db.objectStoreNames.contains('myLibrary')) {
                 db.createObjectStore('myLibrary', {keyPath: 'id'});
@@ -87,6 +86,7 @@ function deleteData(storeName, id) {
 }
 
 export default {
+    openDatabase,
     setData,
     getData,
     deleteData

@@ -28,9 +28,19 @@
             </div>
             <!-- User Profile -->
             <span class="align-items-right fw-bold ms-1" aria-expanded="false" style="user-select: none;">
-                    <strong id="profile-name" class="me-1" style="letter-spacing: 1px;"></strong>
-                    <img id="profile-pic" width="32" height="32" class="rounded-circle">
-                </span>
+                <strong id="profile-name" class="me-1" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
+                <img id="profile-pic" width="32" height="32" class="rounded-circle profilePic cursorBt dropdown-toggle"
+                     data-bs-toggle="dropdown" aria-expanded="true">
+                <ul class="dropdown-menu text-small shadow text-end" id="profileMenu"
+                    data-popper-placement="top-start">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item fs-5" href="#" id="logOutBt">تسجيل الخروج</a></li>
+            </ul>
+            </span>
+            </span>
             <!-- Session's Side -->
             <span class="align-items-right ms-3 me-1 cursorBt headerBt" aria-expanded="false">
                     <i class="fa-solid fa-users-viewfinder" id="SessionSideBt"></i>

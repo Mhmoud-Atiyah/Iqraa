@@ -29,15 +29,13 @@ window.onload = () => {
              * Load Library
              * ***********/
             if (!config.newlibrary) {
-                library.libraryNameField.remove();
-                library.initLibraryBt.remove();
                 /********************
                  * load Other's Library
                  * ******************/
                 if (libraryId != null && config.mylibrary !== libraryId) {
                     // TODO: Just request the update by comparing Flag
                     //  (Update: 1323) of Library Data with current one local on IndexDb
-                    misc.postData('loadLibrary', { // Get Authorized
+                    misc.postData('loadLibrary', {
                         userId: misc.ID,
                         libraryId: libraryId,
                         hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null
@@ -48,14 +46,8 @@ window.onload = () => {
                             LibraryData = otherLibraryData;// set Global LibraryData
                             profileBt.style.border = "solid 2px var(--App-linkHoverColor)";// Enable User Mode
                             misc.getData(`loadLibrarySection/${otherLibraryData.main}`).then(sectionDataBooks => {
-                                createLibrarySection(`${otherLibraryData.title}`, sectionDataBooks);
-                                /*****************
-                                 * 1. Set Currency
-                                 * ***************/
                                 const Currency = misc.currency[otherLibraryData.currency];
-                                for (let i = 0; i < document.getElementsByClassName("bookItemPriceCurrency").length; i++) {
-                                    document.getElementsByClassName("bookItemPriceCurrency")[i].innerText = Currency;
-                                }
+                                createLibrarySection(`${otherLibraryData.title}`, sectionDataBooks, Currency);
                             }).catch(err => {
                                 console.error(`error occurred ${err}`)
                             })
@@ -69,17 +61,6 @@ window.onload = () => {
                             console.error(`Error: ${res.msg}`);
                             document.getElementById("SecondaryWindowBt_").onclick = () => {
                                 window.location.href = window.location.href.split("library")[0] + "library";
-                            }
-                        }
-                    }).then(() => {
-                        /*************************
-                         * Activate library button
-                         * ***********************/
-                        for (let i = 0; i < document.getElementsByClassName("headerCenterBt").length; i++) {
-                            const id = document.getElementsByClassName("headerCenterBt")[i].getAttribute("data-libraryId");
-                            if (libraryId === id) {
-                                document.getElementsByClassName("headerCenterBt")[i].style.color = "var(--App-buttonTextColor)";
-                                document.getElementsByClassName("headerCenterBt")[i].style.backgroundColor = "var(--App-buttonBgColor)";
                             }
                         }
                     });
@@ -106,12 +87,8 @@ window.onload = () => {
                                  * Load Library View
                                  * *****************/
                                 misc.getData(`loadLibrarySection/${LibraryData.main}`).then(DataBooks => {
-                                    createLibrarySection(`مكتبتي`, DataBooks);
-                                    // 1. Set Currency
                                     const Currency = misc.currency[LibraryData.currency];
-                                    for (let i = 0; i < document.getElementsByClassName("bookItemPriceTextCurrency").length; i++) {
-                                        document.getElementsByClassName("bookItemPriceTextCurrency")[i].innerText = Currency;
-                                    }
+                                    createLibrarySection(`مكتبتي`, DataBooks, Currency);
                                     return 0;//TODO: return based on Update
                                 }).then((newUpdate) => {
                                     /***
@@ -143,15 +120,25 @@ window.onload = () => {
                     // TODO: remove this since here is a lot of requests
                     for (let i = 0; i < config.libraries.length; i++) {
                         const libraryId = config.libraries[i];
+                        //TODO: if (libraryId === misc.getQueryParams().libraryId) continue;
                         misc.postData('loadLibraries', { // Get Authorized
                             userId: misc.ID,
                             libraryId: libraryId,
                             hashedPass: localStorage.getItem("userPass") != null ? localStorage.getItem("userPass").slice(3) : null
                         }).then(libraryData => {
-                            addLibraryButton(libraryData);
+                            if (misc.getQueryParams().libraryId != null && misc.getQueryParams().libraryId === libraryId) {
+                                addLibraryButton(libraryData, true);
+                            } else {
+                                addLibraryButton(libraryData);
+                            }
                         });
                     }
                 }
+                /****
+                 * Remove New library Input
+                 * */
+                library.libraryNameField.remove();
+                library.initLibraryBt.remove();
             }
             /****************
              * Welcome Message
@@ -172,16 +159,6 @@ window.onload = () => {
                 mainView.append(Div);
                 library.initBt.classList.add("pulsed-border");
             }
-            /***
-             * Load Libraries buttons
-             * */
-
-            /****************
-             * Responsive View
-             * **************/
-            const headerCenterSpace = document.body.offsetWidth - document.getElementById("headerRight").offsetWidth - searchInput.offsetWidth - addBookBt.offsetWidth - 80;
-            document.getElementById("headerCenter").style.right = document.getElementById("headerRight").offsetWidth + 40 + 'px';
-            document.getElementById("headerCenter").style.width = headerCenterSpace + 'px';
             /*****
              * Load Effect
              * ****/
@@ -194,6 +171,7 @@ window.onload = () => {
  * Library Info Bt
  * ***************/
 library.LibraryInfoBt.onclick = () => {
+    // TODO: Add Options of library like (support printting books -- support delivery and so on)
     showHideSecondaryWindow("بطاقة التعريف", libraryAbout(LibraryData), "تمام");
 }
 /****************
@@ -230,7 +208,6 @@ library.PartiesBt.onclick = () => {
  * LibraryExtensionsBt
  * *********************/
 library.ExtensionsBt.onclick = () => {
-    // TODO: add extension for library which print book on demand !
     libraryExtensions();
 }
 /*********************
@@ -304,6 +281,7 @@ library.initBt.onclick = () => {
  * Create New Library Routine
  ***************************/
 library.initLibraryBt.onclick = () => {
+    // TODO: Add Options of library like (support printting books -- support delivery and so on)
     /***************
      * Creation Window
      * *************/

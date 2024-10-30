@@ -54,6 +54,12 @@ app.get('/tag', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "main.html"));
 })
 /*******************************
+ *   Home Related Requests
+ ********************************/
+app.get('/home', (req, res) => {
+    res.sendFile(path.join(__dirname, "static", "home.html"));
+})
+/*******************************
  *   User Related Requests
  ********************************/
 app.get('/login', (req, res) => {
@@ -684,7 +690,6 @@ app.post('/goodreads', upload.single('file'), (req, res) => {
 app.get('/bookview', (req, res) => {
     res.sendFile(path.join(__dirname, "static", "bookView.html"));
 })
-
 /*******************************
  *   Library's Requests
  ********************************/
@@ -917,35 +922,35 @@ app.post('/libraryExcel', upload.single('file'), (req, res) => {
          * Get credentials
          *  */
         const {userId, hashedPass, libraryId} = req.body;
+        // Parse a file
+        const excelFile = req.file ? req.file.path : null;
         /***************
          * User Authorized
          * **************/
         if (pg.authenticateUser(userId, hashedPass)) {
-            if (libraryId != null) {
+            if (libraryId != null && excelFile != null) {
                 try {
-                    // Parse a file
-                    const excelFile = req.file ? req.file.path : 'assets/profile.png';
                     const File = xlsx.parse(excelFile),
                         Data = File[0].data,
-                        libraryHash = generateCryptographicValue(hashedPass, libraryId);
+                        errorReport = [];
                     /***
-                     * Write Data To Database
+                     * Write Data To Library
                      * */
                     for (let i = 0; i < Data.length; i++) {
                         const book = Data[i];
                         /***
-                         * Excel Entry Contain Must Data
+                         * Excel Entry Contain (Must) Data
                          * */
                         if (book.length > 0 && book[0] !== null && book[1] !== null && !isNaN(book[1])) {
                             //TODO: const bookId = Search(book[0]);
                             // make sure that no two books get same id
                             const bookId = 5295735;
+                            const libraryHash = generateCryptographicValue(hashedPass, `${bookId}`);
                             (async () => {
                                 /****
                                  * Book Already Existed ?
                                  * */
                                 const exists = await pg.checkIfIdExists(libraryId, bookId);
-                                // If it doesn't exist, proceed with insertion
                                 if (!exists) {
                                     const bookData = {
                                         id: bookId,
@@ -968,6 +973,15 @@ app.post('/libraryExcel', upload.single('file'), (req, res) => {
                             })();
                         }
                         /****
+                         * Collect Error Then Send to Client
+                         * */
+                        else {
+                            errorReport.push({
+                                Entry: i,
+                                msg: "Must Entries [bookName, Price] not included"
+                            });
+                        }
+                        /****
                          * Respond User based on itertaion
                          * */
                         if (i === Data.length - 1) {
@@ -975,7 +989,8 @@ app.post('/libraryExcel', upload.single('file'), (req, res) => {
                             console.log(`user [userId: ${userId}] Completed Add Data To Library [libraryId: ${libraryId}] by Excel File`);
                             res.json({
                                 status: 0,
-                                msg: `user [userId: ${userId}] Add Data To Library [libraryId: ${libraryId}] by Excel File`
+                                msg: `user [userId: ${userId}] Add Data To Library [libraryId: ${libraryId}] by Excel File`,
+                                report: errorReport
                             })
                         }
                     }

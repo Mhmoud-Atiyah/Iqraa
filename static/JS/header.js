@@ -230,6 +230,28 @@ logOutBt.onclick = () => {
  * Riwaq Buttons
  * *******/
 if (pathname === '/riwaq') {
+    /*******
+     * Adjust UI
+     * ******/
+    riwaq.initModal.style.display = "none";
+    riwaq.UsersWindow.style.display = "none";
+    riwaq.Side.style.height = window.innerHeight - 50 + 'px';
+    document.getElementById("SessionNotes").style.height = window.innerHeight - 350 + 'px';
+    document.getElementById("conversation").style.height = window.innerHeight - 110 + 'px';
+    document.getElementById("conversation").style.width = window.innerWidth - 220 + 'px';
+    if (window.innerWidth <= 480) {
+        //document.getElementById("Side").style.height = window.innerHeight - 120 + 'px';
+        document.getElementById("messageInput").style.width = window.innerWidth + 'px';
+        document.getElementById("messageInputText_in").style.width = window.innerWidth - 180 + 'px';
+    } else {
+        document.getElementById("messageInput").style.width = window.innerWidth - 220 + 'px';
+        document.getElementById("messageInputText_in").style.width = window.innerWidth - 420 + 'px';
+    }
+    riwaq.initBt.setAttribute("data-show", "hide");
+    riwaq.UsersWindow.setAttribute("data-display", 'none');
+    riwaq.Side.setAttribute("data-display", 'block');
+    riwaq.emojiPicker.setAttribute("data-display", 'none');
+    riwaq.markersBt.setAttribute("data-show", "hide");
     /******
      * Academy Mode Session
      * ******/

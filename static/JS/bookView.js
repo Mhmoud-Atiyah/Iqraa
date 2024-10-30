@@ -8,7 +8,7 @@ import loadAuthorPage from "../components/loadAuthorPage.js";
 import List from "./List.js";
 
 const BookID = misc.getQueryParams().bookId;
-
+// TODO:==> path of book include link of reading (.kfx or epub or pdf)
 window.onload = () => {
     /************
      * Mobile View

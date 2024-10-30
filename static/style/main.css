@@ -15,7 +15,7 @@ input[class="form-check-input"]:active::before,
 input[type="date"],
 textarea[class="form-control"],
 #myBookComment,
-#recognizedText,/* OCR in Library */
+#recognizedText, /* OCR in Library */
 #addBookModal_rate,
 select[class="form-select"] {
     font-family: GilroyLight, serif;
@@ -185,16 +185,19 @@ body {
     transform: scaleX(-1);
 }
 
-#profileMenu {
+.dropdown-menu {
     position: absolute;
     inset: auto auto 0px 0px;
     margin: 0px;
     z-index: 1;
     transform: translate(0px, -34px);
-    color: var(--App-textColor);
-    background-color: var(--App-panelBorderColor);
+    background-color: var(--App-panelBgColor);
     border: solid 1px var(--App-panelBorderColor);
-
+}
+.dropdown-item {
+    color: var(--App-textColor);
+    font-weight: bold;
+    letter-spacing: 1px;
 }
 
 .profilePic {
@@ -211,10 +214,11 @@ body {
     direction: rtl;
     overflow-x: scroll;
     overflow-y: hidden;
-    /*line-height: 2em;*/
+    /*TODO: on english => line-height: 2em;*/
 }
 
 .tagBt {
+    white-space: nowrap;
     background-color: var(--App-inputBgColor);
     color: var(--App-placeholderColor);
     font-family: Moharram, serif;

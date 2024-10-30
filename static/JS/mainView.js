@@ -160,6 +160,7 @@ myBooks.onclick = () => {
 /***********
  * Open Book
  * ********/
+// TODO: Remove this with <a> tag
 for (let index = 0; index < openBookBt.length; index++) {
     openBookBt[index].onclick = () => {
         if (!misc.isElectron()) {
@@ -183,6 +184,16 @@ settingBt.onclick = () => {
 libraryBt.onclick = () => {
     if (!misc.isElectron()) {
         window.location.href = `/library`;
+    } else {
+        window.IPC.openLibraryWindow(misc.ID);
+    }
+}
+/****************
+ * home button
+ * **************/
+homeBt.onclick = () => {
+    if (!misc.isElectron()) {
+        window.location.href = `/home`;
     } else {
         window.IPC.openLibraryWindow(misc.ID);
     }

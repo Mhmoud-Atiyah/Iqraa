@@ -8,7 +8,7 @@ export default function libraryResource(mainUUID) {
                 <!-- Excel -->
                 <div class="form-check mt-1 rounded mb-2" style="font-family: Moharram, serif;font-size: 24px;padding-bottom: 4px;width: 300px;user-select: none">                
                 <label class="form-check-label me-3" for="flexSwitchCheckChecked">تحميل مِلَفّ البيانات&nbsp;</label>
-                <a class="fs-5" href="https://github.com/Mhmoud-Atiyah/iqraa/blob/master/DOC/goodreads.md" target="_blank" 
+                <a class="fs-5" href="https://github.com/Mhmoud-Atiyah/iqraa/blob/master/DOC/ExcelLoad.md" target="_blank" 
                         title="شرح كيفية تحميل الملف والصيغة المطلوبة" style="text-decoration: underline">(الطريقة)</a>
                 <a class="fw-bold border rounded cursorBt" href="#" id="browse_excelFileBt">
                         <input class="form-control-file" type="file" name="file" style="display:none" id="browse_excelFile" accept=".xls,.xlsx">
@@ -52,6 +52,10 @@ export default function libraryResource(mainUUID) {
                 // Success
                 if (!res.status) {
                     console.log(res.msg);
+                    // check error
+                    if (res.report.length > 0) {
+                        //     TODO: Handle this
+                    }
                     // Reload Library
                     window.location.href = '/library';
                 }

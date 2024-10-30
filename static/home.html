@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,8 +11,8 @@
     <link href="style/loader.css" rel="stylesheet">
     <link href="style/responsive/res.css" rel="stylesheet">
     <link href="style/fonts.css" rel="stylesheet">
+    <link href="style/home.css" rel="stylesheet">
 </head>
-
 <body style="font-family: Moharram;">
 <!-- Header -->
 <div id="header">
@@ -29,8 +28,9 @@
             <img id="profile-pic" class="rounded-circle profilePic cursorBt dropdown-toggle" data-bs-toggle="dropdown"
                  aria-expanded="true">
             <strong id="profile-name" class="me-2" style="letter-spacing: 1px;word-spacing: 2px;"></strong>
-            <ul class="dropdown-menu text-end" id="profileMenu" data-popper-placement="top-start">
-                <li><a class="dropdown-item fs-6" href="#">الملف الشخصي</a></li>
+            <ul class="dropdown-menu text-small shadow text-end" id="profileMenu"
+                data-popper-placement="top-start">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item fs-5" href="#" id="logOutBt">تسجيل الخروج</a></li>
             </ul>
@@ -57,31 +57,39 @@
                     <ul id="search-inputListItems"><!-- placeholder for Search Responses --></ul>
                 </div>
             </div>
-            <!-- Add Book button -->
-            <div class="addbookSide" style="width: 25%;">
-                <div id="addBookBt" class="fs-5 fw-bold rounded" type="button">اضف كتاب</div>
-            </div>
         </form>
     </div>
 </div>
 <!--  Main View -->
-<div id="main"></div>
-<!-- Bottom Dock -->
-<div id="nav" class="navbar navbar-expand-md">
-    <div class="col-md-1"><img class="cursorBt" id="current" src="#"></div>
-    <div class="row">
-        <div id="myBooks" class="navBt myBooks col-md-1 nav-bt cursorBt">كتبي</div>
-        <div id="home" class="navBt col-md-1 nav-bt cursorBt">المنصة</div>
-        <div id="library_bt" class="navBt col-md-1 nav-bt cursorBt">المكتبة</div>
-        <div id="session" class="navBt col-md-1 nav-bt cursorBt">الرواق</div>
+<div id="main">
+    <div class="main_view container">
+        <div class="row">
+            <!-- Contributors Section -->
+            <div class="col home_contributors">
+
+            </div>
+            <!-- User Section -->
+            <div class="col-4 ms-2 pt-2 home_user bg-white">
+                <div class="mb-2">
+                    <!-- user Profile -->
+                    <div class="home_user_profile"></div>
+                    <!-- User Window -->
+                    <div class="g-0 rounded overflow-hidden shadow-sm h-md-250 userData p-2 bg-danger">
+                        <div class="col d-flex flex-column position-static">
+                            <div id="userWindow">
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Window Spinner-->
+                    <div id="home_user_Spinner"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<!-- Setting Icon -->
-<div id="settings" class="cursorBt">
-    <i class="fa-solid fa-bars" style="padding: 5px;"></i>
-</div>
 <!-- Secondary Window -->
-<div id="SecondaryWindow" class="rounded">
+<div id="SecondaryWindow" class="rounded" style="display: none">
     <span id="SecondaryWindowHeader">
         <span id="SecondaryWindowHeader_close" class="float-end me-2 cursorBt">
             <i class="fa-solid fa-xmark rounded-circle"></i>
@@ -91,14 +99,13 @@
     <span id="SecondaryWindowBody"></span>
     <span id="SecondaryWindowBt"><span class="border rounded fw-bold" id="SecondaryWindowBt_"></span></span>
 </div>
+<!-- Modal Placeholder -->
+<div id="ModalPlaceHolder"></div>
 <!-- External Scripts -->
 <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="JS/components.js"></script><!-- Dark Mode and Themes -->
 <script src="JS/header.js" type="module"></script><!-- Top Header -->
-<script src="JS/search.js" type="module"></script><!-- Search Routines -->
-<script src="JS/addBook.js" type="module"></script><!-- Add Book -->
-<script src="JS/userSection.js" type="module"></script><!-- Load and remove User Sections -->
-<script src="JS/mainView.js" type="module"></script><!-- Main Routines -->
+<script src="JS/home.js" type="module"></script><!-- Top Header -->
 </body>
 
 </html>

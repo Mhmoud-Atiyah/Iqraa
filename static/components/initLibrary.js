@@ -1,5 +1,6 @@
 import showHideSecondaryWindow from "../JS/SecondaryWindow.js";
 import misc from "../JS/misc.js";
+import indexedDB from "../JS/indexedDB.js";
 
 export default function initLibrary(libraryName) {
     let libraryLocation = {latitude: 0.0, longitude: 0.0};
